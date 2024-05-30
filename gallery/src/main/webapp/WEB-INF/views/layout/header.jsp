@@ -2,119 +2,69 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 
-	<div class="container-fluid bg-light header-top">
-		<div class="container">
-			<div class="row">
-				<div class="col">
-					<div class="p-2">
-						<i class="bi bi-telephone-inbound-fill"></i> +82-1234-1234
-					</div>
-				</div>
-				<div class="col">
-					<div class="d-flex justify-content-end">
-						<c:if test="${empty sessionScope.member}">
-							<div class="p-2">
-								<a href="javascript:dialogLogin();" title="로그인"><i class="bi bi-lock"></i></a>
-							</div>
-							<div class="p-2">
-								<a href="${pageContext.request.contextPath}/" title="회원가입"><i class="bi bi-person-plus"></i></a>
-							</div>	
-						</c:if>
-						<c:if test="${not empty sessionScope.member}">
-							<div class="p-2">
-								<a href="#" title="알림"><i class="bi bi-bell"></i></a>
-							</div>
-							<div class="p-2">
-								<a href="${pageContext.request.contextPath}/" title="로그아웃"><i class="bi bi-unlock"></i></a>
-							</div>					
-						</c:if>
-						<c:if test="${sessionScope.member.userId == 'admin'}">
-							<div class="p-2">
-								<a href="#" title="관리자"><i class="bi bi-gear"></i></a>
-							</div>					
-						</c:if>
-					
-					</div>
-					
-				</div>
-			</div>
+
+
+<nav class="navbar navbar-expand-lg bg-transparent">
+	<div class="container-fluid">
+		<a class="navbar-brand" href="${pageContext.request.contextPath}/main">
+			<img src="${pageContext.request.contextPath}/resources/images/logo.png" style="width: 200px; height: 70px;">
+		</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+      		<span class="navbar-toggler-icon"></span>
+    	</button>
+    	<div class="collapse navbar-collapse" id="navbarNavDropdown">
+			<ul class="nav ms-auto">
+				<li class="nav-item">
+					<a class="nav-link" href="${pageContext.request.contextPath}/notice/list">Notice</a>
+        		</li>
+        		<li class="nav-item">
+        			<a class="nav-link" href="${pageContext.request.contextPath}/artist/list">Artist</a>
+        		</li>
+        		<li class="nav-item">
+          			<a class="nav-link" href="${pageContext.request.contextPath}/gallery/list">Gallery</a>
+        		</li>
+        		<li class="nav-item dropdown">
+       				<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+       				 aria-expanded="false" href="${pageContext.request.contextPath}/community/list">Community</a>
+					<ul class="dropdown-menu dropdown-menu-warning">
+            			<li><a class="dropdown-item" href="#">자유게시판</a></li>
+            			<li><hr class="dropdown-divider"></li>
+           				<li><a class="dropdown-item" href="#">팬아트 게시판</a></li>
+            			<li><hr class="dropdown-divider"></li>
+            			<li><a class="dropdown-item" href="#">팬 게시판</a></li>
+            			<li><hr class="dropdown-divider"></li>
+            			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/art_board/list">작가 게시판</a></li>
+					</ul>
+        		</li>
+        		<li class="nav-item dropdown">
+          			<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
+       				 aria-expanded="false" href="#">Contact</a>
+          <ul class="dropdown-menu dropdown-menu-warning">
+            <li><a class="dropdown-item" href="#">연락처</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">FAQ</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">Q&A</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#">신고</a></li>
+          </ul>
+        </li>
+        		<li class="nav-item">
+          			<a class="nav-link" href="${pageContext.request.contextPath}/contact/list">Contact</a>
+        		</li>
+        		<li class="nav-item">
+          			 <c:if test="${empty sessionScope.member}">
+          			 <a class="nav-link" onclick="dialogLogin();" >Log-in</a>
+        </c:if>
+        <c:if test="${not empty sessionScope.member}">
+        <a class="nav-link" href="${pageContext.request.contextPath}/member/logout">Log-out</a>
+        </c:if>
+				</li>
+			</ul>
 		</div>
 	</div>
+</nav>
 
-	<nav class="navbar navbar-expand-lg navbar-light">
-		<div class="container">
-			<a class="navbar-brand" href="${pageContext.request.contextPath}/"><i class="bi bi-app-indicator"></i></a>
-			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-				
-			<div class="collapse navbar-collapse" id="navbarSupportedContent">
-				<ul class="navbar-nav mx-auto flex-nowrap"> <!-- ms-auto : 우측으로 정렬 -->
-					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="${pageContext.request.contextPath}/">홈</a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="#">회사소개</a>
-					</li>
-
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							IT 강좌
-						</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<li><a class="dropdown-item" href="#">프로그래밍</a></li>
-							<li><a class="dropdown-item" href="#">데이터베이스</a></li>
-							<li><a class="dropdown-item" href="#">웹프로그래밍</a></li>
-							<li><hr class="dropdown-divider"></li>
-							<li><a class="dropdown-item" href="#">IT  질문과 답변</a></li>
-						</ul>
-					</li>
-
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							커뮤니티
-						</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<li><a class="dropdown-item" href="#">방명록</a></li>
-							<li><a class="dropdown-item" href="#">자유게시판</a></li>
-							<li><a class="dropdown-item" href="#">포토갤러리</a></li>
-							<li><hr class="dropdown-divider"></li>
-							<li><a class="dropdown-item" href="#">자료실</a></li>
-						</ul>
-					</li>
-					
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							고객센터
-						</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<li><a class="dropdown-item" href="#">자주하는질문</a></li>
-							<li><a class="dropdown-item" href="#">공지사항</a></li>
-							<li><hr class="dropdown-divider"></li>
-							<li><a class="dropdown-item" href="#">질문과답변</a></li>
-						</ul>
-					</li>
-					
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-							마이페이지
-						</a>
-						<ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-							<li><a class="dropdown-item" href="#">일정관리</a></li>
-							<li><a class="dropdown-item" href="#">사진첩</a></li>
-							<li><a class="dropdown-item" href="#">쪽지함</a></li>
-							<li><a class="dropdown-item" href="#">가계부</a></li>
-							<li><hr class="dropdown-divider"></li>
-							<li><a class="dropdown-item" href="#">정보수정</a></li>
-						</ul>
-					</li>
-					
-				</ul>
-			</div>
-			
-		</div>
-	</nav>
-	
 	<!-- Login Modal -->
 	<script type="text/javascript">
 		function dialogLogin() {
@@ -142,7 +92,7 @@
 		        return;
 		    }
 		
-		    f.action = "${pageContext.request.contextPath}";
+		    f.action = "${pageContext.request.contextPath}/member/login";
 		    f.submit();
 		}
 	</script>
@@ -186,7 +136,7 @@
 	                    <div>
 	                        <p class="form-control-plaintext mb-0">
 	                        	아직 회원이 아니세요 ?
-	                        	<a href="${pageContext.request.contextPath}" class="text-decoration-none">회원가입</a>
+	                        	<a href="${pageContext.request.contextPath}/member/member" class="text-decoration-none">회원가입</a>
 	                        </p>
 	                    </div>
 	                </div>

@@ -11,6 +11,7 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/layout.css" type="text/css">
 
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/font.css" type="text/css">
 
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/jquery/js/jquery.min.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/resources/js/util-jquery.js"></script>
