@@ -29,7 +29,7 @@
 					<ul class="dropdown-menu dropdown-menu-warning">
             			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/free_board/list">자유게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
-           				<li><a class="dropdown-item" href="#">팬아트 게시판</a></li>
+           				<li><a class="dropdown-item" href="${pageContext.request.contextPath}/fanArt_board/list">팬아트 게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
             			<li><a class="dropdown-item" href="#">팬 게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
@@ -44,7 +44,7 @@
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">FAQ</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Q&A</a></li>
+            <li><a class="dropdown-item" href="#">Q&amp;A</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="#">신고</a></li>
           </ul>

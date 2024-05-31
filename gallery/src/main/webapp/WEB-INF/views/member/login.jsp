@@ -77,7 +77,7 @@ function sendLogin() {
 	                        <p class="text-center mb-0">
 	                        	<a href="#" class="text-decoration-none me-2">아이디 찾기</a>
 	                        	<a href="#" class="text-decoration-none me-2">패스워드 찾기</a>
-	                        	<a href="${pageContext.request.contextPath}/" class="text-decoration-none">회원가입</a>
+	                        	<a href="${pageContext.request.contextPath}/member/member" class="text-decoration-none">회원가입</a>
 	                        </p>
 	                    </div>
 	                </div>

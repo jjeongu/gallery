@@ -43,7 +43,8 @@ public class MemberController {
 			// 세션에 저장할 내용
 			SessionInfo info = new SessionInfo();
 			info.setUserId(dto.getUserId());
-			info.setUserName(dto.getUserName());
+			info.setUserName(dto.getName());
+			info.setUserRoll(dto.getRole());
 
 			// 세션에 member이라는 이름으로 저장
 			session.setAttribute("member", info);
@@ -75,4 +76,56 @@ public class MemberController {
 		return new ModelAndView("redirect:/");
 	}
 	
+	@RequestMapping(value = "/member/member", method = RequestMethod.GET)
+	public ModelAndView memberForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ModelAndView model = new ModelAndView("/member/member");
+		
+		model.addObject("mode", "member");
+		
+		return model;
+	}
+	
+	// 회원가입시 관리자는 role을 선택하는 박스를 만들어주고 role이 넘어오지 않으면 3으로 설정
+		@RequestMapping(value = "/member/member", method = RequestMethod.POST)
+		public ModelAndView memberSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+			MemberDAO dao = new MemberDAO();
+			
+			try {
+				MemberDTO dto = new MemberDTO();
+				
+				dto.setUserId(req.getParameter("userId"));
+				dto.setUserPwd(req.getParameter("userPwd"));
+				dto.setName(req.getParameter("userName"));
+				
+				String tel1 = req.getParameter("tel1");
+				String tel2 = req.getParameter("tel2");
+				String tel3 = req.getParameter("tel3");
+				dto.setTel(tel1 + "-" + tel2 + "-" + tel3);
+				
+				String email1 = req.getParameter("email1");
+				String email2 = req.getParameter("email2");
+				dto.setEmail(email1 + "@" + email2);
+				
+				dto.setBirth(req.getParameter("birth"));
+				
+				int role = 3;
+				String userRole = req.getParameter("role");
+				if(userRole != null) {
+					role = Integer.parseInt(userRole);
+				}
+				dto.setRole(role);
+				
+				dao.insertMember(dto);
+				
+				return new ModelAndView("redirect:/");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			ModelAndView model = new ModelAndView("/member/member");
+			model.addObject("mode", "member");
+			
+			return model;
+		}
 }

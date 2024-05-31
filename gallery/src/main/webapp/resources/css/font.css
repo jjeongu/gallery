@@ -1,14 +1,16 @@
 @charset "UTF-8";
 
-@font-face {
-	font-family:'DNFBitBitv2';
-	font-style:normal;
-	font-weight:400;
-	src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype');
+@font-face{
+font-family:'DNFBitBitv2';
+font-style:normal;font-weight:700;src:url('//cdn.df.nexon.com/img/common/font/DNFBitBitv2.otf')format('opentype')}
+
+@font-face{
+font-family: LaundryGothicBold;
+font-style:normal;font-weight:700;
+src:local('LaundryGothicBold.ttf'),
+	url('/gallery/resources/css/fonts/LaundryGothicBold.ttf') format('ttf')
 }
 
-@font-face {
-	font-family: LaundryGothicBold;
-	font-style:normal;font-weight:700;
-	src:local('LaundryGothicBold.ttf'),	url('/gallery/resources/css/fonts/LaundryGothicBold.ttf') format('ttf');
+.nav > .nav-item > .nav-link {
+	font-family: DNFBitBitv2;
 }

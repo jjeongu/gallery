@@ -11,9 +11,6 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
-.nav-item {
-	font-family: DNFBitBitv2;
-}
 .body-container {
 	max-width: 800px;
 }
@@ -63,10 +60,10 @@
 		</div>
 		<div class="introduce">
 			<p>
-				PAT&MAT<br>
+				PAT&amp;MAT<br>
 				GALLERY
 			<p id="context">
-					PAT&MAT은  PAT 작가와 MAT 작가의 갤러리 홈페이지 입니다. <br>
+					PAT&amp;MAT은  PAT 작가와 MAT 작가의 갤러리 홈페이지 입니다. <br>
 				<br><br>
 
 		</div>
