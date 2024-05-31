@@ -66,6 +66,22 @@
 							</td>
 						</tr>	
 						<tr>
+							<td colspan="2">
+								<c:if test="${listFile.size()!=0}">
+								<div class="dropdown">
+  									<button class="btn btn-secondary btn-danger dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+    									첨부 파일 ${listFile.size()}개
+  									</button>
+  									<ul class="dropdown-menu">
+										<c:forEach var="vo" items="${listFile}" varStatus="status">
+    										<li>
+    											<a href="${pageContext.request.contextPath}/notice/download?fileNum=${vo.fileNum}">${vo.uploadFilename}</a>
+    										</li>
+										</c:forEach>
+									</ul>
+								</div>
+								</c:if>
+							</td>
 						</tr>
 						
 						<tr>

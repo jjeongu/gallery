@@ -50,9 +50,6 @@
           </ul>
         </li>
         		<li class="nav-item">
-          			<a class="nav-link" href="${pageContext.request.contextPath}/contact/list">Contact</a>
-        		</li>
-        		<li class="nav-item">
           			 <c:if test="${empty sessionScope.member}">
           			 <a class="nav-link" onclick="dialogLogin();" >Log-in</a>
         </c:if>

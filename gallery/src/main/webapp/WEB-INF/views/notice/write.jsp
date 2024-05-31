@@ -86,13 +86,6 @@ function sendOk() {
 								<textarea name="content" id="content" class="form-control">${dto.content}</textarea>
 							</td>
 						</tr>
-						
-						<tr>
-							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
-							<td> 
-								<input type="file" name="selectFile" multiple class="form-control">
-							</td>
-						</tr>
 						<c:if test="${mode=='update'}">
 							<input type="hidden" name="page" value="${page}">
 							<input type="hidden" name="size" value="${size}">
@@ -101,14 +94,17 @@ function sendOk() {
 								<tr>
 									<td class="bg-light col-sm-2">첨부된 파일</td>
 									<td>
-										<p class="form-controll-plaintext">
-											<a href="javascript:deleteFile(${vo.fileNum})"><i class="bi bi-trash"></i></a>
-											${vo.originalFilename}
-										</p>
+										<p class="form-controll-plaintext">${vo.uploadFilename}</p>
 									</td>
 								</tr>
 							</c:forEach>
 						</c:if>
+						<tr>
+							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+							<td> 
+								<input type="file" name="selectFile" multiple class="form-control">
+							</td>
+						</tr>
 					</table>
 					
 					<table class="table table-borderless">

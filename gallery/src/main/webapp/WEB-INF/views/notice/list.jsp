@@ -89,7 +89,9 @@
 						</form>
 					</div>
 					<div class="col text-end">
-						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/write';">글올리기</button>
+						<c:if test="${sessionScope.member.userId=='admin'}">
+							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/write';">글올리기</button>
+						</c:if>	
 					</div>
 				</div>
 			</div>

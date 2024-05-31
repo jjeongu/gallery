@@ -10,6 +10,7 @@ import java.util.List;
 import com.gallery.domain.NoticeDTO;
 import com.gallery.util.DBConn;
 import com.gallery.util.DBUtil;
+import com.gallery.util.MyMultipartFile;
 
 public class NoticeDAO {
 	Connection conn=DBConn.getConnection();
@@ -18,7 +19,7 @@ public class NoticeDAO {
 		StringBuilder sb=new StringBuilder();
 		
 		try {
-			sb.append(" INSERT INTO NOTICE(NUM, TO_CHAR(REG_DATE, 'YYYYMMDD') AS REG_DATE, ");
+			sb.append(" INSERT INTO NOTICE(NUM, REG_DATE, ");
 			sb.append(" HITCOUNT, SUBJECT, CONTENT, MEMBER_ID) ");
 			sb.append(" VALUES(NOTICE_SEQ.NEXTVAL, SYSDATE, 0, ?, ?, ?) ");
 			pstmt=conn.prepareStatement(sb.toString());
@@ -26,6 +27,18 @@ public class NoticeDAO {
 			pstmt.setString(2, dto.getContent());
 			pstmt.setString(3, dto.getMember_id());
 			pstmt.executeQuery();
+			DBUtil.close(pstmt);
+			pstmt=null;
+			
+			sb=new StringBuilder();
+			sb.append(" INSERT INTO NOTICEFILE(FILENUM, NUM, SAVEFILENAME, ORIGINALFILENAME) ");
+			sb.append(" VALUES(NOTICEFILE_SEQ.NEXTVAL, NOTICE_SEQ.CURRVAL, ?, ?) ");
+			pstmt=conn.prepareStatement(sb.toString());
+			for(MyMultipartFile mf:dto.getListFile()) {
+				pstmt.setString(1, mf.getSaveFilename());
+				pstmt.setString(2, mf.getOriginalFilename());
+				pstmt.executeUpdate();			
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
@@ -358,5 +371,135 @@ public class NoticeDAO {
 			DBUtil.close(pstmt);
 		}
 		return dto;
+	}
+
+	public List<NoticeDTO> listNoticeFile(long num) {
+		List<NoticeDTO> list=new ArrayList<NoticeDTO>();
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		StringBuilder sb=new StringBuilder();
+		
+		try {
+			sb.append(" SELECT NUM, FILENUM, SAVEFILENAME, UPLOADFILENAME ");
+			sb.append(" FROM NOTICEFILE WHERE NUM=? ");
+			pstmt=conn.prepareStatement(sb.toString());
+			pstmt.setLong(1, num);
+			rs=pstmt.executeQuery();
+			
+			while(rs.next()) {
+				NoticeDTO dto=new NoticeDTO();
+				dto.setNum(rs.getLong(1));
+				dto.setFileNum(rs.getLong(2));
+				dto.setSaveFilename(rs.getString(3));
+				dto.setUploadFilename(rs.getString(4));
+				
+				list.add(dto);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return list;
+	}
+
+	public NoticeDTO findByFileId(long fileNum) {
+		NoticeDTO dto=null;
+		PreparedStatement pstmt=null;
+		ResultSet rs=null;
+		StringBuilder sb=new StringBuilder();
+		
+		try {
+			sb.append(" SELECT NUM, FILENUM, SAVEFILENAME, UPLOADFILENAME ");
+			sb.append(" FROM NOTICEFILE WHERE FILENUM=? ");
+			pstmt=conn.prepareStatement(sb.toString());
+			pstmt.setLong(1, fileNum);
+			rs=pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto=new NoticeDTO();
+				
+				dto.setNum(rs.getLong(1));
+				dto.setFileNum(rs.getLong(2));
+				dto.setSaveFilename(rs.getString(3));
+				dto.setUploadFilename(rs.getString(4));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return dto;
+	}
+
+	public void updateNotice(NoticeDTO dto) {
+		PreparedStatement pstmt=null;
+		StringBuilder sb=new StringBuilder();
+		
+		try {
+			sb.append(" UPDATE NOTICE SET SUBJECT=?, CONTENT=? ");
+			sb.append(" WHERE NUM=? ");
+			pstmt=conn.prepareStatement(sb.toString());
+			pstmt.setString(1, dto.getSubject());
+			pstmt.setString(2, dto.getContent());
+			pstmt.setLong(3, dto.getNum());
+			pstmt.executeQuery();
+			DBUtil.close(pstmt);
+			pstmt=null;
+			
+			deleteNoticeFile(dto.getNum());
+			
+			sb=new StringBuilder();
+			sb.append(" INSERT INTO NOTICEFILE(FILENUM, NUM, SAVEFILENAME, UPLOADFILENAME) ");
+			sb.append(" VALUES(NOTICEFILE_SEQ.NEXTVAL, ?, ?, ?) ");
+			pstmt=conn.prepareStatement(sb.toString());
+			for(MyMultipartFile mf:dto.getListFile()) {
+				pstmt.setLong(1, dto.getNum());
+				pstmt.setString(2, mf.getSaveFilename());
+				pstmt.setString(3, mf.getOriginalFilename());
+				pstmt.executeUpdate();			
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
+		
+	}
+
+	public void deleteNotice(long num) {
+		PreparedStatement pstmt=null;
+		StringBuilder sb=new StringBuilder();
+		
+		try {
+			sb.append(" DELETE FROM NOTICE WHERE NUM=? ");
+			pstmt=conn.prepareStatement(sb.toString());
+			pstmt.setLong(1, num);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+
+	public void deleteNoticeFile(long num) {
+		PreparedStatement pstmt=null;
+		StringBuilder sb=new StringBuilder();
+		
+		try {
+			sb.append(" DELETE FROM NOTICEFILE WHERE NUM=? ");
+			pstmt=conn.prepareStatement(sb.toString());
+			pstmt.setLong(1, num);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
 	}	
 }
