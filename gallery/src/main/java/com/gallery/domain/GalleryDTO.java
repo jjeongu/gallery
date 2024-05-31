@@ -6,6 +6,7 @@ public class GalleryDTO {
 	private String reg_date;
 	private String introduce;
 	private String img;
+	private String userName;
 	
 	public long getNum() {
 		return num;
@@ -36,6 +37,12 @@ public class GalleryDTO {
 	}
 	public void setImg(String img) {
 		this.img = img;
+	}
+	public String getUserName() {
+		return userName;
+	}
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
 	
 	
