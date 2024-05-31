@@ -14,6 +14,17 @@
 .body-container {
 	max-width: 800px;
 }
+.body-title {
+	text-align: center;
+}
+.body-title h3 {
+	 font-size: 50px;
+	 padding-bottom: 20px;
+}
+.hover:hover {
+	cursor: pointer;
+	background: #eee;
+}
 </style>
 
 </head>
@@ -22,7 +33,7 @@
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
 </header>
-	
+
 <main>
 	<div class="container">
 		<div class="body-container">	
@@ -32,25 +43,21 @@
 			<div class="body-main">
 				<form name="listForm" method="post">
 					<div>
-						<div class="row p-3 hover border">
+					<c:forEach var="dto" items="${list}" varStatus="status">
+						<div class="row p-3 hover border" onclick="location.href='${pageContext.request.contextPath}/notice/article?page=${page}&num=${dto.num}';">
+							<input type="checkbox" class="form-check-input">      
 							<div class="col">
-								<h2>2024.05.29</h2>
+								<h2>${dto.reg_date}</h2>
 							</div>
 							<div class="col">
-								<p>공지사항 제목 1
-								<p>공지사항 내용 1
-							</div>
-						</div>
-						
-						<div class="row p-3 hover border">
-							<div class="col">
-								<h2>2024.05.29</h2>
+								<p>${dto.subject}
+								<p>${dto.content}
 							</div>
 							<div class="col">
-								<p>공지사항 제목 2
-								<p>공지사항 내용 2
+								<p>${dto.hitcount}
 							</div>
 						</div>
+					</c:forEach>
 					</div>
 				</form>
 				
@@ -77,15 +84,12 @@
 								<input type="text" name="kwd" value="${kwd}" class="form-control">
 							</div>
 							<div class="col-auto p-1">
-								<input type="hidden" name="size" value="${size}">
-								<button type="button" class="btn btn-light" onclick="searchList();"> <i class="bi bi-search"></i> </button>
+								<button type="submit" class="btn btn-light"> <i class="bi bi-search"></i> </button>
 							</div>
 						</form>
 					</div>
 					<div class="col text-end">
-						<c:if test="${sessionScope.member.userId=='admin'}">
-							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/write';">글올리기</button>
-						</c:if>
+						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/write';">글올리기</button>
 					</div>
 				</div>
 			</div>
