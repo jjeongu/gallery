@@ -39,23 +39,23 @@
         		<li class="nav-item dropdown">
           			<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="#">Contact</a>
-          <ul class="dropdown-menu dropdown-menu-warning">
-            <li><a class="dropdown-item" href="#">연락처</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">FAQ</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Q&amp;A</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">신고</a></li>
-          </ul>
-        </li>
+				<ul class="dropdown-menu dropdown-menu-warning">
+					<li><a class="dropdown-item" href="#">연락처</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" href="#">FAQ</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" href="#">Q&amp;A</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" href="#">신고</a></li>
+				</ul>
+				</li>
         		<li class="nav-item">
-          			 <c:if test="${empty sessionScope.member}">
-          			 <a class="nav-link" onclick="dialogLogin();" >Log-in</a>
-        </c:if>
-        <c:if test="${not empty sessionScope.member}">
-        <a class="nav-link" href="${pageContext.request.contextPath}/member/logout">Log-out</a>
-        </c:if>
+				<c:if test="${empty sessionScope.member}">
+					<a class="nav-link" onclick="dialogLogin();" >Log-in</a>
+				</c:if>
+				<c:if test="${not empty sessionScope.member}">
+					<a class="nav-link" href="${pageContext.request.contextPath}/member/logout">Log-out</a>
+				</c:if>
 				</li>
 			</ul>
 		</div>

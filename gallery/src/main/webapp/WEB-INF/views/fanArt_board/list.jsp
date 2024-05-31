@@ -28,11 +28,28 @@
 			<div class="body-container">
 				<div class="body-title">
 					<h3>
-						<i class="bi bi-app"></i> 제목
+						<i class="bi bi-app"></i> 팬아트
 					</h3>
+					<button class="btn btn-secondary float-end py-1" onclick="location.href='${pageContext.request.contextPath}/fanArt_board/write'"> 글올리기</button>
 				</div>
 
-				<div class="body-main">내용 입니다.</div>
+				<div class="body-main">
+					<div class="row row-cols-1 row-cols-md-3 g-4">
+						<c:forEach var="dto" items="${list}">
+						<div class="col">
+							<div class="card h-100" onclick="location.href='${articleUrl}&num=${dto.num}'">
+								<img src="${pageContext.request.contextPath}/uploads/fanArt/${dto.img}" class="card-img-top">
+								<div class="card-body">
+								<h5 class="card-title">${dto.subject}</h5>
+							</div>
+							<div class="card-footer">
+								<small class="text-body-secondary">${dto.reg_date}</small>
+							</div>
+							</div>
+						</div>
+						</c:forEach>
+					</div>
+				</div>
 			</div>
 		</div>
 	</main>
