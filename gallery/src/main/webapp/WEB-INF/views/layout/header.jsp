@@ -27,7 +27,7 @@
        				<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="${pageContext.request.contextPath}/community/list">Community</a>
 					<ul class="dropdown-menu dropdown-menu-warning">
-            			<li><a class="dropdown-item" href="#">자유게시판</a></li>
+            			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/free_board/list">자유게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
            				<li><a class="dropdown-item" href="#">팬아트 게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
