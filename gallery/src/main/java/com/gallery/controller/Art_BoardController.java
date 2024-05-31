@@ -26,12 +26,14 @@ public class Art_BoardController {
 		ModelAndView mav = new ModelAndView("art_board/list");
 
 		
+		
 		return mav;
 	}
 	
 	
 	@RequestMapping(value = "/art_board/write", method = RequestMethod.GET)
 	public ModelAndView writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
 		ModelAndView mav = new ModelAndView("art_board/write");
 		mav.addObject("mode", "write");
 		return mav;
@@ -54,10 +56,11 @@ public class Art_BoardController {
 		
 		try {
 			Art_BoardDTO dto = new Art_BoardDTO();
+			
 			// userId는 세션에 저장된 정보
 			dto.setMember_id(info.getUserId());
 			
-			// 파라미터
+			// 파라미터 : 제목, 내용
 			dto.setSubject(req.getParameter("subject"));
 			dto.setContent(req.getParameter("content"));
 			
@@ -65,14 +68,14 @@ public class Art_BoardController {
 			MyMultipartFile multFile = fileManager.doFileUpload(p, pathname);
 			if(multFile != null) {
 				String saveFilename = multFile.getSaveFilename();
-				String uploadfilename = multFile.getSaveFilename();
+				String uploadfilename = multFile.getOriginalFilename();
 				long size = multFile.getSize();
 				dto.setSaveFilename(saveFilename);
 				dto.setUploadfilename(uploadfilename);
 				dto.setFileSize(size);
 				
-				dao.insertAar_Board(dto,"write");
 			}
+			dao.insertArt_Board(dto);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

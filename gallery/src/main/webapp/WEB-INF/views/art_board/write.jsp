@@ -24,7 +24,7 @@ function check() {
 	
     str = f.subject.value.trim();
     if(!str) {
-        alert("제목을 입력하세요. ");
+        alert("제목을 입력하세요.");
         f.subject.focus();
         return false;
     }
@@ -61,11 +61,11 @@ function check() {
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-			<h3><i class="bi bi-book-half"></i> 작가게시판 </h3>
+			<h3><i class="fa-solid fa-pen"></i> 작가게시판 </h3>
 			</div>
 			
 			<div class="body-main">
-				<form name="Art_BoardForm" method="post"	enctype="multipart/form-data">
+				<form name="Art_BoardForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
 							<td class="bg-light col-sm-2" scope="row">제 목</td>
@@ -123,7 +123,7 @@ function check() {
 									<input type="hidden" name="page" value="${page}">
 									<input type="hidden" name="fileSize" value="${dto.fileSize}">
 									<input type="hidden" name="saveFilename" value="${dto.saveFilename}">
-									<input type="hidden" name="originalFilename" value="${dto.uploadfilename}">
+									<input type="hidden" name="uploadfilename" value="${dto.uploadfilename}">
 								</c:if>
 							</td>
 						</tr>
