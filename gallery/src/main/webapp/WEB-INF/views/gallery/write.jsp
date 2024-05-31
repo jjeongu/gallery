@@ -134,6 +134,16 @@ $(function() {
 						</tr>
 						
 						<tr>
+							<td class="bg-light col-sm-2" scope="row">작 가</td>
+							<td>
+								<select name="artistName">
+									<option value="PAT">패트</option>
+									<option value="MAT">매트</option>
+								</select>
+							</td>
+						</tr>
+						
+						<tr>
 							<td class="bg-light col-sm-2" scope="row">이미지</td>
 							<td>
 								<div class="img-viewer"></div>
