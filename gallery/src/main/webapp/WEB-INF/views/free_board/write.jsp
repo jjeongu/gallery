@@ -55,7 +55,7 @@ function sendOk() {
 			</div>
 			
 			<div class="body-main">
-				<form name="boardForm" method="post">
+				<form name="boardForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
 							<td class="bg-light col-sm-2" scope="row">제 목</td>
@@ -77,6 +77,27 @@ function sendOk() {
 								<textarea name="content" id="content" class="form-control">${dto.content}</textarea>
 							</td>
 						</tr>
+						
+						<tr>
+							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+							<td> 
+								<input type="file" name="selectFile" class="form-control">
+							</td>
+						</tr>
+						<c:if test="${mode=='update'}">
+							<tr>
+								<td class="bg-light col-sm-2" scope="row">첨부된파일</td>
+								<td> 
+									<p class="form-control-plaintext">
+										<c:if test="${not empty dto.saveFileName}">
+											<a href="javascript:deleteFile('${dto.num}');"><i class="bi bi-trash"></i></a>
+											${dto.uploadFileName}
+										</c:if>
+										&nbsp;
+									</p>
+								</td>
+							</tr>
+						</c:if>
 					</table>
 					
 					<table class="table table-borderless">
@@ -88,11 +109,14 @@ function sendOk() {
 								<c:if test="${mode=='update'}">
 									<input type="hidden" name="num" value="${dto.num}">
 									<input type="hidden" name="page" value="${page}">
+									<input type="hidden" name="fileSize" value="${dto.fileSize}">
+									<input type="hidden" name="saveFilename" value="${dto.saveFileName}">
+									<input type="hidden" name="uploadFileName" value="${dto.uploadFileName}">
 								</c:if>
 							</td>
 						</tr>
 					</table>
-				</form>
+				</form>j
 			</div>
 		</div>
 	</div>

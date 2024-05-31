@@ -64,9 +64,9 @@ function searchList() {
 								<td class="left">
 									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.subject}</a>
 								</td>
-								<td>${dto.userName}</td>
+								<td>${dto.member_id}</td>
 								<td>${dto.reg_date}</td>
-								<td>${dto.hitCount}</td>
+								<td>${dto.hitcount}</td>
 							</tr>
 						</c:forEach>
 					</tbody>

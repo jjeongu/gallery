@@ -20,8 +20,8 @@ public class Free_BoardDAO {
 		String sql;
 		
 		try {
-			sql = " insert into Free_Board(num, member_id, hitcount, reg_date, notice, subject, content) "
-					+ " values(Free_Board_seq.NEXTVAL, ?, 0, sysdate, ?, ?, ?) ";
+			sql = " insert into Free_Board(num, member_id, hitcount, reg_date, notice, subject, content, saveFileName, uploadFileName, fileSize) "
+					+ " values(Free_Board_seq.NEXTVAL, ?, 0, sysdate, ?, ?, ?, ?, ?, ?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -29,6 +29,9 @@ public class Free_BoardDAO {
 			pstmt.setInt(2, dto.getNotice());
 			pstmt.setString(3, dto.getSubject());
 			pstmt.setString(4, dto.getContent());
+			pstmt.setString(5, dto.getSaveFileName());
+			pstmt.setString(6, dto.getUploadFileName());
+			pstmt.setLong(7, dto.getFileSize());
 			
 			pstmt.executeUpdate();
 			
@@ -67,7 +70,7 @@ public class Free_BoardDAO {
 		
 		return result;
 	}
-	
+	// 검색
 	public int dataCount(String schType, String kwd) {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -110,6 +113,7 @@ public class Free_BoardDAO {
 		return result;
 	}
 	
+	// 리스트
 	public List<Free_BoardDTO> listFree_Board(int offset, int size) {
 		List<Free_BoardDTO> list = new ArrayList<Free_BoardDTO>();
 		PreparedStatement pstmt = null;
@@ -117,17 +121,10 @@ public class Free_BoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" select f.num, member_id, subject, hirCount, ");
-			sb.append(" to_char(reg_date, 'YYYY-MM-DD') reg_date, ");
-			sb.append(" nvl(replyCount, 0) replyCount ");
-			sb.append(" from free_board f ");
-			sb.append(" join membert m on f.member_id = m.member_id ");
-			sb.append(" left outer join( ");
-			sb.append(" select num, count(*) replyCount ");
-			sb.append(" from free_board_reply ");
-			sb.append(" where answer = 0 ");
-			sb.append(" group by num ");
-			sb.append(" ) c on f.num = c.num ");
+			sb.append(" select num, f.member_id, subject, hitCount, ");
+			sb.append(" to_char(f.reg_date, 'YYYY-MM-DD') reg_date ");
+			sb.append(" from free_board f");
+			sb.append(" join member1 m on f.member_id=m.member_id ");
 			sb.append(" order by num desc ");
 			sb.append(" offset ? rows fetch first ? rows only ");
 			
@@ -168,11 +165,11 @@ public class Free_BoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" select f.num, member_id, subject, hirCount, ");
+			sb.append(" select f.num, member_id, subject, hitCount, ");
 			sb.append(" to_char(reg_date, 'YYYY-MM-DD') reg_date, ");
 			sb.append(" nvl(replyCount, 0) replyCount ");
 			sb.append(" from free_board f ");
-			sb.append(" join membert m on f.member_id = m.member_id ");
+			sb.append(" join member1 m on f.member_id = m.member_id ");
 			sb.append(" left outer join( ");
 			sb.append(" select num, count(*) replyCount ");
 			sb.append(" from free_board_reply ");
@@ -213,6 +210,7 @@ public class Free_BoardDAO {
 				dto.setSubject(rs.getString("subject"));
 				dto.setHitcount(rs.getInt("hitCount"));
 				dto.setReg_date(rs.getString("reg_date"));
+				dto.setReplyCount(rs.getInt("replyCount"));
 				
 				list.add(dto);
 			}
@@ -228,6 +226,7 @@ public class Free_BoardDAO {
 		return list;
 	}
 	
+	// 조회수
 	public void updateHitCount(long num) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
@@ -246,6 +245,8 @@ public class Free_BoardDAO {
 			DBUtil.close(pstmt);
 		}
 	}
+	
+	// 게시물 보기
 	
 	
 }

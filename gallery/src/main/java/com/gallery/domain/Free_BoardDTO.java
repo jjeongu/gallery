@@ -9,8 +9,44 @@ public class Free_BoardDTO {
 	private String subject;
 	private String content;
 	
+	private int replyCount;
+	private int free_boardLikeCount;
 	
+	private String saveFileName;
+	private String uploadFileName;
+	private long fileSize;
 	
+	public String getSaveFileName() {
+		return saveFileName;
+	}
+	public void setSaveFileName(String saveFileName) {
+		this.saveFileName = saveFileName;
+	}
+	public String getUploadFileName() {
+		return uploadFileName;
+	}
+	public void setUploadFileName(String uploadFileName) {
+		this.uploadFileName = uploadFileName;
+	}
+	
+	public long getFileSize() {
+		return fileSize;
+	}
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
+	}
+	public int getReplyCount() {
+		return replyCount;
+	}
+	public void setReplyCount(int replyCount) {
+		this.replyCount = replyCount;
+	}
+	public int getFree_boardLikeCount() {
+		return free_boardLikeCount;
+	}
+	public void setFree_boardLikeCount(int free_boardLikeCount) {
+		this.free_boardLikeCount = free_boardLikeCount;
+	}
 	public int getNum() {
 		return num;
 	}
