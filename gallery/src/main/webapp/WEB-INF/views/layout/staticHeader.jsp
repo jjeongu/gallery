@@ -9,7 +9,6 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/style2.css" type="text/css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/layout.css" type="text/css">
-
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.5.2/css/all.css">
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/font.css" type="text/css">
 

@@ -23,9 +23,11 @@
 .introduce {
 	text-align: center;
 	font-size: 80px;
+	font-family: DNFBitBitv2;
 }
 #context {
 	font-size: 30px;
+	
 }
 </style>
 

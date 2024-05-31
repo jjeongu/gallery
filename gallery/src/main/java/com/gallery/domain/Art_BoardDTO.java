@@ -11,8 +11,30 @@ public class Art_BoardDTO {
 	private String subject;
 	private String content;
 	
+	private String saveFilename;
+	private String uploadfilename;
+	private long fileSize;
 	
 	
+	public String getSaveFilename() {
+		return saveFilename;
+	}
+	public void setSaveFilename(String saveFilename) {
+		this.saveFilename = saveFilename;
+	}
+
+	public String getUploadfilename() {
+		return uploadfilename;
+	}
+	public void setUploadfilename(String uploadfilename) {
+		this.uploadfilename = uploadfilename;
+	}
+	public long getFileSize() {
+		return fileSize;
+	}
+	public void setFileSize(long fileSize) {
+		this.fileSize = fileSize;
+	}
 	public int getNum() {
 		return num;
 	}
