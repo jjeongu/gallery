@@ -38,7 +38,7 @@
 			</div>
 			
 			<div class="body-main">
-				<c:if test="${sessionScope.member.userRoll!=0}">
+				<c:if test="${sessionScope.member.userRole!=0}">
 					<div class="alert alert-danger" role="alert">
 						패트와 매트 작가에 대해 악플, 비방 등을 목격하신 분은 아래를 통해 신고해주시기 바랍니다.<br>
 						신고하신 분의 신원은 익명으로 보호하며 조사 결과 허위사실일 경우 처벌받을 수 있습니다.
@@ -50,10 +50,10 @@
 					<input type="hidden" name="page" value="${page}">
 					<input type="hidden" name="schType" value="${schType}">
 					<input type="hidden" name="kwd" value="${kwd}">
-					<c:if test="${sessionScope.member.userRoll==0}">
+					<c:if test="${sessionScope.member.userRole==0}">
 						<p>전체 신고 목록
 					</c:if>
-					<c:if test="${sessionScope.member.userRoll==2}">
+					<c:if test="${sessionScope.member.userRole==2}">
 						<p>나의 신고 목록
 					</c:if>
 					<table class="table table-hover board-list">
@@ -90,7 +90,7 @@
 						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/list';"><i class="bi bi-arrow-clockwise"></i></button>
 					</div>
 					<div class="col-6 text-center">
-						<c:if test="${sessionScope.member.userRoll==0}">
+						<c:if test="${sessionScope.member.userRole==0}">
 							<form class="row" name="searchForm" action="${pageContext.request.contextPath}/report/list" method="post">
 								<div class="col-auto p-1">
 									<select name="schType" class="form-select">
@@ -112,7 +112,7 @@
 						</c:if>
 					</div>
 					<div class="col text-end">
-						<c:if test="${sessionScope.member.userRoll==2}">
+						<c:if test="${sessionScope.member.userRole==2}">
 							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/write';">신고하기</button>
 						</c:if>
 					</div>

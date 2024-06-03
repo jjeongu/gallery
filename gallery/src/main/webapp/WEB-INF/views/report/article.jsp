@@ -115,10 +115,10 @@
 				<table class="table table-borderless">
 					<tr>
 						<td width="50%">
-							<c:if test="${sessionScope.member.userRoll==0}">
+							<c:if test="${sessionScope.member.userRole==0}">
 								<button type="button" class="btn btn-light" onclick="deleteReport();">삭제</button>	
 							</c:if>
-							<c:if test="${sessionScope.member.userRoll==2}">
+							<c:if test="${sessionScope.member.userRole==2}">
 								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/update?num=${dto.num}&page=${page}';">수정</button>
 							</c:if>
 						</td>

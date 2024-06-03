@@ -112,7 +112,7 @@
 				<table class="table table-borderless">
 					<tr>
 						<td width="50%">
-							<c:if test="${sessionScope.member.userRoll==0}">
+							<c:if test="${sessionScope.member.userRole==0}">
 								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/update?num=${dto.num}&page=${page}';">수정</button>
 								<button type="button" class="btn btn-light" onclick="deleteNotice();">삭제</button>	
 							</c:if>	

@@ -85,7 +85,7 @@
 									<p class="fs-4 text-truncate">${dto.subject}
 									<p class="fs-5 text-truncate">${dto.content}
 									<p>조회수 : ${dto.hitcount}
-									<c:if test="${sessionScope.member.userRoll==0}">
+									<c:if test="${sessionScope.member.userRole==0}">
 										<input type="checkbox" class="form-check-input" value="${dto.num}" name="check">   
 									</c:if>
 								</div>
@@ -99,11 +99,11 @@
 
 				<div class="row board-list-footer">
 					<div class="col">
-						<c:if test="${sessionScope.member.userRoll==0}">
+						<c:if test="${sessionScope.member.userRole==0}">
 							<input type="checkbox" class="form-check-input" id="checkAll">   
 							<button type="button" class="btn btn-light" id="deletebtn">삭제하기</button>
 						</c:if>
-						<c:if test="${sessionScope.member.userRoll!=0}">
+						<c:if test="${sessionScope.member.userRole!=0}">
 							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/list';"><i class="bi bi-arrow-clockwise"></i></button>
 						</c:if>
 					</div>
@@ -126,7 +126,7 @@
 						</form>
 					</div>
 					<div class="col text-end">
-						<c:if test="${sessionScope.member.userRoll==0}">
+						<c:if test="${sessionScope.member.userRole==0}">
 							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/write';">글올리기</button>
 						</c:if>	
 					</div>

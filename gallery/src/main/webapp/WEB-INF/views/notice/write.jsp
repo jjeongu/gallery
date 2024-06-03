@@ -93,7 +93,7 @@ function sendOk() {
 								<tr>
 									<td class="bg-light col-sm-2">첨부된 파일</td>
 									<td>
-										<p class="form-controll-plaintext">${vo.uploadFilename}</p>
+										<p class="form-contRole-plaintext">${vo.uploadFilename}</p>
 									</td>
 								</tr>
 							</c:forEach>
