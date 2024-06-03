@@ -34,7 +34,7 @@ public class NoticeController {
 		NoticeDAO dao=new NoticeDAO();
 		MyUtil util=new MyUtilBootstrap();
 		List<NoticeDTO> list;
-		int size=10;
+		int size=5;
 		int dataCount, total_page;
 		
 		try {

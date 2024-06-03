@@ -25,6 +25,14 @@
 	cursor: pointer;
 	background: #eee;
 }
+.page-navigation ul {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+}
+.page-navigation li {
+    list-style-type: none;
+}
 </style>
 
 <c:import url="/WEB-INF/views/layout/staticHeader.jsp"/>

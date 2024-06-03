@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gallery.domain.Art_BoardDTO;
+import com.gallery.domain.ReplyDTO;
 import com.gallery.util.DBConn;
 import com.gallery.util.DBUtil;
 
@@ -158,7 +159,7 @@ public class Art_BoardDAO {
 		return list;
 	}
 	
-	// 검색하기 인것 같은데 오류가 있음.
+	// 오류
 	public List<Art_BoardDTO> listArt_Board(int offset, int size, String schType, String kwd) {
 		List<Art_BoardDTO> list = new ArrayList<Art_BoardDTO>();
 		PreparedStatement pstmt = null;
@@ -166,17 +167,10 @@ public class Art_BoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" SELECT ab.num, member_id, subject, hitCount, ");
+			sb.append(" SELECT num, ab.member_id, subject, hitCount, ");
 			sb.append(" TO_CHAR(reg_date, 'YYYY-MM-DD') reg_date, ");
-			sb.append(" NVL(replyCount, 0) replyCount ");
 			sb.append(" FROM art_board ab");
 			sb.append(" JOIN Art a ON ab.member_id = a.member_id ");
-			sb.append(" LEFT OUTER JOIN ( ");
-			sb.append(" SELECT num, COUNT(*) replyCount ");
-			sb.append(" FROM Art_Board_Reply ");
-			//sb.append(" WHERE answer = 0");
-			sb.append(" GROUP BY num");
-			sb.append(" ) c ON ab.num = c.num"); 
 			if( schType.equals("all")) {
 				sb.append(" WHERE INSTR(subject, ?) >= 1 OR INSTR(content, ?) >= 1");
 			} else if ( schType.equals("reg_date")) {
@@ -484,6 +478,137 @@ public class Art_BoardDAO {
 			throw e;
 		} finally {
 			DBUtil.close(pstmt);
+		}
+	}
+	
+	// 로그인 유저의 게시판 공감 유무 
+	public boolean isUserArt_BoardLike(long num, String member_id) {
+		
+		boolean result = false;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null ;
+		String sql;
+		
+		try {
+			sql = "SELECT num, member_id "
+					+ " FORM Art_Board_Like "
+					+ " WHERE num = ? AND member_id = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, member_id);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = true;
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		return result;
+	}
+	
+	// 게시판 공감 추가 
+	
+	public void insertArt_BoardLike(long num, String member_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO Art_Board_Like(num, member_id) VALUES (?,?)";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, member_id);
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
+	// 게시판 공감 삭제
+	public void deleteArt_BoardLike(long num, String member_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "DELETE FROM Art_Board_Like WHERE num = ? AND member_id = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, member_id);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
+	// 게시판 공감 개수
+	public int countArt_BoardLike(long num) {
+		
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql ="SELECT NVL(COUNT(*),0) FROM Art_Board_Like WHERE num =? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	// 게시판 댓글 및 답글 추가
+	public void insertReply(ReplyDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO Art_Board_Reply(r_num, num, member_id, content, reg_Date) "
+					+ " VALUES (Art_Board_Reply_seq.NEXTVAL,?,?,?,?)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, dto.getNum());
+			pstmt.setString(2, dto.getmember_Id());
+			pstmt.setString(3,dto.getContent());
+			pstmt.setLong(4, dto.getAnswer());
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		}finally {
+			 DBUtil.close(pstmt);
 		}
 	}
 	

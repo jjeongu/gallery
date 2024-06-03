@@ -3,7 +3,7 @@ package com.gallery.domain;
 public class ReplyDTO {
 	private long replyNum;
 	private long num;
-	private String userId;
+	private String member_Id;
 	private String userName;
 	private String content;
 	private String reg_date;
@@ -26,11 +26,11 @@ public class ReplyDTO {
 	public void setNum(long num) {
 		this.num = num;
 	}
-	public String getUserId() {
-		return userId;
+	public String getmember_Id() {
+		return member_Id;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setmember_Id(String member_Id) {
+		this.member_Id = member_Id;
 	}
 	public String getUserName() {
 		return userName;

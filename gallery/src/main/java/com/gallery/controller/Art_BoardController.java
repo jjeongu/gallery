@@ -5,11 +5,15 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.gallery.annotation.Controller;
 import com.gallery.annotation.RequestMapping;
 import com.gallery.annotation.RequestMethod;
+import com.gallery.annotation.ResponseBody;
 import com.gallery.dao.Art_BoardDAO;
 import com.gallery.domain.Art_BoardDTO;
 import com.gallery.domain.SessionInfo;
@@ -397,7 +401,7 @@ public class Art_BoardController {
 				return new ModelAndView("redirect:/art_board/list? " + query);
 			}
 			
-			if(! info.getUserName().equals(dto.getMember_id()) && !info.getUserId().equals("admin")) {
+			if(!info.getUserId().equals(dto.getMember_id()) && !info.getUserId().equals("admin")) {
 				return new ModelAndView("redirect:/art_board/list?" + query);
 			}
 			if (dto.getSaveFilename() != null && dto.getSaveFilename().length()!=0) {
@@ -413,9 +417,10 @@ public class Art_BoardController {
 		return new ModelAndView("redirect:/art_board/list?" + query);
 	}
 
+	// 파일 다운로드
 	@RequestMapping(value = "/art_board/download")
 	public void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 파일 다운로드
+		
 		Art_BoardDAO dao = new Art_BoardDAO();
 		HttpSession session = req.getSession();
 		
@@ -443,7 +448,70 @@ public class Art_BoardController {
 			out.print("<script>alert('파일다운로드가 실패 했습니다.');history.back();</script>");
 		}
 	}
-
+	
+	// 강좌 공감 저장 - AJAX : JSON
+	@ResponseBody
+	@RequestMapping(value = "/art_board/insertArt_BoardLike", method = RequestMethod.POST)
+	public Map<String, Object> insertArt_BoardLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Art_BoardDAO dao = new Art_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String state = "false";
+		int likeCount = 0;
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			String isNoLike = req.getParameter("isNoLike");
+			
+			if(isNoLike.equals("true")) {
+				dao.insertArt_BoardLike(num, info.getUserId());
+			}else {
+				dao.deleteArt_BoardLike(num, info.getUserId());
+			}
+			likeCount = dao.countArt_BoardLike(num);
+			
+			state = "true";
+		} catch (SQLException e) {
+			state = "liked";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		model.put("state", state);
+		model.put("likeCount", likeCount);
+		
+		return model;
+	}
+	
+	/*
+	// 리플 리스트 
+	@RequestMapping(value = "art_board/listReply", method = RequestMethod.GET)
+	public ModelAndView listReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Art_BoardDAO dao = new Art_BoardDAO();
+		MyUtil util = new MyUtilBootstrap();
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			String pageNo = req.getParameter("pageNo");
+			int current_page = 1;
+			if(pageNo != null) {
+				current_page = Integer.parseInt(pageNo);
+			}
+			
+			int size = 5;
+			int total_page = 0;
+			int replyCount = 0;
+			
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}
+		
+	}
+*/
 	
 }
 

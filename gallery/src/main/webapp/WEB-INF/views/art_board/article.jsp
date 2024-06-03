@@ -74,7 +74,7 @@
 						
 						<tr>
 							<td colspan="2" class="text-center p-3" style="border-bottom: none;">
-								<button type="button" class="btn btn-outline-secondary btnSendart_boardLike" title="좋아요"><i class="far fa-hand-point-up" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.likeCount}</span></button>
+								<button type="button" class="btn btn-outline-secondary btnSendart_boardLike" title="좋아요"><i class="fa-solid fa-heart-circle-plus" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.likeCount}</span></button>
 							</td>
 						</tr>
 						
@@ -135,8 +135,30 @@
 						</td>
 					</tr>
 				</table>
-
 				
+				<div class="reply">
+					<form name="replyForm" method="post">
+						<div class='form-header'>
+							<span class="bold">댓글💫</span><span> -🤖타인을 비방하거나 개인정보를 유출하는 글의 게시를 삼가해 주세요🙏.</span>
+						</div>
+						
+						<table class="table table-borderless reply-form">
+							<tr>
+								<td>
+									<textarea class='form-control' name="content"></textarea>
+								</td>
+							</tr>
+							<tr>
+							   <td align='right'>
+							        <button type='button' class='btn btn-light btnSendReply'>댓글 등록</button>
+							    </td>
+							 </tr>
+						</table>
+					</form>
+					
+					<div id="listReply"></div>
+				</div>
+
 			</div>
 		</div>
 	</div>
@@ -331,7 +353,6 @@ $(function(){
 			countReplyAnswer(replyNum);
 		}
 	});
-	
 });
 
 // 댓글별 답글 등록
