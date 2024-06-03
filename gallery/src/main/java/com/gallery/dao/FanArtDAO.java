@@ -33,6 +33,8 @@ public class FanArtDAO {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
 		}
 		
 	}
@@ -55,10 +57,10 @@ public class FanArtDAO {
 			
 			rs = pstmt.executeQuery();
 			
-			if(rs.next()) {
+			while(rs.next()) {
 				dto = new FanArtDTO();
 				
-				dto.setNum(rs.getInt("num"));
+				dto.setNum(rs.getLong("num"));
 				dto.setMember_id(rs.getString("member_id"));
 				dto.setName(rs.getString("name"));
 				dto.setNotice(rs.getInt("notice"));
@@ -73,6 +75,9 @@ public class FanArtDAO {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
 		}
 		
 		return list;
@@ -102,5 +107,84 @@ public class FanArtDAO {
 		}
 		
 		return result;
+	}
+	
+	public FanArtDTO findById(long num) {
+		FanArtDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "select num, f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img from fanArt f join member1 m on f.member_id=m.member_id where num = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			rs=pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new FanArtDTO();
+				
+				dto.setNum(rs.getLong("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				dto.setNotice(rs.getInt("notice"));
+				dto.setSubject(rs.getString("subject"));
+				dto.setContent(rs.getString("content"));
+				dto.setHitcount(rs.getInt("hitcount"));
+				dto.setReg_date(rs.getString("reg_date"));
+				dto.setImg(rs.getString("img"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return dto;
+	}
+	
+	public void updateFanArt(FanArtDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			sql = "update fanArt set subject = ?, content = ?, img = ?, notice = ? where num = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, dto.getSubject());
+			pstmt.setString(2, dto.getContent());
+			pstmt.setString(3, dto.getImg());
+			pstmt.setInt(4, dto.getNotice());
+			pstmt.setLong(5, dto.getNum());
+			
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
+	public void deleteFanArt(long num) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "delete fanArt where num = ?";
+			
+			pstmt= conn.prepareStatement(sql);
+			pstmt.setLong(1, num);
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
 	}
 }

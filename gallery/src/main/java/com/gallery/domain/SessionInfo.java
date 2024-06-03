@@ -3,7 +3,7 @@ package com.gallery.domain;
 public class SessionInfo {
 	private String userId;
 	private String userName;
-	private int userRoll;
+	private int userRole;
 	
 	public String getUserId() {
 		return userId;
@@ -17,10 +17,10 @@ public class SessionInfo {
 	public void setUserName(String userName) {
 		this.userName = userName;
 	}
-	public int getUserRoll() {
-		return userRoll;
+	public int getUserRole() {
+		return userRole;
 	}
-	public void setUserRoll(int userRoll) {
-		this.userRoll = userRoll;
+	public void setUserRole(int userRole) {
+		this.userRole = userRole;
 	}
 }

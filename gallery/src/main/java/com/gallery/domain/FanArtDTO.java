@@ -1,7 +1,7 @@
 package com.gallery.domain;
 
 public class FanArtDTO {
-	private int num;
+	private long num;
 	private String member_id;
 	private int hitcount;
 	private String reg_date;	
@@ -9,14 +9,13 @@ public class FanArtDTO {
 	private String subject;
 	private String content;
 	private String img;
-	private String upload_img;
 	private String name;
 	
 	
-	public int getNum() {
+	public long getNum() {
 		return num;
 	}
-	public void setNum(int num) {
+	public void setNum(long num) {
 		this.num = num;
 	}
 	public String getMember_id() {
@@ -66,12 +65,6 @@ public class FanArtDTO {
 	}
 	public void setImg(String img) {
 		this.img = img;
-	}
-	public String getUpload_img() {
-		return upload_img;
-	}
-	public void setUpload_img(String upload_img) {
-		this.upload_img = upload_img;
 	}
 	
 }

@@ -49,9 +49,9 @@ public class FanArt_BoardController {
 				current_page = total_page;
 			}
 			
-			int offset = (dataCount -1) * size;
+			int offset = (current_page - 1) * size;
 			if(offset < 0) offset = 0;
-			
+
 			List<FanArtDTO> list = dao.list(offset, size);
 			
 			String cp = req.getContextPath();
@@ -70,8 +70,6 @@ public class FanArt_BoardController {
 			e.printStackTrace();
 		}
 		
-		
-		
 		return mav;
 	}
 	
@@ -86,7 +84,6 @@ public class FanArt_BoardController {
 	
 	@RequestMapping(value = "/fanArt_board/write", method = RequestMethod.POST)
 	public ModelAndView writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		ModelAndView model = new ModelAndView("fanArt_board/write");
 		
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
@@ -105,7 +102,7 @@ public class FanArt_BoardController {
 			FanArtDTO dto = new FanArtDTO();
 			
 			int notice = 0;
-			if(req.getParameter("notice") != null) {
+			if(req.getParameter("notice") != null && info.getUserRole() == 0) {
 				notice = Integer.parseInt(req.getParameter("notice"));
 			}
 			
@@ -132,6 +129,144 @@ public class FanArt_BoardController {
 			e.printStackTrace();
 		}
 		
-		return model;
+		return new ModelAndView("redirect:/fanArt_board/list");
+	}
+	
+	@RequestMapping(value = "/fanArt_board/article")
+	public ModelAndView article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ModelAndView mav = new ModelAndView("fanArt_board/article");
+		
+		FanArtDAO dao = new FanArtDAO();
+		
+		try {
+			String page = req.getParameter("page");
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			FanArtDTO dto = dao.findById(num);
+			if(dto == null) {
+				return new ModelAndView("redirect:/fanArt_board/list?page="+page);
+			}
+			
+			mav.addObject("dto", dto);
+			mav.addObject("page", page);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return mav;
+	}
+	
+	@RequestMapping(value = "/fanArt_board/update", method = RequestMethod.GET)
+	public ModelAndView updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ModelAndView mav = new ModelAndView("fanArt_board/write");
+		
+		FanArtDAO dao = new FanArtDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String page = req.getParameter("page");
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			FanArtDTO dto = dao.findById(num);
+			if(dto == null || ! dto.getMember_id().equals(info.getUserId())) {
+				return new ModelAndView("redirect:/fanAat_borad/list?page="+page);
+			}
+			
+			mav.addObject("dto", dto);
+			mav.addObject("page", page);
+			mav.addObject("mode", "update");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return mav;
+	}
+	
+	@RequestMapping(value = "/fanArt_board/update", method = RequestMethod.POST)
+	public ModelAndView updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		FanArtDAO dao = new FanArtDAO();
+		
+		String root = req.getServletContext().getRealPath("/");
+		String path= root + "uploads" + File.separator +"fanArt";
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		FileManager fileManager = new FileManager();
+		
+		String page = req.getParameter("page");
+		
+		
+		try {
+			FanArtDTO dto = new FanArtDTO();
+			
+			dto.setNum(Long.parseLong(req.getParameter("num")));
+			dto.setSubject(req.getParameter("subject"));
+			dto.setContent(req.getParameter("content"));
+			int notice = 0;
+			if(req.getParameter("notice") != null && info.getUserRole() == 0) {
+				notice = Integer.parseInt(req.getParameter("notice"));
+			}
+			dto.setNotice(notice);
+			String img = req.getParameter("img");
+			dto.setImg(img);
+			
+			Part p = req.getPart("selectFile");
+			MyMultipartFile multipart = fileManager.doFileUpload(p, path);
+			
+			if(multipart != null) {
+				fileManager.doFiledelete(path, img);
+				
+				String filename = multipart.getSaveFilename();
+				dto.setImg(filename);
+			}
+			
+			dao.updateFanArt(dto);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/fanArt_board/list?page="+page);
+	}
+	
+	@RequestMapping(value = "/fanArt_board/delete", method = RequestMethod.GET)
+	public ModelAndView delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		FanArtDAO dao = new FanArtDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		FileManager fileManager = new FileManager();
+		
+		String root = session.getServletContext().getRealPath("/");
+		String pathname = root + "uploads"+File.separator+"photo";
+		String page = req.getParameter("page");
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			FanArtDTO dto = dao.findById(num);
+			if(dto == null) {
+				return new ModelAndView("redirect:/photo/list?page="+page);
+			}
+			
+			if(!dto.getMember_id().equals(info.getUserId()) && !info.getUserId().equals("admin")) {
+				return new ModelAndView("redirect:/photo/list?page="+page);
+			}
+			
+			fileManager.doFiledelete(pathname, dto.getImg());
+			dao.deleteFanArt(num);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		
+		return new ModelAndView("redirect:/fanArt_board/list?page="+page);
 	}
 }

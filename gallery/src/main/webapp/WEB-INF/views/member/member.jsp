@@ -149,7 +149,7 @@ function memberOk() {
 					</div>
 					<div class="row pt-2">
 						<div class="col col-3">비밀번호</div>
-						<div class="col-6"><input type="password" name="userPwd" class="form-control" value="${dto.userPwd}" ${mode=="update" ? "readonly ":""} placeholder="비밀번호" autocomplete="off"></div>
+						<div class="col-6"><input type="password" name="userPwd" class="form-control" placeholder="비밀번호" autocomplete="off"></div>
 					</div>
 					<div class="row pt-2">
 						<div class="col col-3">비밀번호 확인</div>
