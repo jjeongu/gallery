@@ -122,7 +122,7 @@
 							</c:choose>
 					    	
 							<c:choose>
-					    		<c:when test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRoll==0}">
+					    		<c:when test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
 					    			<button type="button" class="btn btn-light" onclick="deleteArt_board();">삭제</button>
 					    		</c:when>
 					    		<c:otherwise>
@@ -386,6 +386,7 @@ $(function(){
 		ajaxFun(url, "post", query, "json", fn);
 	});
 });
+
 </script>
 
 <footer>
