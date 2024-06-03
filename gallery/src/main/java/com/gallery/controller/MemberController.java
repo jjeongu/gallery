@@ -11,6 +11,7 @@ import com.gallery.domain.SessionInfo;
 import com.gallery.servlet.ModelAndView;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -19,8 +20,25 @@ import jakarta.servlet.http.HttpSession;
 public class MemberController {
 	@RequestMapping(value = "/member/login", method = RequestMethod.GET)
 	public ModelAndView loginForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
-		return new ModelAndView("member/login");
+		
+		ModelAndView model = new ModelAndView("member/login");
+		String check = null;
+		String userid = "";
+		Cookie[] cookie = req.getCookies();
+		if (cookie != null) {
+			for (int i = 0; i < cookie.length; i++) {
+				if (cookie[i].getName().equals("remember")) {
+					check = "checked";
+					userid = cookie[i].getValue();
+					break;
+				}
+			}
+		}
+		System.out.println(userid);
+		model.addObject("userid", userid);
+		model.addObject("check", check);
+		
+		return model;
 	}
 
 	@RequestMapping(value = "/member/login", method = RequestMethod.POST)
@@ -31,6 +49,7 @@ public class MemberController {
 
 		String userId = req.getParameter("userId");
 		String userPwd = req.getParameter("userPwd");
+		String rememberMe = req.getParameter("rememberMe");
 
 		MemberDTO dto = dao.loginMember(userId, userPwd);
 		if (dto != null) {
@@ -42,6 +61,17 @@ public class MemberController {
 			info.setUserId(dto.getUserId());
 			info.setUserName(dto.getName());
 			info.setUserRole(dto.getRole());
+			if(rememberMe != null) {
+				Cookie rcookie = new Cookie("remember", userId);
+				rcookie.setMaxAge(60 * 60);
+				rcookie.setPath("/");
+				resp.addCookie(rcookie);
+			} else {
+				Cookie noCookie = new Cookie("remember", "");
+				noCookie.setMaxAge(0);
+				noCookie.setPath("/");
+				resp.addCookie(noCookie);
+			}
 
 			session.setAttribute("member", info);
 			

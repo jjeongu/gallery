@@ -39,35 +39,51 @@
         		<li class="nav-item dropdown">
           			<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="#">Contact</a>
-          <ul class="dropdown-menu dropdown-menu-warning">
-            <li><a class="dropdown-item" href="#">연락처</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="${pageContext.request.contextPath}/faq/list">FAQ</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Q&amp;A</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">신고</a></li>
-          </ul>
-        </li>
+				<ul class="dropdown-menu dropdown-menu-warning">
+					<li><a class="dropdown-item" href="#">연락처</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" href="${pageContext.request.contextPath}/faq/list">FAQ</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" href="#">Q&amp;A</a></li>
+					<li><hr class="dropdown-divider"></li>
+					<li><a class="dropdown-item" href="#">신고</a></li>
+				</ul>
+				</li>
         		<li class="nav-item">
-          			 <c:if test="${empty sessionScope.member}">
-          			 <a class="nav-link" onclick="dialogLogin();" >Log-in</a>
-        </c:if>
-        <c:if test="${not empty sessionScope.member}">
-        <a class="nav-link" href="${pageContext.request.contextPath}/member/logout">Log-out</a>
-        </c:if>
+				<c:if test="${empty sessionScope.member}">
+					<a class="nav-link" onclick="dialogLogin();" >Log-in</a>
+				</c:if>
+				<c:if test="${not empty sessionScope.member}">
+					<a class="nav-link" href="${pageContext.request.contextPath}/member/logout">Log-out</a>					
+				</c:if>
+				</li>
+				<li>
+				<c:if test="${not empty sessionScope.member && sessionScope.member.userRole != 0}">
+					<a href="${pageContext.request.contextPath}/member/update"><i class="bi bi-gear"></i></a>
+				</c:if>
+				<c:if test="${sessionScope.member.userRole == 0}">
+					<a href="${pageContext.request.contextPath}/member/admin"><i class="bi bi-gear"></i></a>
+				</c:if>
 				</li>
 			</ul>
 		</div>
 	</div>
 </nav>
 
-	<!-- Login Modal -->
 	<script type="text/javascript">
 		function dialogLogin() {
-		    $("form[name=modelLoginForm] input[name=userId]").val("");
+			var cookieData = document.cookie;
+				cName = 'remember=';
+			var start = cookieData.indexOf(cName);
+			var cValue = '';
+			if(start != -1){
+				start += cName.length;
+				var end = cookieData.indexOf(';', start);
+				if(end == -1)end = cookieData.length;
+				cValue = cookieData.substring(start, end);
+			}
+		    $("form[name=modelLoginForm] input[name=userId]").val(unescape(cValue));
 		    $("form[name=modelLoginForm] input[name=userPwd]").val("");
-		    
 			$("#loginModal").modal("show");	
 			
 		    $("form[name=modelLoginForm] input[name=userId]").focus();
@@ -116,7 +132,7 @@
 	                        </div>
 	                        <div>
 	                            <div class="form-check">
-	                                <input class="form-check-input" type="checkbox" id="rememberMeModel">
+	                                <input class="form-check-input" type="checkbox" id="rememberMeModel" name="rememberMe" value="chk" ${check=='checked' ? 'checked':'checked'}>
 	                                <label class="form-check-label" for="rememberMeModel"> 아이디 저장</label>
 	                            </div>
 	                        </div>
