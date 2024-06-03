@@ -143,10 +143,13 @@ public class FanArt_BoardController {
 			
 			long num = Long.parseLong(req.getParameter("num"));
 			
+			dao.updateHitCount(num);
+			
 			FanArtDTO dto = dao.findById(num);
 			if(dto == null) {
 				return new ModelAndView("redirect:/fanArt_board/list?page="+page);
 			}
+			
 			
 			mav.addObject("dto", dto);
 			mav.addObject("page", page);

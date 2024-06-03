@@ -12,9 +12,6 @@ public class Fan_BoardDTO {
 	private String nickname;
 	
 	
-	
-	
-	
 	public int getNum() {
 		return num;
 	}

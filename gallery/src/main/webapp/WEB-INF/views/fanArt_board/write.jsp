@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spring</title>
+<title>FanArt</title>
 
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
@@ -61,9 +61,9 @@ function sendOk() {
 }
 
 $(function() {
-	let img = "${dto.imageFilename}";
-	if( img ) { // 수정인 경우
-		img = "${pageContext.request.contextPath}/uploads/photo/" + img;
+	let img = "${dto.img}";
+	if( img ) {
+		img = "${pageContext.request.contextPath}/uploads/fanArt/" + img;
 		$(".write-form .img-viewer").empty();
 		$(".write-form .img-viewer").css("background-image", "url("+img+")");
 	}
@@ -77,7 +77,7 @@ $(function() {
 		if(! file) {
 			$(".write-form .img-viewer").empty();
 			if( img ) { 
-				img = "${pageContext.request.contextPath}/uploads/photo/" + img;
+				img = "${pageContext.request.contextPath}/uploads/fanArt/" + img;
 				$(".write-form .img-viewer").css("background-image", "url("+img+")");
 			} else {
 				img = "${pageContext.request.contextPath}/resources/images/add_photo.png";
@@ -157,7 +157,7 @@ $(function() {
 								
 								<c:if test="${mode=='update'}">
 									<input type="hidden" name="num" value="${dto.num}">
-									<input type="hidden" name="imageFilename" value="${dto.imageFilename}">
+									<input type="hidden" name="img" value="${dto.img}">
 									<input type="hidden" name="page" value="${page}">
 								</c:if>
 								

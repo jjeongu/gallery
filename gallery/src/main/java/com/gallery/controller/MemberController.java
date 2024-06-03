@@ -82,7 +82,7 @@ public class MemberController {
 		return model;
 	}
 	
-	// 회원가입시 관리자는 role을 선택하는 박스를 만들어주고 role이 넘어오지 않으면 3으로 설정
+	// 회원가입시 관리자는 role을 선택하는 박스를 만들어주고 role이 넘어오지 않으면 2로 설정
 	@RequestMapping(value = "/member/member", method = RequestMethod.POST)
 	public ModelAndView memberSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
@@ -109,14 +109,14 @@ public class MemberController {
 			
 			dto.setBirth(req.getParameter("birth"));
 			
-			int role = 3;
+			int role = 2;
 			String userRole = req.getParameter("role");
 			if(userRole != null && info.getUserRole() == 0) {
 				role = Integer.parseInt(userRole);
 			}
 			dto.setRole(role);
 			
-			dao.insertMember(dto, info.getUserRole());
+			dao.insertMember(dto);
 			
 			return new ModelAndView("redirect:/");
 		} catch (Exception e) {
@@ -130,8 +130,8 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/member/update", method = RequestMethod.GET)
-	public ModelAndView upadateForm(HttpServletRequest req, HttpServletResponse resp) {
-		ModelAndView model = new ModelAndView("member/update");
+	public ModelAndView upadateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ModelAndView model = new ModelAndView("member/member");
 		
 		MemberDAO dao = new MemberDAO();
 		
@@ -147,21 +147,70 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value = "/member/update", method = RequestMethod.POST)
-	public ModelAndView upadateSubmit(HttpServletRequest req, HttpServletResponse resp) {
+	public ModelAndView upadateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		
 		MemberDAO dao = new MemberDAO();
 		
-		try {
-			
-		} catch (Exception e) {
-			// TODO: handle exception
-		}
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
+		try {
+			if (info == null) {
+				return new ModelAndView("redirect:/member/login");
+			}
+			MemberDTO dto = new MemberDTO();
+			
+			dto.setUserId(req.getParameter("userId"));
+			dto.setUserPwd(req.getParameter("userPwd"));
+			dto.setName(req.getParameter("userName"));
+			
+			String tel1 = req.getParameter("tel1");
+			String tel2 = req.getParameter("tel2");
+			String tel3 = req.getParameter("tel3");
+			dto.setTel(tel1 + "-" + tel2 + "-" + tel3);
+			
+			String email1 = req.getParameter("email1");
+			String email2 = req.getParameter("email2");
+			dto.setEmail(email1 + "@" + email2);
+			
+			dto.setBirth(req.getParameter("birth"));
+			
+			int role = 2;
+			String userRole = req.getParameter("role");
+			if(userRole != null && info.getUserRole() == 0) {
+				role = Integer.parseInt(userRole);
+			}
+			dto.setRole(role);
+			
+			dao.updateMember(dto);
+			
+			return new ModelAndView("redirect:/");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return new ModelAndView("redirect:/");
 	}
 	
-	
+	@RequestMapping(value = "/member/delete")
+	public ModelAndView delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		MemberDAO dao = new MemberDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		try {
+			if(info.getUserRole() == 0 || info.getUserId().equals(req.getParameter("userId"))) {
+				dao.deleteMeber(req.getParameter("userId"));
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/");
+	}
 	
 	
 	

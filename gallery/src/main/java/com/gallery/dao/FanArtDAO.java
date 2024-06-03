@@ -187,4 +187,25 @@ public class FanArtDAO {
 			DBUtil.close(pstmt);
 		}
 	}
+	
+	public void updateHitCount(long num) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+
+		try {
+			sql = "update fanArt set hitCount=hitCount+1 where num=?";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
 }

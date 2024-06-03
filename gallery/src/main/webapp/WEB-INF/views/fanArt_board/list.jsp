@@ -44,6 +44,7 @@
 							</div>
 							<div class="card-footer">
 								<small class="text-body-secondary">${dto.reg_date}</small>
+								<small class="text-body-secondary text-end">/ 조회수 : ${dto.hitcount}</small>
 							</div>
 							</div>
 						</div>

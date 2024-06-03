@@ -47,7 +47,7 @@ public class MemberDAO {
 		return dto;
 	}
 	
-	public void insertMember(MemberDTO dto, int role) throws SQLException {
+	public void insertMember(MemberDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 		
@@ -62,11 +62,7 @@ public class MemberDAO {
 			pstmt.setString(4, dto.getBirth());
 			pstmt.setString(5, dto.getTel());
 			pstmt.setString(6, dto.getEmail());
-			if(role == 0) {
-				pstmt.setInt(7, dto.getRole());
-			} else {
-				pstmt.setInt(7, 3);
-			}
+			pstmt.setInt(7, dto.getRole());
 			
 			pstmt.executeUpdate();
 		} catch (Exception e) {
@@ -84,7 +80,7 @@ public class MemberDAO {
 		MemberDTO dto = null;
 		
 		try {
-			sql = "select member_id, name, birth, tel, email, role, to_char(reg_date, 'yyyy-mm-dd') reg_date from member1 where member_id=?";
+			sql = "select member_id, name, to_char(birth, 'yyyy-MM-dd') birth, tel, email, role, to_char(reg_date, 'yyyy-MM-dd') reg_date from member1 where member_id=?";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
@@ -101,11 +97,32 @@ public class MemberDAO {
 				dto.setEmail(rs.getString("email"));
 				dto.setRole(rs.getInt("role"));
 				dto.setRegister_date(rs.getString("reg_date"));
+				
+				if(dto.getTel() != null) {
+					String[] ss = dto.getTel().split("-");
+					if(ss.length == 3) {
+						dto.setTel1(ss[0]);
+						dto.setTel2(ss[1]);
+						dto.setTel3(ss[2]);
+					}
+				}
+				dto.setEmail(rs.getString("email"));
+				if(dto.getEmail() != null) {
+					String[] ss = dto.getEmail().split("@");
+					if(ss.length == 2) {
+						dto.setEmail1(ss[0]);
+						dto.setEmail2(ss[1]);
+					}
+				}
 			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
 		}
+		
 		return dto;
 	}
 	
@@ -129,6 +146,8 @@ public class MemberDAO {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
 		}
 	}
 	
@@ -145,6 +164,8 @@ public class MemberDAO {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
 		}
 	}
 }

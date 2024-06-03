@@ -157,7 +157,7 @@ function memberOk() {
 					</div>
 					<div class="row pt-2">
 						<div class="col col-3">이름</div>
-						<div class="col col-6"><input type="text" name="userName" class="form-control" value="${dto.name}" ${mode=="update" ? "readonly ":""} placeholder="이름"></div>
+						<div class="col col-6"><input type="text" name="userName" class="form-control" value="${dto.name}" placeholder="이름"></div>
 					</div>
 					<div class="row pt-2">
 						<div class="col col-3">생일</div>
@@ -190,7 +190,7 @@ function memberOk() {
 						</div>
 					</div>
 					
-					<div class="row mb-3">
+					<div class="row mt-3">
 				        <div class="text-center">
 				            <button type="button" name="sendButton" class="btn btn-primary" onclick="memberOk();"> ${mode=="member"?"회원가입":"정보수정"} <i class="bi bi-check2"></i></button>
 				            <button type="button" class="btn btn-danger" onclick="location.href='${pageContext.request.contextPath}/';"> ${mode=="member"?"가입취소":"수정취소"} <i class="bi bi-x"></i></button>
