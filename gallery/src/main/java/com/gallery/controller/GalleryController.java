@@ -24,10 +24,7 @@ import jakarta.servlet.http.Part;
 
 @Controller
 public class GalleryController {
-	
-	
-	
-	
+
 		//사진 리스트
 		@RequestMapping(value="/gallery/list", method=RequestMethod.GET)
 		public ModelAndView list(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -80,21 +77,16 @@ public class GalleryController {
 			
 			return mav;
 		}
-		
-		
-		
-		
-		
+	
 		
 		@RequestMapping(value="/gallery/write", method=RequestMethod.GET)
 		public ModelAndView writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			ModelAndView mav = new ModelAndView("gallery/write");
 			
+			mav.addObject("mode", "write");
+			
 			return mav;
 		}
-		
-		
-		
 		
 		
 		//사진 등록
@@ -224,6 +216,7 @@ public class GalleryController {
 					
 		}
 		
+		//사진 수정 폼
 		@RequestMapping(value = "/gallery/update", method = RequestMethod.GET)
 		public ModelAndView updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			GalleryDAO dao = new GalleryDAO();
@@ -250,10 +243,7 @@ public class GalleryController {
 			return new ModelAndView("redirect:/gallery/list");
 		}
 		
-		
-		
-		
-		//사진 수정
+		//사진 수정 완료
 		@RequestMapping(value = "/gallery/update", method = RequestMethod.POST)
 		public ModelAndView updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			GalleryDAO dao = new GalleryDAO();

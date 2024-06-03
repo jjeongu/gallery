@@ -54,7 +54,7 @@ function sendOk() {
         return;
     }
     
-    f.action = "${pageContext.request.contextPath}/gallery/write";
+    f.action = "${pageContext.request.contextPath}/gallery/${mode}";
     f.submit();
 }
 
@@ -132,7 +132,6 @@ $(function() {
 								<textarea name="introduce" id="introduce" class="form-control">${dto.introduce}</textarea>
 							</td>
 						</tr>
-						
 						<tr>
 							<td class="bg-light col-sm-2" scope="row">작 가</td>
 							<td>
@@ -142,7 +141,6 @@ $(function() {
 								</select>
 							</td>
 						</tr>
-						
 						<tr>
 							<td class="bg-light col-sm-2" scope="row">이미지</td>
 							<td>

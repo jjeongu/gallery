@@ -89,12 +89,14 @@
 								<c:when test="${sessionScope.member.userRole==0}">
 									<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/gallery/update?num=${dto.num}&page=${page}';">수정</button>
 								</c:when>
+								
 							</c:choose>
 					    	
 							<c:choose>
 					    		<c:when test="${sessionScope.member.userRole==0}">
 					    			<button type="button" class="btn btn-light" onclick="deleteBoard();">삭제</button>
 					    		</c:when>
+					    		
 					    	</c:choose>
 						</td>
 						<td class="text-end">
