@@ -86,21 +86,15 @@
 					<tr>
 						<td width="50%">
 							<c:choose>
-								<c:when test="${sessionScope.member.userId==dto.member_id}">
+								<c:when test="${sessionScope.member.userRole==0}">
 									<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/gallery/update?num=${dto.num}&page=${page}';">수정</button>
 								</c:when>
-								<c:otherwise>
-									<button type="button" class="btn btn-light" disabled>수정</button>
-								</c:otherwise>
 							</c:choose>
 					    	
 							<c:choose>
-					    		<c:when test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userId=='admin'}">
+					    		<c:when test="${sessionScope.member.userRole==0}">
 					    			<button type="button" class="btn btn-light" onclick="deleteBoard();">삭제</button>
 					    		</c:when>
-					    		<c:otherwise>
-					    			<button type="button" class="btn btn-light" disabled>삭제</button>
-					    		</c:otherwise>
 					    	</c:choose>
 						</td>
 						<td class="text-end">

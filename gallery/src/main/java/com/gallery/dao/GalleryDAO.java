@@ -181,6 +181,30 @@ public class GalleryDAO {
 			}
 		}
 	
-	
+		//사진 수정
+				public void updateGallery(GalleryDTO dto) throws SQLException {
+					PreparedStatement pstmt = null;
+					String sql;
+					
+					try {
+						sql = "UPDATE gallery SET introduce=?, img=?"
+								+ " where num = ? ";
+						
+						pstmt = conn.prepareStatement(sql);
+						
+						pstmt.setString(1, dto.getIntroduce());
+						pstmt.setString(2, dto.getImg());
+						pstmt.setLong(3,  dto.getNum());
+						
+						pstmt.executeUpdate();
+						
+						
+					} catch (Exception e) {
+						e.printStackTrace();
+					} finally {
+						DBUtil.close(pstmt);
+					}
+					
+				}
 	
 }

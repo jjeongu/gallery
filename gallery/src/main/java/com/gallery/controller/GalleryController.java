@@ -224,6 +224,74 @@ public class GalleryController {
 					
 		}
 		
+		@RequestMapping(value = "/gallery/update", method = RequestMethod.GET)
+		public ModelAndView updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			GalleryDAO dao = new GalleryDAO();
+			String page = req.getParameter("page");
+			
+			 // 로그인 및 아이디 일치 여부 등을 자바스크르비트로 검증하고 막는건 우회 가능해서 무의미
+			try {
+				long num = Long.parseLong(req.getParameter("num"));
+				
+				GalleryDTO dto = dao.findById(num);
+
+				ModelAndView mav = new ModelAndView("gallery/write");
+				
+				mav.addObject("dto", dto);
+				mav.addObject("page", page);
+				mav.addObject("mode", "update");
+				
+				return mav;
+				
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			return new ModelAndView("redirect:/gallery/list");
+		}
 		
+		
+		
+		
+		//사진 수정
+		@RequestMapping(value = "/gallery/update", method = RequestMethod.POST)
+		public ModelAndView updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+			GalleryDAO dao = new GalleryDAO();
+			
+			HttpSession session = req.getSession();
+			FileManager fileManager = new FileManager();
+			
+			String root = session.getServletContext().getRealPath("/");
+			String pathname = root + "uploads" + File.separator + "gallery";
+			
+			String page = req.getParameter("page");
+			
+			try {
+				GalleryDTO dto = new GalleryDTO();
+				
+				dto.setNum(Long.parseLong(req.getParameter("num")));
+				dto.setIntroduce(req.getParameter("introduce"));
+				
+				String img = req.getParameter("img");
+				dto.setImg(img);
+				
+				Part p =req.getPart("selectFile");
+				MyMultipartFile multipart = fileManager.doFileUpload(p, pathname);
+				
+				if(multipart != null) { // null 이면 사진 안올린 것.
+					String filename = multipart.getSaveFilename();
+					dto.setImg(filename); // 이미지파일 갈아치우기.
+					
+					// 기존의 파일 지우기
+					fileManager.doFiledelete(pathname, img); // doFiledelete: 파일 지우기
+					
+				}
+				dao.updateGallery(dto);
+				
+			} catch (Exception e) {
+			}
+			
+			return new ModelAndView("redirect:/gallery/list?page=" + page);
+		}
 		
 	}

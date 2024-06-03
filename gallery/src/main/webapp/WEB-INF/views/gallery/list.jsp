@@ -179,7 +179,9 @@
 						</p>
 					</div>
 				   <div class="col-auto">
-				   		<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/gallery/write';">사진올리기</button>
+				   		<c:if test="${sessionScope.member.userId=='admin'}">
+				   			<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/gallery/write';">사진올리기</button>
+				   		</c:if>
 				   </div>
 				  </div>
 				  
