@@ -2,8 +2,7 @@ package com.gallery.domain;
 
 public class Art_BoardDTO {
 
-
-	private int num; 			// 글번호 
+	private long num; 			// 글번호 
 	private String member_id;	// 아이디
 	private int hitcount; 		// 조회수
 	private String reg_date;    // 작성일
@@ -15,7 +14,15 @@ public class Art_BoardDTO {
 	private String uploadfilename;	// 업로드 파일명
 	private long fileSize;			// 파일크기
 	
+	private int likeCount;
 	
+	
+	public int getLikeCount() {
+		return likeCount;
+	}
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
 	public String getSaveFilename() {
 		return saveFilename;
 	}
@@ -35,10 +42,10 @@ public class Art_BoardDTO {
 	public void setFileSize(long fileSize) {
 		this.fileSize = fileSize;
 	}
-	public int getNum() {
+	public long getNum() {
 		return num;
 	}
-	public void setNum(int num) {
+	public void setNum(long num) {
 		this.num = num;
 	}
 	public String getMember_id() {
