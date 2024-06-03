@@ -5,7 +5,8 @@ public class Free_Board_ReplyDTO {
 	private int r_num;
 	private int num;
 	private String content;
-	private int reg_date;
+	private String reg_date;
+	
 	public int getR_num() {
 		return r_num;
 	}
@@ -24,13 +25,12 @@ public class Free_Board_ReplyDTO {
 	public void setContent(String content) {
 		this.content = content;
 	}
-	public int getReg_date() {
+	public String getReg_date() {
 		return reg_date;
 	}
-	public void setReg_date(int reg_date) {
+	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
-	
 	
 	
 }

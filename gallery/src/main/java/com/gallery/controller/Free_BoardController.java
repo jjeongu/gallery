@@ -3,13 +3,18 @@ package com.gallery.controller;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.gallery.annotation.Controller;
 import com.gallery.annotation.RequestMapping;
 import com.gallery.annotation.RequestMethod;
+import com.gallery.annotation.ResponseBody;
 import com.gallery.dao.Free_BoardDAO;
 import com.gallery.domain.Free_BoardDTO;
+import com.gallery.domain.Free_Board_ReplyDTO;
 import com.gallery.domain.SessionInfo;
 import com.gallery.servlet.ModelAndView;
 import com.gallery.util.FileManager;
@@ -38,7 +43,6 @@ public class Free_BoardController {
 		try {
 			String page = req.getParameter("page");
 			int current_page = 1;
-			
 			if(page != null) {
 				current_page = Integer.parseInt(page);
 			}
@@ -54,8 +58,19 @@ public class Free_BoardController {
 				kwd = URLDecoder.decode(kwd,"utf-8");
 			}
 			
-			String pageSize = req.getParameter("size");
-			int size = pageSize == null ? 10 : Integer.parseInt(pageSize);
+			int dataCount;
+			if (kwd.length() == 0) {
+				dataCount = dao.dataCount();
+			} else {
+				dataCount = dao.dataCount(schType, kwd);
+			}
+			
+			int size = 10;
+			int total_page = util.pageCount(dataCount, size);
+			if (current_page > total_page) {
+				current_page = total_page;
+			}
+
 			
 			int offset = (current_page - 1) * size;
 			if(offset < 0) offset = 0;
@@ -67,9 +82,28 @@ public class Free_BoardController {
 				list = dao.listFree_Board(offset, size, schType, kwd);
 			}
 			
+			String query = "";
+			if (kwd.length() != 0) {
+				query = "schType=" + schType + "&kwd=" + URLEncoder.encode(kwd, "utf-8");
+			}
+			
+			String cp = req.getContextPath();
+			String listUrl = cp + "/free_board/list";
+			String articleUrl = cp + "/free_board/article?page=" + current_page;
+			if (query.length() != 0) {
+				listUrl += "?" + query;
+				articleUrl += "&" + query;
+			}
+
+			String paging = util.paging(current_page, total_page, listUrl);
+			
 			mav.addObject("list", list);
 			mav.addObject("page", current_page);
+			mav.addObject("total_page", total_page);
+			mav.addObject("dataCount", dataCount);
 			mav.addObject("size", size);
+			mav.addObject("articleUrl", articleUrl);
+			mav.addObject("paging", paging);
 			mav.addObject("schType", schType);
 			mav.addObject("kwd", kwd);
 			
@@ -139,8 +173,241 @@ public class Free_BoardController {
 		return new ModelAndView("redirect:/free_board/list");
 	}
 	
-	
+	@RequestMapping(value = "/free_board/article", method = RequestMethod.GET)
 	// 글 보기
+	public ModelAndView article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			String schType = req.getParameter("schType");
+			String kwd = req.getParameter("kwd");
+			if (schType == null) {
+				schType = "all";
+				kwd = "";
+			}
+			kwd = URLDecoder.decode(kwd, "utf-8");
+
+			if (kwd.length() != 0) {
+				query += "&schType=" + schType + "&kwd=" + URLEncoder.encode(kwd, "UTF-8");
+			}
+			
+			dao.updateHitCount(num);
+
+			Free_BoardDTO dto = dao.findById(num);
+			if(dto == null) {
+				return new ModelAndView("redirect:/free_board/list?" + query);
+			}
+			
+			Free_BoardDTO prevDto = dao.findByPrev(dto.getNum(), schType, kwd);
+			Free_BoardDTO nextDto = dao.findByNext(dto.getNum(), schType, kwd);
+			
+			//HttpSession session = req.getSession();
+			//SessionInfo info = (SessionInfo)session.getAttribute("member");
+			
+			ModelAndView mav = new ModelAndView("free_board/article");
+			
+			mav.addObject("dto", dto);
+			mav.addObject("page", page);
+			mav.addObject("query", query);
+			mav.addObject("prevDto", prevDto);
+			mav.addObject("nextDto", nextDto);
+			
+			return mav;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			
+		}
+		return new ModelAndView("redirect:/free_board/list?"+query);
+	}
 	
+	//글 수정
+	@RequestMapping(value = "/free_board/update", method = RequestMethod.GET)
+	public ModelAndView updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String page = req.getParameter("page");
+
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			Free_BoardDTO dto = dao.findById(num);
+			
+			if(dto==null) {
+				return new ModelAndView("redirect:/free_board/list?page=" + page);
+			}
+			
+			if(! dto.getMember_id().equals(info.getUserId())) {
+				return new ModelAndView("redirect:/free_board/list?page=" + page);
+			}
+			
+			ModelAndView mav = new ModelAndView("free_board/write");
+			
+			mav.addObject("dto", dto);
+			mav.addObject("page", page);
+			mav.addObject("mode", "update");
+			
+			return mav;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/free_board/list?page=" + page);
+
+	}
+	
+	@RequestMapping(value = "/free_board/update", method = RequestMethod.POST)
+	public ModelAndView updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String page = req.getParameter("page");
+		
+		try {
+			Free_BoardDTO dto = new Free_BoardDTO();
+			
+			dto.setNum(Integer.parseInt(req.getParameter("num")));
+			dto.setSubject(req.getParameter("subject"));
+			dto.setContent(req.getParameter("content"));
+			
+			dto.setMember_id(info.getUserId());
+			
+			dao.updateFree_board(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/free_board/list?page=" + page);
+	}
+	
+	// 삭제
+	@RequestMapping(value = "/free_board/delete", method = RequestMethod.GET)
+	public ModelAndView delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String page = req.getParameter("page");
+		String query = "page=" + page;
+		
+		try {
+			long num = Integer.parseInt(req.getParameter("num"));
+			String schType = req.getParameter("schType");
+			String kwd = req.getParameter("kwd");
+			if (schType == null) {
+				schType = "all";
+				kwd = "";
+			}
+			kwd = URLDecoder.decode(kwd, "utf-8");
+
+			if (kwd.length() != 0) {
+				query += "&schType=" + schType + "&kwd=" + URLEncoder.encode(kwd, "UTF-8");
+			}
+			
+			dao.deleteFree_board(num, info.getUserId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/free_board/list?" + query);
+	}
+	
+	// 댓글 저장
+	@ResponseBody
+	@RequestMapping(value = "/free_board/insertReply", method = RequestMethod.POST)
+	public Map<String, Object> insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		
+		try {
+			Free_Board_ReplyDTO dto = new Free_Board_ReplyDTO();
+			
+			int num = Integer.parseInt(req.getParameter("num"));
+			dto.setNum(num);
+			dto.setContent(req.getParameter("content"));
+			
+			dao.insertReply(dto);
+			
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.put("state", state);
+		
+		return model;
+	}
+	
+	@RequestMapping(value = "/free_board/listReply", method = RequestMethod.GET)
+	public ModelAndView listReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+		MyUtil util = new  MyUtilBootstrap();
+		
+		try {
+			int num = Integer.parseInt(req.getParameter("num"));
+			String pageNo = req.getParameter("pageNo");
+			int current_page = 1;
+			if(pageNo != null) {
+				current_page = Integer.parseInt(pageNo);
+			}
+			
+			int size = 5;
+			int total_page = 0;
+			int replyCount = 0;
+			
+			replyCount = dao.dataCountReply(num);
+			total_page = util.pageCount(replyCount, size);
+			
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
+			
+			int offset = (current_page -1) * size;
+			if(offset < 0) offset = 0;
+			
+			List<Free_Board_ReplyDTO> listReply = dao.listReply(num, offset, size);
+			
+			for(Free_Board_ReplyDTO dto : listReply) {
+				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+			}
+			
+			String paging = util.pagingMethod(current_page, total_page, "listPage");
+
+			ModelAndView mav = new ModelAndView("free_board/listReply");
+
+			mav.addObject("listReply", listReply);
+			mav.addObject("pageNo", current_page);
+			mav.addObject("replyCount", replyCount);
+			mav.addObject("total_page", total_page);
+			mav.addObject("paging", paging);
+			
+			return mav;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw e;
+		}
+	}
 	
 }
