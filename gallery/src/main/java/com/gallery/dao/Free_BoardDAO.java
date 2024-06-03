@@ -1,6 +1,5 @@
 package com.gallery.dao;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -12,9 +11,6 @@ import com.gallery.domain.Free_BoardDTO;
 import com.gallery.domain.Free_Board_ReplyDTO;
 import com.gallery.util.DBConn;
 import com.gallery.util.DBUtil;
-
-import jakarta.servlet.ServletException;
-import oracle.jdbc.proxy.annotation.Pre;
 
 public class Free_BoardDAO {
 	private Connection conn = DBConn.getConnection();
