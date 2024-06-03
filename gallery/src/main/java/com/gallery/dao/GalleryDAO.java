@@ -125,7 +125,7 @@ public class GalleryDAO {
 			String sql;
 			
 			try {
-				sql = "SELECT num, p.member_id, "
+				sql = "SELECT num, name, "
 						+ " Img, introduce, p.reg_date "
 						+ " FROM gallery p "
 						+ " JOIN member1 m ON p.member_id = m.member_id "
@@ -141,7 +141,7 @@ public class GalleryDAO {
 					dto = new GalleryDTO();
 					
 					dto.setNum(rs.getLong("num"));
-					dto.setMember_id(rs.getString("member_id"));
+					dto.setArtistName(rs.getString("name"));
 					dto.setIntroduce(rs.getString("introduce"));
 					dto.setImg(rs.getString("Img"));
 					dto.setReg_date(rs.getString("reg_date"));

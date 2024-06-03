@@ -51,7 +51,13 @@
 				
 				<table class="table">
 
-					
+					<thead>
+						<tr>
+							<td>
+								${dto.introduce}
+							</td>
+						</tr>
+					</thead>
 					<tbody>
 						<tr>
 							
@@ -69,7 +75,7 @@
 						
 						<tr>
 							<td colspan="2">
-								${dto.introduce}
+								${dto.artistName}
 							</td>
 						</tr>
 						

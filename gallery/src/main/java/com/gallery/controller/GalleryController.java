@@ -102,21 +102,26 @@ public class GalleryController {
 		public ModelAndView writeSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			GalleryDAO dao = new GalleryDAO();
 			
-			// parameter : introduce, selectFile
+			// parameter : introduce, selectFile, artistName
 			HttpSession session = req.getSession();
 			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			
+			if(! info.getUserId().equals("admin")) {
+				return new ModelAndView("redirect:/gallery/list");
+			}
+			
 			
 			FileManager fileManager = new FileManager();
 			
 			// 파일 저장 경로
 			String root = session.getServletContext().getRealPath("/");
 			String pathname = root + "uploads" + File.separator + "gallery";
-			
+			String artistName=req.getParameter("artistName");
 			
 			try {
 				GalleryDTO dto=new GalleryDTO();
 				
-				dto.setMember_id(info.getUserId()); // 로그인 아이디
+				dto.setMember_id(artistName); // 작가 아이디
 				dto.setIntroduce(req.getParameter("introduce"));
 			
 				
@@ -200,8 +205,7 @@ public class GalleryController {
 				}
 				
 				//게시물을 올린 사용자나 admin이 아니면 
-				if(!dto.getMember_id().equals(info.getUserId()) &&
-						!info.getUserId().equals("admin")) {
+				if(! info.getUserId().equals("admin")) {
 					
 					return new ModelAndView("redirect:/gallery/list?page=" + page);
 				}

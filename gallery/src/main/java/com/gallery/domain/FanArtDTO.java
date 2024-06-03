@@ -4,14 +4,13 @@ public class FanArtDTO {
 	private int num;
 	private String member_id;
 	private int hitcount;
-	private int reg_date;	
+	private String reg_date;	
 	private int notice;
 	private String subject;
 	private String content;
 	private String img;
 	private String upload_img;
-	
-	
+	private String name;
 	
 	
 	public int getNum() {
@@ -29,13 +28,19 @@ public class FanArtDTO {
 	public int getHitcount() {
 		return hitcount;
 	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	public void setHitcount(int hitcount) {
 		this.hitcount = hitcount;
 	}
-	public int getReg_date() {
+	public String getReg_date() {
 		return reg_date;
 	}
-	public void setReg_date(int reg_date) {
+	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
 	public int getNotice() {
@@ -68,7 +73,5 @@ public class FanArtDTO {
 	public void setUpload_img(String upload_img) {
 		this.upload_img = upload_img;
 	}
-	
-	
 	
 }

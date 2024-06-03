@@ -90,7 +90,7 @@ public class LoginFilter implements Filter {
 				"/notice/list",
 				"/artist/list",
 				"/gallery/list",
-				"/uploads/photo/**",
+				"/uploads/gallery/**",
 				"/resources/**"
 		};
 		

@@ -1,17 +1,16 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
-<%@ taglib  prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib  prefix="fmt" uri="jakarta.tags.fmt" %>
-
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spring</title>
 
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
-
 .body-container {
 	max-width: 800px;
 }
@@ -28,22 +27,25 @@
 	background-repeat : no-repeat;
 	background-size : cover;
 }
-
 </style>
-
-
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
-
 
 <script type="text/javascript">
 function sendOk() {
     const f = document.photoForm;
 	let str;
 	
-    str = f.introduce.value.trim();
+    str = f.subject.value.trim();
+    if(!str) {
+        alert("제목을 입력하세요. ");
+        f.subject.focus();
+        return;
+    }
+
+    str = f.content.value.trim();
     if(!str) {
         alert("내용을 입력하세요. ");
-        f.introduce.focus();
+        f.content.focus();
         return;
     }
 
@@ -54,29 +56,28 @@ function sendOk() {
         return;
     }
     
-    f.action = "${pageContext.request.contextPath}/gallery/write";
+    f.action = "${pageContext.request.contextPath}/fanArt_board/${mode}";
     f.submit();
 }
 
-
 $(function() {
-	let img = "${dto.img}";
+	let img = "${dto.imageFilename}";
 	if( img ) { // 수정인 경우
-		img = "${pageContext.request.contextPath}/uploads/gallery/" + img;
+		img = "${pageContext.request.contextPath}/uploads/photo/" + img;
 		$(".write-form .img-viewer").empty();
 		$(".write-form .img-viewer").css("background-image", "url("+img+")");
 	}
 	
 	$(".write-form .img-viewer").click(function(){
-		$("form[name=photoForm] input[name=selectFile]").trigger("click"); 
+		$("form[name=photoForm] input[name=selectFile]").trigger("click");
 	});
 	
 	$("form[name=photoForm] input[name=selectFile]").change(function(){
 		let file=this.files[0];
 		if(! file) {
 			$(".write-form .img-viewer").empty();
-			if( img ) {
-				img = "${pageContext.request.contextPath}/uploads/gallery/" + img;
+			if( img ) { 
+				img = "${pageContext.request.contextPath}/uploads/photo/" + img;
 				$(".write-form .img-viewer").css("background-image", "url("+img+")");
 			} else {
 				img = "${pageContext.request.contextPath}/resources/images/add_photo.png";
@@ -98,7 +99,6 @@ $(function() {
 		reader.readAsDataURL(file);
 	});
 });
-
 </script>
 </head>
 <body>
@@ -106,18 +106,23 @@ $(function() {
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
 </header>
-
 	
 <main>
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3><i class="bi bi-image"></i> 포토 갤러리 </h3>
+				<h3><i class="bi bi-image"></i> 팬아트 </h3>
 			</div>
 			
 			<div class="body-main">
 				<form name="photoForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
+						<tr>
+							<td class="bg-light col-sm-2" scope="row">제 목</td>
+							<td>
+								<input type="text" name="subject" class="form-control" value="${dto.subject}">
+							</td>
+						</tr>
 	        
 						<tr>
 							<td class="bg-light col-sm-2" scope="row">작성자명</td>
@@ -129,17 +134,7 @@ $(function() {
 						<tr>
 							<td class="bg-light col-sm-2" scope="row">내 용</td>
 							<td>
-								<textarea name="introduce" id="introduce" class="form-control">${dto.introduce}</textarea>
-							</td>
-						</tr>
-						
-						<tr>
-							<td class="bg-light col-sm-2" scope="row">작 가</td>
-							<td>
-								<select name="artistName">
-									<option value="PAT">패트</option>
-									<option value="MAT">매트</option>
-								</select>
+								<textarea name="content" id="content" class="form-control">${dto.content}</textarea>
 							</td>
 						</tr>
 						
@@ -158,11 +153,11 @@ $(function() {
 							<td class="text-center">
 								<button type="button" class="btn btn-dark" onclick="sendOk();">${mode=='update'?'수정완료':'등록하기'}&nbsp;<i class="bi bi-check2"></i></button>
 								<button type="reset" class="btn btn-light">다시입력</button>
-								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/gallery/list';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
+								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/fanArt_board/list';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
 								
-								<c:if test="${mode == 'update'}">
+								<c:if test="${mode=='update'}">
 									<input type="hidden" name="num" value="${dto.num}">
-									<input type="hidden" name="img" value="${dto.img}">
+									<input type="hidden" name="imageFilename" value="${dto.imageFilename}">
 									<input type="hidden" name="page" value="${page}">
 								</c:if>
 								
@@ -174,8 +169,6 @@ $(function() {
 		</div>
 	</div>
 </main>
-
-
 
 <footer>
 	<jsp:include page="/WEB-INF/views/layout/footer.jsp"/>
