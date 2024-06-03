@@ -32,11 +32,11 @@
 </header>
 <c:if test="${sessionScope.member.userId=='admin'}">
 	<script type="text/javascript">
-	function deleteNotice() {
+	function deleteReport() {
 		if(! confirm('게시글을 삭제하시겠습니까')) {
 			return;
 		}
-		let url='${pageContext.request.contextPath}/notice/delete';
+		let url='${pageContext.request.contextPath}/report/delete';
 		location.href=url+'?page=${page}&num=${dto.num}&schType=${schType}&kwd=${kwd}';
 	}
 	</script>
@@ -45,7 +45,7 @@
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title mb-0">
-				<h3><i class="bi bi-info-circle"></i> 공지사항 </h3>
+				<h3><i class="bi bi-exclamation-triangle"></i></i> 신고 </h3>
 			</div>
 			
 			<div class="body-main">
@@ -61,8 +61,11 @@
 					
 					<tbody>
 						<tr>
+							<td align="left">
+								작성자 : ${dto.userName}
+							</td>
 							<td align="right">
-								${dto.reg_date.substring(0,4)}년 ${dto.reg_date.substring(4,6)}월 ${dto.reg_date.substring(6)}일 | 조회 ${dto.hitcount}
+								${dto.reg_date.substring(0,4)}년 ${dto.reg_date.substring(4,6)}월 ${dto.reg_date.substring(6)}일
 							</td>
 						</tr>
 						
@@ -81,7 +84,7 @@
   									<ul class="dropdown-menu">
 										<c:forEach var="vo" items="${listFile}" varStatus="status">
     										<li>
-    											<a href="${pageContext.request.contextPath}/notice/download?fileNum=${vo.fileNum}">${vo.uploadFilename}</a>
+    											<a href="${pageContext.request.contextPath}/report/download?fileNum=${vo.fileNum}">${vo.uploadFilename}</a>
     										</li>
 										</c:forEach>
 									</ul>
@@ -93,7 +96,7 @@
 							<td colspan="2">
 								다음글 : 
 								<c:if test="${not empty nextDto}">
-									<a href="${pageContext.request.contextPath}/notice/article?schType=${schType}&kwd=${kwd}&page=${page}&num=${nextDto.num}">${nextDto.subject}</a>
+									<a href="${pageContext.request.contextPath}/report/article?schType=${schType}&kwd=${kwd}&page=${page}&num=${nextDto.num}">${nextDto.subject}</a>
 								</c:if>
 								
 							</td>
@@ -102,7 +105,7 @@
 							<td colspan="2">
 								이전글 : 
 								<c:if test="${not empty prevDto}">
-									<a href="${pageContext.request.contextPath}/notice/article?schType=${schType}&kwd=${kwd}&page=${page}&num=${prevDto.num}">${prevDto.subject}</a>
+									<a href="${pageContext.request.contextPath}/report/article?schType=${schType}&kwd=${kwd}&page=${page}&num=${prevDto.num}">${prevDto.subject}</a>
 								</c:if>
 							</td>
 						</tr>
@@ -113,12 +116,14 @@
 					<tr>
 						<td width="50%">
 							<c:if test="${sessionScope.member.userRoll==0}">
-								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/update?num=${dto.num}&page=${page}';">수정</button>
-								<button type="button" class="btn btn-light" onclick="deleteNotice();">삭제</button>	
-							</c:if>	
+								<button type="button" class="btn btn-light" onclick="deleteReport();">삭제</button>	
+							</c:if>
+							<c:if test="${sessionScope.member.userRoll==2}">
+								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/update?num=${dto.num}&page=${page}';">수정</button>
+							</c:if>
 						</td>
 						<td class="text-end">
-							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/list?&page=${page}&num=${dto.num}&schType=${schType}&kwd=${kwd}';">리스트</button>
+							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/list?${query}';">리스트</button>
 						</td>
 					</tr>
 				</table>

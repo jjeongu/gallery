@@ -168,6 +168,8 @@ public class NoticeController {
 			mav.addObject("nextDto", nextDto);
 			mav.addObject("page", page);
 			mav.addObject("num", num);
+			mav.addObject("schType", schType);
+			mav.addObject("kwd", kwd);
 			mav.addObject("listFile", listFile);
 			
 			return mav;
@@ -242,6 +244,12 @@ public class NoticeController {
 		FileManager fileManager=new FileManager();
 		String page=req.getParameter("page");
 		String num=req.getParameter("num");
+		String schType=req.getParameter("schType");
+		String kwd=req.getParameter("kwd");		
+		if(schType==null) {
+			schType="all";
+			kwd="";
+		}
 		
 		String root=session.getServletContext().getRealPath("/");
 		String pathname=root+"uploads"+File.separator+"notice";
@@ -254,11 +262,11 @@ public class NoticeController {
 			
 			List<MyMultipartFile> listFile=fileManager.doFileUpload(req.getParts(), pathname);
 			dto.setListFile(listFile);
-			dao.updateNotice(dto);		
+			dao.updateNotice(dto);	
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
-		return new ModelAndView("redirect:/notice/article?page="+page+"&num="+num);
+		return new ModelAndView("redirect:/notice/article?page="+page+"&num="+num+"&schType="+schType+"&kwd="+kwd);
 	}
 	
 	@RequestMapping(value="/notice/delete", method=RequestMethod.GET)
@@ -268,6 +276,7 @@ public class NoticeController {
 		HttpSession session=req.getSession();
 		FileManager fileManager=new FileManager();
 
+		String page=req.getParameter("page");
 		String num=req.getParameter("num");
 		String schType=req.getParameter("schType");
 		String kwd=req.getParameter("kwd");		
@@ -293,6 +302,32 @@ public class NoticeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ModelAndView("redirect:/notice/list");
+		return new ModelAndView("redirect:/notice/list?page="+page+"&num="+num+"&schType="+schType+"&kwd="+kwd);
+	}
+	@RequestMapping(value="/notice/deleteList", method=RequestMethod.POST)
+	public ModelAndView deleteList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 선택된 공지 삭제
+		// parameters : check
+		NoticeDAO dao=new NoticeDAO();
+		FileManager fileManager=new FileManager();
+		HttpSession session=req.getSession();
+		String root=session.getServletContext().getRealPath("/");
+		String pathname=root+"uploads"+File.separator+"notice";
+			
+		String[] nums=req.getParameterValues("check");
+		
+		try {
+			for(String num:nums) {
+				List<NoticeDTO> listFile=dao.listNoticeFile(Long.parseLong(num));
+				for(NoticeDTO dto:listFile) {
+					fileManager.doFiledelete(pathname, dto.getSaveFilename());
+				}
+				dao.deleteNoticeFile(Long.parseLong(num));
+				dao.deleteNotice(Long.parseLong(num));
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		return new ModelAndView("redirect:/notice/list?");	
 	}
 }

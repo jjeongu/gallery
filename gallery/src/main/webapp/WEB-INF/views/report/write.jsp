@@ -14,6 +14,13 @@
 .body-container {
 	max-width: 800px;
 }
+.body-title {
+	text-align: center;
+}
+.body-title h3 {
+	 font-size: 50px;
+	 padding-bottom: 20px;
+}
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
@@ -36,19 +43,9 @@ function sendOk() {
         return;
     }
 
-    f.action = "${pageContext.request.contextPath}/notice/${mode}";
+    f.action = "${pageContext.request.contextPath}/report/${mode}";
     f.submit();
 }
-<c:if test="${mode=='update'}">
-	function deleteFile(fileNum) {
-		if(! confirm('파일을 삭제하시겠습니까')) {
-			return;
-		}
-		
-		let q='num=${dto.num}&page=${page}&size=${size}&fileNum='+fileNum;
-		location.href='${pageContext.request.contextPath}/notice/deleteFile?'+q;
-	}
-</c:if>
 </script>
 </head>
 <body>
@@ -61,7 +58,7 @@ function sendOk() {
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3><i class="bi bi-info-circle"></i> 공지사항 </h3>
+				<h3><i class="bi bi-exclamation-triangle"></i> 신고 </h3>
 			</div>
 			
 			<div class="body-main">
@@ -111,7 +108,7 @@ function sendOk() {
 							<td class="text-center">
 								<button type="button" class="btn btn-dark" onclick="sendOk();">${mode=='update'?'수정완료':'등록하기'}&nbsp;<i class="bi bi-check2"></i></button>
 								<button type="reset" class="btn btn-light">다시입력</button>
-								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/list';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
+								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/list';">${mode=='update'?'수정취소':'등록취소'}&nbsp;<i class="bi bi-x"></i></button>
 
 							</td>
 						</tr>

@@ -5,25 +5,24 @@ import java.util.List;
 import com.gallery.util.MyMultipartFile;
 
 public class ReportDTO {
-	private long report_num;
+	private long num;
 	private String subject;
 	private String content;
 	private String member_id;
 	private String reg_date;
+	private String userName;
 	
-	
-	private long filenum;
-	private String uploadfilename;
-	private String savefilename;
+	private long fileNum;
+	private String uploadFilename;
+	private String saveFilename;
 	
 	private List<MyMultipartFile> listFile; //다중 파일 처리하기 위해서
 
-	public long getReport_num() {
-		return report_num;
+	public long getNum() {
+		return num;
 	}
-
-	public void setReport_num(long report_num) {
-		this.report_num = report_num;
+	public void setNum(long num) {
+		this.num = num;
 	}
 
 	public String getSubject() {
@@ -57,31 +56,38 @@ public class ReportDTO {
 	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
-
-	public long getFilenum() {
-		return filenum;
+	
+	public String getUserName() {
+		return userName;
 	}
-
-	public void setFilenum(long filenum) {
-		this.filenum = filenum;
+	public void setUserName(String userName) {
+		this.userName = userName;
 	}
-
-	public String getUploadfilename() {
-		return uploadfilename;
+	
+	public long getFileNum() {
+		return fileNum;
 	}
-
-	public void setUploadfilename(String uploadfilename) {
-		this.uploadfilename = uploadfilename;
+	
+	public void setFileNum(long fileNum) {
+		this.fileNum = fileNum;
 	}
-
-	public String getSavefilename() {
-		return savefilename;
+	
+	public String getUploadFilename() {
+		return uploadFilename;
 	}
-
-	public void setSavefilename(String savefilename) {
-		this.savefilename = savefilename;
+	
+	public void setUploadFilename(String uploadFilename) {
+		this.uploadFilename = uploadFilename;
 	}
-
+	
+	public String getSaveFilename() {
+		return saveFilename;
+	}
+	
+	public void setSaveFilename(String saveFilename) {
+		this.saveFilename = saveFilename;
+	}
+	
 	public List<MyMultipartFile> getListFile() {
 		return listFile;
 	}
@@ -89,7 +95,4 @@ public class ReportDTO {
 	public void setListFile(List<MyMultipartFile> listFile) {
 		this.listFile = listFile;
 	}
-	
-	
-	
 }
