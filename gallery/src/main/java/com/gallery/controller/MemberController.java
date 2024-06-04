@@ -34,7 +34,7 @@ public class MemberController {
 				}
 			}
 		}
-		System.out.println(userid);
+		
 		model.addObject("userid", userid);
 		model.addObject("check", check);
 		

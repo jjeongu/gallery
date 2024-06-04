@@ -11,6 +11,8 @@ public class FanArtDTO {
 	private String img;
 	private String name;
 	
+	private int replyCount;
+	private int boardLikeCount;
 	
 	public long getNum() {
 		return num;
@@ -66,5 +68,18 @@ public class FanArtDTO {
 	public void setImg(String img) {
 		this.img = img;
 	}
+	public int getReplyCount() {
+		return replyCount;
+	}
+	public void setReplyCount(int replyCount) {
+		this.replyCount = replyCount;
+	}
+	public int getBoardLikeCount() {
+		return boardLikeCount;
+	}
+	public void setBoardLikeCount(int boardLikeCount) {
+		this.boardLikeCount = boardLikeCount;
+	}
+	
 	
 }

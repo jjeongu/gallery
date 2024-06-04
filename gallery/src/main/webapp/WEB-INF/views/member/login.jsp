@@ -36,6 +36,19 @@ function sendLogin() {
     f.action = "${pageContext.request.contextPath}/member/login";
     f.submit();
 }
+$(function() {
+	var cookieData = document.cookie;
+	cName = 'remember=';
+	var start = cookieData.indexOf(cName);
+	var cValue = '';
+	if(start != -1){
+		start += cName.length;
+		var end = cookieData.indexOf(';', start);
+		if(end == -1)end = cookieData.length;
+		cValue = cookieData.substring(start, end);
+	}
+	document.loginForm.userId.value = cValue;
+});
 </script>
 </head>
 <body>
@@ -64,7 +77,7 @@ function sendLogin() {
 	                        </div>
 	                        <div class="col-12">
 	                            <div class="form-check">
-	                                <input class="form-check-input" type="checkbox" id="rememberMe">
+	                                <input class="form-check-input" type="checkbox" id="rememberMe" name="rememberMe" value="chk" ${check=='checked' ? 'checked':'checked'}>
 	                                <label class="form-check-label" for="rememberMe"> 아이디 저장</label>
 	                            </div>
 	                        </div>

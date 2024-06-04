@@ -2,13 +2,18 @@ package com.gallery.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.gallery.annotation.Controller;
 import com.gallery.annotation.RequestMapping;
 import com.gallery.annotation.RequestMethod;
+import com.gallery.annotation.ResponseBody;
 import com.gallery.dao.FanArtDAO;
 import com.gallery.domain.FanArtDTO;
+import com.gallery.domain.FanArt_ReplyDTO;
 import com.gallery.domain.SessionInfo;
 import com.gallery.servlet.ModelAndView;
 import com.gallery.util.FileManager;
@@ -41,7 +46,7 @@ public class FanArt_BoardController {
 				current_page = Integer.parseInt(page); 
 			}
 			
-			int size = 10;
+			int size = 9;
 			
 			int dataCount = dao.dataCount();
 			int total_page = util.pageCount(dataCount, size);
@@ -149,10 +154,13 @@ public class FanArt_BoardController {
 			if(dto == null) {
 				return new ModelAndView("redirect:/fanArt_board/list?page="+page);
 			}
-			
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			boolean isUserLike = dao.isUserBoardLike(num, info.getUserId());
 			
 			mav.addObject("dto", dto);
 			mav.addObject("page", page);
+			mav.addObject("isUserLike", isUserLike);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -269,7 +277,171 @@ public class FanArt_BoardController {
 			e.printStackTrace();
 		}
 		
-		
 		return new ModelAndView("redirect:/fanArt_board/list?page="+page);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/fanArt_board/boardLike", method = RequestMethod.POST)
+	public Map<String, Object> insertLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		FanArtDAO dao = new FanArtDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		int boardLikeCount = 0;
+		
+		try {
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			String isNoLike = req.getParameter("isNoLike");
+			
+			if(isNoLike.equals("true")) {
+				dao.insertBoardLike(num, info.getUserId());
+			}  else {
+				dao.deleteBoardLike(num, info.getUserId());
+			}
+			
+			boardLikeCount = dao.countBoardLike(num);
+			
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		map.put("state", state);
+		map.put("boardLikeCount", boardLikeCount);
+		
+		return map;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/fanArt_board/insertReply", method = RequestMethod.POST)
+	public Map<String, Object> insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> map = new HashMap<String, Object>();
+		FanArtDAO dao = new FanArtDAO();
+		
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		
+		try {
+			FanArt_ReplyDTO dto = new FanArt_ReplyDTO();
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			dto.setNum(num);
+			dto.setMember_id(info.getUserId());
+			dto.setContent(req.getParameter("content"));
+			
+			dao.insertReply(dto);
+			
+			state = "true";
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		map.put("state", state);
+		
+		return map;
+	}
+	
+	@RequestMapping(value = "/fanArt_board/listReply", method = RequestMethod.GET)
+	public ModelAndView listReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		//넘어오는 파라미터 : 글번호 [, 페이지 번호]
+		FanArtDAO dao = new FanArtDAO();
+		MyUtil util = new MyUtilBootstrap();
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			String pageNo = req.getParameter("pageNo");
+			int current_page = 1;
+			if(pageNo != null) {
+				current_page = Integer.parseInt(pageNo);
+			}
+			
+			int size = 5;
+			int total_page = 0;
+			int replyCount = 0;
+			
+			replyCount = dao.dataCountReply(num);
+			total_page = util.pageCount(replyCount, size);
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
+			
+			int offset = (current_page -1) * size;
+			if(offset <0) offset = 0;
+			
+			List<FanArt_ReplyDTO> listReply = dao.listReply(num, offset, size);
+			
+			for(FanArt_ReplyDTO dto : listReply) {
+				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+			}
+			// 페이징 : 자바스크립트 함수 listpage 호출
+			String paging = util.pagingMethod(current_page, total_page, "listPage");
+			
+			ModelAndView mav = new ModelAndView("fanArt_board/listReply");
+			
+			mav.addObject("listReply", listReply);
+			mav.addObject("pageNo", current_page);
+			mav.addObject("replyCount", replyCount);
+			mav.addObject("total_page", total_page);
+			mav.addObject("paging", paging);
+			
+			return mav;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			resp.sendError(400);
+			
+			throw e;
+		}
+		
+	}
+	@ResponseBody
+	@RequestMapping(value = "/fanArt_board/insertReplyLike", method = RequestMethod.POST)
+	public Map<String, Object> insertReplyLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		FanArtDAO dao = new FanArtDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		int likeCount = 0;
+	
+		try {
+			long r_num = Long.parseLong(req.getParameter("r_num"));
+			
+			FanArt_ReplyDTO dto = new FanArt_ReplyDTO();
+			dto.setR_num(r_num);
+			dto.setMember_id(info.getUserId());
+			
+			dao.insertReplyLike(dto);
+			
+			likeCount = dao.countReplyLike(r_num);
+			
+			state = "true";
+		} catch (SQLException e) {
+			if(e.getErrorCode() == 1) {
+				state = "liked";
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.put("state", state);
+		model.put("likeCount", likeCount);
+		
+		return model;
 	}
 }

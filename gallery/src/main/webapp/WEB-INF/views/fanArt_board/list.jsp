@@ -29,6 +29,7 @@
 				<div class="body-title">
 					<h3>
 						<i class="bi bi-app"></i> 팬아트
+						<span class="fs-6">${dataCount}개(${page}/${total_page})</span>
 					</h3>
 					<button class="btn btn-secondary float-end py-1" onclick="location.href='${pageContext.request.contextPath}/fanArt_board/write'"> 글올리기</button>
 				</div>
@@ -41,6 +42,9 @@
 								<img src="${pageContext.request.contextPath}/uploads/fanArt/${dto.img}" class="card-img-top">
 								<div class="card-body">
 								<h5 class="card-title">${dto.subject}</h5>
+								<!-- 
+								<p>${dto.hitcount}</p>
+								 -->
 							</div>
 							<div class="card-footer">
 								<small class="text-body-secondary">${dto.reg_date}</small>

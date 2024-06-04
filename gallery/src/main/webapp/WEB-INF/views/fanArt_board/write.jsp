@@ -118,9 +118,13 @@ $(function() {
 				<form name="photoForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">제 목</td>
+							<td class="bg-light col" scope="row">제 목</td>
 							<td>
-								<input type="text" name="subject" class="form-control" value="${dto.subject}">
+								<select name="artistName" class="form-select d-inline" style="max-width: 25% !important;">
+									<option value="PAT">패트</option>
+									<option value="MAT">매트</option>
+								</select>
+								<input type="text" name="subject" class="form-control d-inline" style="max-width: 70% !important;" value="${dto.subject}">
 							</td>
 						</tr>
 	        

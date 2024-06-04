@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.gallery.domain.FanArtDTO;
+import com.gallery.domain.FanArt_ReplyDTO;
 import com.gallery.util.DBConn;
 import com.gallery.util.DBUtil;
 
@@ -48,7 +49,7 @@ public class FanArtDAO {
 		
 		try {
 			sql = "select num, f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img from fanArt f join member1 m on f.member_id=m.member_id "
-					+ " order by num desc offset ? rows fetch first ? rows only ";
+					+ " where notice = 0 order by num desc offset ? rows fetch first ? rows only ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -83,6 +84,42 @@ public class FanArtDAO {
 		return list;
 	}
 	
+	public List<FanArtDTO> noticeList() {
+		List<FanArtDTO> list = new ArrayList<FanArtDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		FanArtDTO dto = null;
+		
+		try {
+			sql = "select f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img from fanArt f join member1 m on f.member_id=m.member_id where notice = 1 order by num desc";
+			
+			pstmt = conn.prepareStatement(sql);
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				dto = new FanArtDTO();
+				
+				dto.setNum(rs.getLong("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				dto.setNotice(rs.getInt("notice"));
+				dto.setSubject(rs.getString("subject"));
+				dto.setContent(rs.getString("content"));
+				dto.setHitcount(rs.getInt("hitcount"));
+				dto.setReg_date(rs.getString("reg_date"));
+				dto.setImg(rs.getString("img"));
+				
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
 	public int dataCount() {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -90,7 +127,7 @@ public class FanArtDAO {
 		String sql;
 		
 		try {
-			sql = "SELECT COUNT(*) FROM fanArt";
+			sql = "SELECT COUNT(*) FROM fanArt where notice = 0";
 			pstmt = conn.prepareStatement(sql);
 			
 			rs = pstmt.executeQuery();
@@ -116,7 +153,8 @@ public class FanArtDAO {
 		String sql;
 		
 		try {
-			sql = "select num, f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img from fanArt f join member1 m on f.member_id=m.member_id where num = ?";
+			sql = "select f.num, f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img, boardLikeCount from fanArt f join member1 m on f.member_id=m.member_id"
+					+ " LEFT OUTER JOIN ( SELECT num, NVL(COUNT(*), 0) boardLikeCount FROM FanArt_Like GROUP BY num ) fl ON f.num = fl.num where f.num = ?";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -135,6 +173,7 @@ public class FanArtDAO {
 				dto.setHitcount(rs.getInt("hitcount"));
 				dto.setReg_date(rs.getString("reg_date"));
 				dto.setImg(rs.getString("img"));
+				dto.setBoardLikeCount(rs.getInt("boardLikeCount"));
 			}
 			
 		} catch (Exception e) {
@@ -208,4 +247,245 @@ public class FanArtDAO {
 		}
 	}
 	
+	public boolean isUserBoardLike(long num, String member_id) {
+		boolean result = false;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT num, member_id FROM FanArt_Like WHERE num = ? AND member_id = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, member_id);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = true;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	public void insertBoardLike(long num, String member_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO FanArt_Like(num, member_id) VALUES (?, ?)";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, member_id);
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
+	public void deleteBoardLike(long num, String member_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "DELETE FROM FanArt_Like WHERE num = ? AND member_id = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setString(2, member_id);
+			
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	public int countBoardLike(long num) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT NVL(COUNT(*), 0) FROM FanArt_Like WHERE num=?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	// 게시물의 댓글 및 답글 추가
+	public void insertReply(FanArt_ReplyDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO FanArt_Reply(r_num, num, member_id, content, reg_date) "
+					+ " VALUES (FanArt_Reply_seq.NEXTVAL, ?, ?, ?, SYSDATE)";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, dto.getNum());
+			pstmt.setString(2, dto.getMember_id());
+			pstmt.setString(3, dto.getContent());
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			DBUtil.close(pstmt);
+		}
+		
+	}
+	
+	public int dataCountReply(long num) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "SELECT NVL(COUNT(*), 0) FROM FanArt_Reply WHERE num = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return result;
+	}
+	
+	public List<FanArt_ReplyDTO> listReply(long num, int offset, int size) {
+		List<FanArt_ReplyDTO> list = new ArrayList<FanArt_ReplyDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		FanArt_ReplyDTO dto = null;
+		String sql;
+		
+		try {
+			sql = "select r.r_num, num, r.member_id, content, r.reg_date, name, likeCount  from FanArt_Reply r join member1 m on r.member_id=m.member_id "
+					+ " LEFT OUTER  JOIN ( SELECT r_num, NVL(COUNT(*), 0) likeCount FROM FanArt_Reply_Like GROUP BY r_num ) b ON r.r_num = b.r_num"
+					+ " where num=? order by r_num desc offset ? rows fetch first ? rows only ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, num);
+			pstmt.setInt(2, offset);
+			pstmt.setInt(3, size);
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				dto = new FanArt_ReplyDTO();
+				
+				dto.setR_num(rs.getLong("r_num"));
+				dto.setNum(rs.getLong("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				dto.setContent(rs.getString("content"));
+				dto.setReg_date(rs.getString("reg_date"));
+				dto.setLikeCount(rs.getInt("likeCount"));
+				
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+			DBUtil.close(rs);
+		}
+		
+		return list;
+	}
+	
+	public void insertReplyLike(FanArt_ReplyDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "INSERT INTO FanArt_Reply_Like(r_num, member_id) VALUES (?, ?)";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, dto.getR_num());
+			pstmt.setString(2, dto.getMember_id());
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			if(e.getErrorCode() == 1) {
+				throw e;
+			}
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}		
+	}
+	
+	public int countReplyLike(long r_num) {
+		int count = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = " SELECT NVL(COUNT(*), 0) likeCount FROM FanArt_Reply_Like WHERE r_num = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, r_num);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				count = rs.getInt("likeCount");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return count;
+	}	
 }
