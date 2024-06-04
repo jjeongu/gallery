@@ -166,7 +166,6 @@ public class Art_BoardController {
 				
 			}
 			dao.insertArt_Board(dto);
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -210,6 +209,10 @@ public class Art_BoardController {
 			Art_BoardDTO prevDto = dao.findByPrev(dto.getNum(), schType, kwd);
 			Art_BoardDTO nextDto = dao.findByNext(dto.getNum(), schType, kwd);
 			
+			// 삭제할수있음
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			boolean isUserLike = dao.isUserArt_BoardLike(num, info.getUserId());
 			
 			ModelAndView mav = new ModelAndView("art_board/article");
 			
@@ -218,6 +221,8 @@ public class Art_BoardController {
 			mav.addObject("query", query);
 			mav.addObject("prevDto", prevDto);
 			mav.addObject("nextDto", nextDto);
+			
+			mav.addObject("isUserLike", isUserLike);
 			
 			return mav;
 		} catch (Exception e) {
@@ -259,7 +264,6 @@ public class Art_BoardController {
 			mav.addObject("mode", "update");
 			
 			return mav;
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -313,7 +317,6 @@ public class Art_BoardController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		
 		return new ModelAndView("redirect:/art_board/list?page=" + page);
 	}
@@ -405,7 +408,7 @@ public class Art_BoardController {
 			if(!info.getUserId().equals(dto.getMember_id()) && !info.getUserId().equals("admin")) {
 				return new ModelAndView("redirect:/art_board/list?" + query);
 			}
-			if (dto.getSaveFilename() != null && dto.getSaveFilename().length()!=0) {
+			if (dto.getSaveFilename() != null && dto.getSaveFilename().length() != 0) {
 				fileManager.doFiledelete(pathname, dto.getSaveFilename());
 			}
 			
@@ -414,7 +417,6 @@ public class Art_BoardController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 		return new ModelAndView("redirect:/art_board/list?" + query);
 	}
 
@@ -535,13 +537,9 @@ public class Art_BoardController {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			resp.sendError(400);
-			
 			throw e;
 		}
-		
 	}
-	
 	@ResponseBody
 	@RequestMapping(value = "/art_board/insertReply", method = RequestMethod.POST)
 	public Map<String, Object> insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -592,9 +590,9 @@ public class Art_BoardController {
 		String state = "false";
 
 		try {
-			long replyNum = Long.parseLong(req.getParameter("replyNum"));
+			long r_num = Long.parseLong(req.getParameter("r_num"));
 
-			dao.deleteReply(replyNum, info.getUserId());
+			dao.deleteReply(r_num , info.getUserId());
 			
 			state = "true";
 		} catch (Exception e) {
@@ -649,6 +647,45 @@ public class Art_BoardController {
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("count", count);
 
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/art_board/insertReplyLike", method = RequestMethod.POST)
+	public Map<String, Object> insertReplyLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Art_BoardDAO dao = new Art_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		int likeCount = 0;
+	
+		try {
+			long r_num = Long.parseLong(req.getParameter("r_num"));
+			
+			Art_Board_ReplyDTO dto = new Art_Board_ReplyDTO();
+			dto.setR_num(r_num);
+			dto.setMember_id(info.getUserId());
+			
+			dao.insertReplyLike(dto);
+			
+			likeCount = dao.countReplyLike(r_num);
+			
+			state = "true";
+		} catch (SQLException e) {
+			if(e.getErrorCode() == 1) {
+				state = "liked";
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.put("state", state);
+		model.put("likeCount", likeCount);
+		
 		return model;
 	}
 	

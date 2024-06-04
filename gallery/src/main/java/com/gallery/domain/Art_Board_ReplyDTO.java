@@ -12,6 +12,7 @@ public class Art_Board_ReplyDTO {
 	
 	private int answerCount;
 	private int likeCount;
+	
 	public long getR_num() {
 		return r_num;
 	}

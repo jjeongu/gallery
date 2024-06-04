@@ -19,7 +19,7 @@
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
-<c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userId=='admin'}">
+<c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
 	<script type="text/javascript">
 		function deleteArt_board() {
 		    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
@@ -296,10 +296,10 @@ $(function(){
 		let page = $(this).attr("data-pageNo");
 		
 		let url = "${pageContext.request.contextPath}/art_board/deleteReply";
-		let query = "r_num="+r_num+"&mode=reply";
+		let query = "r_num="+r_num+"&mode=reply"+"&pageNo=" +page;
+		
 		
 		const fn = function(data){
-			// var state = data.state;
 			listPage(page);
 		};
 		
@@ -389,7 +389,7 @@ $(function(){
 // 댓글별 답글 삭제
 $(function(){
 	$("body").on("click", ".deleteReplyAnswer", function(){
-		if(! confirm("게시물을 삭제하시겠습니까 ? ")) {
+		if(! confirm("댓글을 삭제하시겠습니까 ? ")) {
 		    return false;
 		}
 		
@@ -397,7 +397,7 @@ $(function(){
 		let answer = $(this).attr("data-answer");
 		
 		let url = "${pageContext.request.contextPath}/art_board/deleteReply";
-		let query = "r_Num=" + r_Num;
+		let query = "r_num=" + r_num;
 		
 		const fn = function(data){
 			listReplyAnswer(answer);
@@ -407,7 +407,41 @@ $(function(){
 		ajaxFun(url, "post", query, "json", fn);
 	});
 });
-
+$(function() {
+	$(".reply").on("click", ".btnSendReplyLike", function() {
+		let r_num = $(this).attr("data-r_num");
+		let replyLike = $(this).attr("data-replyLike");
+		const $btn = $(this);
+		
+		let msg = "게시글에 공감하지 않으십니까 ?";
+		if(replyLike === "1"){
+			msg = "게시글에 공감하십니까 ?"
+		}
+		
+		if(! confirm(msg)){
+			return false;
+		}
+		
+		let url = "${pageContext.request.contextPath}/art_board/insertReplyLike";
+		let query = "r_num="+r_num+"&replyLike="+replyLike;
+		
+		const fn = function(data) {
+			let state = data.state;
+			if(state === "true"){
+				let likeCount = data.likeCount;
+				
+				$btn.parent("td").children().eq(0).find("span").html(likeCount);
+			} else if(state = "liked") {
+				alert("게시물 공감 여부는 한번만 가능합니다");
+			} else {
+				alert("게시물 공감 여부 처리가 실패했습니다");
+			}
+		};
+		
+		ajaxFun(url, "post", query, "json", fn);
+		
+	});
+});
 </script>
 
 <footer>
