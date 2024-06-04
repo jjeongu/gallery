@@ -13,7 +13,7 @@
       		<span class="navbar-toggler-icon"></span>
     	</button>
     	<div class="collapse navbar-collapse" id="navbarNavDropdown">
-			<ul class="nav ms-auto">
+			<ul class="navbar-nav nav ms-auto">
 				<li class="nav-item">
 					<a class="nav-link" href="${pageContext.request.contextPath}/notice/list">Notice</a>
         		</li>
@@ -46,7 +46,7 @@
 					<li><hr class="dropdown-divider"></li>
 					<li><a class="dropdown-item" href="#">Q&amp;A</a></li>
 					<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="#">신고</a></li>
+					<li><a class="dropdown-item" href="${pageContext.request.contextPath}/report/list">신고</a></li>
 				</ul>
 				</li>
         		<li class="nav-item">

@@ -11,6 +11,17 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
+.regdate_small {
+		display: none;
+	}
+@media(max-width:800px) {
+	.regdate_large {
+		display: none;
+	}
+	.regdate_small {
+		display: block;
+	}
+}
 .body-container {
 	max-width: 800px;
 }
@@ -28,14 +39,6 @@
 .noticeitem p {
 	margin: 0;
 }
-.page-navigation ul {
-    display: flex;
-    flex-direction: row;
-    padding: 0;
-}
-.page-navigation li {
-    list-style-type: none;
-}
 </style>
 
 </head>
@@ -48,7 +51,7 @@
 <script type="text/javascript">
 	$(function() {
 		$('#checkAll').click(function(){
-			$('input[name=check]').prop('checked', $(this).is(':checked'));
+			$('input[name=check]').prop('checked', $(this).hasClass("active"));
 		});
 		
 		$('#deletebtn').click(function(){
@@ -67,9 +70,17 @@
 		$('.noticeitem input[name=check]').click(function(e){
 			e.stopPropagation();
 		});
+		
+		$('.navbar-toggler').click(function(){
+			if($(this).hasClass("collapsed") === false) {
+				$('.nav-item').parent().find('li:eq(2)').addClass('order-first');
+			} else {
+				$('.nav-item').parent().find('li:eq(2)').removeClass('order-first');
+			}
+		});
 	});
 </script>
-
+ 
 <main>
 	<div class="container">
 		<div class="body-container">	
@@ -85,14 +96,15 @@
 						<c:forEach var="dto" items="${list}" varStatus="status">
 							<div class="noticeitem row p-3 hover"
 							onclick="location.href='${pageContext.request.contextPath}/notice/article?page=${page}&num=${dto.num}&schType=${schType}&kwd=${kwd}';">
-								<div class="col-sm-3 text-center">
+								<div class="col-sm-3 text-center regdate_large">
 									<p class="fs-2">${dto.reg_date.substring(0,4)}년
 									<p class="fs-2">${dto.reg_date.substring(4,6)}월 ${dto.reg_date.substring(6)}일
 								</div>
 								<div class="col-sm-9" style="overflow:hidden;">
 									<p class="fs-4 text-truncate">${dto.subject}
-									<p class="fs-5 text-truncate">${dto.content}
-									<p>조회수 : ${dto.hitcount}
+									<p class="fs-5 text-truncate">${dto.content}<br>
+									<span class="fs-6">조회수 : ${dto.hitcount}</span>
+									<span class="fs-6 regdate_small">작성일 : ${dto.reg_date.substring(0,4)}.${dto.reg_date.substring(4,6)}.${dto.reg_date.substring(6)}</span>
 									<c:if test="${sessionScope.member.userRole==0}">
 										<input type="checkbox" class="form-check-input" value="${dto.num}" name="check">   
 									</c:if>
@@ -104,41 +116,47 @@
 				<div class="page-navigation">
 					${dataCount==0?"등록된 게시글이 없습니다":paging}
 				</div>
-
-				<div class="row board-list-footer">
-					<div class="col">
-						<c:if test="${sessionScope.member.userRole==0}">
-							<input type="checkbox" class="form-check-input" id="checkAll">   
-							<button type="button" class="btn btn-light" id="deletebtn">삭제하기</button>
-						</c:if>
-						<c:if test="${sessionScope.member.userRole!=0}">
-							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/list';"><i class="bi bi-arrow-clockwise"></i></button>
-						</c:if>
-					</div>
-					<div class="col-6 text-center">
-						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/notice/list" method="post">
-							<div class="col-auto p-1">
-								<select name="schType" class="form-select">
-									<option value="all" ${schType=="all"?"selected":""}>제목+내용</option>
-									<option value="reg_date" ${schType=="reg_date"?"selected":""}>등록일</option>
-									<option value="subject" ${schType=="subject"?"selected":""}>제목</option>
-									<option value="content" ${schType=="content"?"selected":""}>내용</option>
-								</select>
-							</div>
-							<div class="col-auto p-1">
-								<input type="text" name="kwd" value="${kwd}" class="form-control">
-							</div>
-							<div class="col-auto p-1">
-								<button type="submit" class="btn btn-light"> <i class="bi bi-search"></i> </button>
-							</div>
-						</form>
-					</div>
-					<div class="col text-end">
-						<c:if test="${sessionScope.member.userRole==0}">
-							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/write';">글올리기</button>
-						</c:if>	
-					</div>
-				</div>
+				<nav class="navbar-transparent navbar-expand-lg border">
+  					<div class="container-fluid">
+    					<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    						버튼
+    					</button>
+    					<div class="collapse navbar-collapse justify-content-center" id="navbarTogglerDemo02">
+      						<ul class="navbar-nav">
+        						<li class="nav-item p-1">
+          							<c:if test="${sessionScope.member.userRole==0}">
+          								<button type="button" class="btn btn-light" id="checkAll" data-bs-toggle="button">전체선택</button>
+									</c:if>
+        						</li>
+        						<li class="nav-item p-1">
+          							<c:if test="${sessionScope.member.userRole==0}">
+										<button type="button" class="btn btn-light" id="deletebtn">삭제하기</button>
+									</c:if>
+        						</li>
+        						<li class="nav-item p-1">
+        							<form class="d-flex" name="searchForm" action="${pageContext.request.contextPath}/notice/list" method="post">
+										<select name="schType" class="form-select">
+											<option value="all" ${schType=="all"?"selected":""}>제목+내용</option>
+											<option value="reg_date" ${schType=="reg_date"?"selected":""}>등록일</option>
+											<option value="subject" ${schType=="subject"?"selected":""}>제목</option>
+											<option value="content" ${schType=="content"?"selected":""}>내용</option>
+										</select>
+										<input type="text" name="kwd" value="${kwd}" class="form-control">
+										<button type="submit" class="btn btn-light"> <i class="bi bi-search"></i> </button>
+      								</form>
+        						</li>
+        						<li class="nav-item p-1">
+        							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/list';">새로고침</button>
+        						</li>
+        						<li class="nav-item p-1">
+          							<c:if test="${sessionScope.member.userRole==0}">
+										<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/notice/write';">글올리기</button>
+									</c:if>
+        						</li>
+      						</ul>
+    					</div>
+  					</div>
+				</nav>
 			</div>
 		</div>
 	</div>

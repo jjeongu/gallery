@@ -21,6 +21,14 @@
 	 font-size: 50px;
 	 padding-bottom: 20px;
 }
+.page-navigation ul {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+}
+.page-navigation li {
+    list-style-type: none;
+}
 </style>
 
 </head>
