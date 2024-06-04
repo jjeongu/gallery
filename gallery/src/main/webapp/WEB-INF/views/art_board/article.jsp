@@ -19,7 +19,7 @@
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
-
+<c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userId=='admin'}">
 	<script type="text/javascript">
 		function deleteArt_board() {
 		    if(confirm("게시글을 삭제 하시 겠습니까 ? ")) {
@@ -29,6 +29,7 @@
 		    }
 		}
 	</script>
+</c:if>
 
 
 </head>
@@ -59,7 +60,7 @@
 					<tbody>
 						<tr>
 							<td width="50%">
-								이름 : ${dto.member_id}
+								이름 : ${dto.name}
 							</td>
 							<td align="right">
 								${dto.reg_date} | 조회 ${dto.hitcount}
@@ -74,7 +75,7 @@
 						
 						<tr>
 							<td colspan="2" class="text-center p-3" style="border-bottom: none;">
-								<button type="button" class="btn btn-outline-secondary btnSendart_boardLike" title="좋아요"><i class="fa-solid fa-heart-circle-plus" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.likeCount}</span></button>
+								<button type="button" class="btn btn-outline-secondary btnSendArt_BoardLike" title="좋아요"><i class="fa-solid fa-heart-circle-plus" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.likeCount}</span></button>
 							</td>
 						</tr>
 						
@@ -205,7 +206,7 @@ function ajaxFun(url, method, formData, dataType, fn, file = false) {
 
 // 게시글 공감 여부
 $(function(){
-	$(".btnSendart_boardLike").click(function(){
+	$(".btnSendArt_BoardLike").click(function(){
 		const $i = $(this).find("i");
 		let isNoLike = $i.css("color") == "rgb(0, 0, 0)";
 		let msg = isNoLike ? "게시글에 공감하십니까 ? " : "게시글 공감을 취소하시겠습니까 ? ";
@@ -214,9 +215,8 @@ $(function(){
 			return false;
 		}
 		
-		let url = "${pageContext.request.contextPath}/art_board/insertart_boardLike";
+		let url = "${pageContext.request.contextPath}/art_board/insertArt_BoardLike";
 		let num = "${dto.num}";
-		// var query = {num:num, isNoLike:isNoLike};
 		let query = "num=" + num + "&isNoLike=" + isNoLike;;
 
 		const fn = function(data) {
@@ -224,7 +224,7 @@ $(function(){
 			if(state === "true") {
 				let color = "black";
 				if( isNoLike ) {
-					color = "blue";
+					color = "red";
 				}
 				$i.css("color", color);
 				
@@ -292,11 +292,11 @@ $(function(){
 		    return false;
 		}
 		
-		let replyNum = $(this).attr("data-replyNum");
+		let r_num = $(this).attr("data-replynum");
 		let page = $(this).attr("data-pageNo");
 		
 		let url = "${pageContext.request.contextPath}/art_board/deleteReply";
-		let query = "replyNum="+replyNum+"&mode=reply";
+		let query = "r_num="+r_num+"&mode=reply";
 		
 		const fn = function(data){
 			// var state = data.state;
@@ -339,7 +339,7 @@ $(function(){
 		const $trReplyAnswer = $(this).closest("tr").next();
 		
 		let isVisible = $trReplyAnswer.is(':visible');
-		let replyNum = $(this).attr("data-replyNum");
+		let r_num = $(this).attr("data-replynum");
 			
 		if(isVisible) {
 			$trReplyAnswer.hide();
@@ -347,10 +347,10 @@ $(function(){
 			$trReplyAnswer.show();
             
 			// 답글 리스트
-			listReplyAnswer(replyNum);
+			listReplyAnswer(r_num);
 			
 			// 답글 개수
-			countReplyAnswer(replyNum);
+			countReplyAnswer(r_num);
 		}
 	});
 });
@@ -359,7 +359,7 @@ $(function(){
 $(function(){
 	$("body").on("click", ".btnSendReplyAnswer", function(){
 		let num = "${dto.num}";
-		let replyNum = $(this).attr("data-replyNum");
+		let r_num = $(this).attr("data-replynum");
 		const $td = $(this).closest("td");
 		
 		let content = $td.find("textarea").val().trim();
@@ -370,15 +370,15 @@ $(function(){
 		content = encodeURIComponent(content);
 		
 		let url = "${pageContext.request.contextPath}/art_board/insertReply";
-		let query = "num=" + num + "&content=" + content + "&answer=" + replyNum;
+		let query = "num=" + num + "&content=" + content + "&answer=" + r_num;
 		
 		const fn = function(data){
 			$td.find("textarea").val("");
 			
 			let state = data.state;
 			if(state === "true") {
-				listReplyAnswer(replyNum);
-				countReplyAnswer(replyNum);
+				listReplyAnswer(r_num);
+				countReplyAnswer(r_num);
 			}
 		};
 		
@@ -393,11 +393,11 @@ $(function(){
 		    return false;
 		}
 		
-		let replyNum = $(this).attr("data-replyNum");
+		let r_num = $(this).attr("data-replynum");
 		let answer = $(this).attr("data-answer");
 		
 		let url = "${pageContext.request.contextPath}/art_board/deleteReply";
-		let query = "replyNum=" + replyNum;
+		let query = "r_Num=" + r_Num;
 		
 		const fn = function(data){
 			listReplyAnswer(answer);

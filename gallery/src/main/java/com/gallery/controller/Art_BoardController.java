@@ -16,6 +16,7 @@ import com.gallery.annotation.RequestMethod;
 import com.gallery.annotation.ResponseBody;
 import com.gallery.dao.Art_BoardDAO;
 import com.gallery.domain.Art_BoardDTO;
+import com.gallery.domain.Art_Board_ReplyDTO;
 import com.gallery.domain.SessionInfo;
 import com.gallery.servlet.ModelAndView;
 import com.gallery.util.FileManager;
@@ -43,7 +44,6 @@ public class Art_BoardController {
 		Art_BoardDAO dao = new Art_BoardDAO();
 		MyUtil util =new MyUtilBootstrap();
 		
-		
 		try {
 			String page = req.getParameter("page");
 			int current_page = 1;
@@ -69,6 +69,7 @@ public class Art_BoardController {
 			} else {
 				dataCount = dao.dataCount(schType, kwd);
 			}
+			
 			
 			int size = 10;
 			int total_page = util.pageCount(dataCount, size);
@@ -480,15 +481,15 @@ public class Art_BoardController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		model.put("state", state);
 		model.put("likeCount", likeCount);
 		
 		return model;
 	}
-	
-	/*
+
 	// 리플 리스트 
-	@RequestMapping(value = "art_board/listReply", method = RequestMethod.GET)
+	@RequestMapping(value = "/art_board/listReply", method = RequestMethod.GET)
 	public ModelAndView listReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		Art_BoardDAO dao = new Art_BoardDAO();
 		MyUtil util = new MyUtilBootstrap();
@@ -505,13 +506,153 @@ public class Art_BoardController {
 			int total_page = 0;
 			int replyCount = 0;
 			
+			replyCount = dao.dataCountReply(num);
+			total_page = util.pageCount(replyCount, size);
+			if(current_page > total_page) {
+				current_page = total_page;
+			}
+			
+			int offset = (current_page -1 ) * size; 
+			if(offset < 0) offset = 0;
+			
+			List<Art_Board_ReplyDTO> listReply = dao.listReply(num, offset, size);
+			
+			for(Art_Board_ReplyDTO dto : listReply) {
+				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+			}
+			
+			String paging = util.pagingMethod(current_page, total_page, "listPage");
+			
+			ModelAndView mav = new ModelAndView("art_board/listReply");
+			
+			mav.addObject("listReply", listReply);
+			mav.addObject("paging", paging);
+			mav.addObject("replyCount", replyCount);
+			mav.addObject("total_page", total_page);
+			mav.addObject("paging", paging);
+			
+			return mav;
 			
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
+			resp.sendError(400);
+			
+			throw e;
 		}
 		
 	}
-*/
+	
+	@ResponseBody
+	@RequestMapping(value = "/art_board/insertReply", method = RequestMethod.POST)
+	public Map<String, Object> insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Art_BoardDAO dao = new Art_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String state = "false";
+		
+		try {
+			Art_Board_ReplyDTO dto = new Art_Board_ReplyDTO();
+			
+			long num = Long.parseLong(req.getParameter("num"));
+			dto.setNum(num);
+			dto.setMember_id(info.getUserId());
+			dto.setContent(req.getParameter("content"));
+			String answer = req.getParameter("answer");
+			if(answer!=null) {
+				dto.setAnswer(Long.parseLong(answer));
+			}
+			dao.insertReply(dto);
+			
+			state = "true";
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.put("state", state);
+		
+		return model;
+	}
+	
+	// 리플 또는 답글 삭제
+	@ResponseBody
+	@RequestMapping(value = "/art_board/deleteReply", method = RequestMethod.POST)
+	public Map<String, Object> deleteReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Art_BoardDAO dao = new Art_BoardDAO();
+
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		String state = "false";
+
+		try {
+			long replyNum = Long.parseLong(req.getParameter("replyNum"));
+
+			dao.deleteReply(replyNum, info.getUserId());
+			
+			state = "true";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		model.put("state", state);
+		
+		return model;
+	}
+
+	// 리플의 답글 리스트 - AJAX:TEXT
+	@RequestMapping(value = "/art_board/listReplyAnswer", method = RequestMethod.GET)
+	public ModelAndView listReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Art_BoardDAO dao = new Art_BoardDAO();
+
+		try {
+			long answer = Long.parseLong(req.getParameter("answer"));
+			
+
+			List<Art_Board_ReplyDTO> listReplyAnswer = dao.listReplyAnswer(answer);
+
+			for (Art_Board_ReplyDTO dto : listReplyAnswer) {
+				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+			}
+
+			ModelAndView mav = new ModelAndView("art_board/listReplyAnswer");
+			mav.addObject("listReplyAnswer", listReplyAnswer);
+
+			return mav;
+		} catch (Exception e) {
+			e.printStackTrace();
+			resp.sendError(400);
+			throw e;
+		}
+	}
+
+	// 리플의 답글 개수 
+	@ResponseBody
+	@RequestMapping(value = "/art_board/countReplyAnswer", method = RequestMethod.POST)
+	public Map<String, Object> countReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Art_BoardDAO dao = new Art_BoardDAO();
+		int count = 0;
+
+		try {
+			long answer = Long.parseLong(req.getParameter("answer"));
+			count = dao.dataCountReplyAnswer(answer);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("count", count);
+
+		return model;
+	}
+	
+
 	
 }
 

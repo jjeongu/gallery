@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 
 <div class='reply-info'>
-	<span class='reply-count'>질문 ${replyCount}개</span>
+	<span class='reply-count'>댓글 ${r_num}개</span>
 	<span>[목록, ${pageNo}/${total_page} 페이지]</span>
 </div>
 
@@ -11,13 +11,13 @@
 	<c:forEach var="vo" items="${listReply}">
 		<tr class='list-header'>
 			<td width='50%'>
-				<span class='bold'>${vo.member_id}</span>
+				<span class='bold'>${vo.name}</span>
 			</td>
 			<td width='50%' align='right'>
 				<span>${vo.reg_date}</span> |
 				<c:choose>
 					<c:when test="${sessionScope.member.userId==vo.member_id || sessionScope.member.userRole==0}">
-						<span class='deleteReply' data-replyNum='${vo.replyNum}' data-pageNo='${pageNo}'>삭제</span>
+						<span class='deleteReply' data-replyNum='${vo.r_num}' data-pageNo='${pageNo}'>삭제</span>
 					</c:when>
 					<c:otherwise>
 						<span class='notifyReply'>신고</span>
@@ -31,7 +31,7 @@
 
 		<tr>
 			<td>
-				<button type='button' class='btn btn-light btnReplyAnswerLayout' data-replyNum='${vo.replyNum}'>답글 <span id="answerCount${vo.replyNum}">${vo.answerCount}</span></button>
+				<button type='button' class='btn btn-light btnReplyAnswerLayout' data-replyNum='${vo.r_num}'>답글 <span id="answerCount${vo.r_num}">${vo.answerCount}</span></button>
 			</td>
 			<td align='right'>
 				&nbsp;
@@ -40,13 +40,13 @@
 	
 	    <tr class='reply-answer'>
 	        <td colspan='2'>
-	            <div id='listReplyAnswer${vo.replyNum}' class='answer-list'></div>
+	            <div id='listReplyAnswer${vo.r_num}' class='answer-list'></div>
 	            <div class="answer-form">
 	                <div class='answer-left'>└</div>
 	                <div class='answer-right'><textarea class='form-control'></textarea></div>
 	            </div>
 	             <div class='answer-footer'>
-	                <button type='button' class='btn btn-light btnSendReplyAnswer' data-replyNum='${vo.replyNum}'>답변 등록</button>
+	                <button type='button' class='btn btn-light btnSendReplyAnswer' data-replyNum='${vo.r_num}'>답변 등록</button>
 	            </div>
 			</td>
 	    </tr>

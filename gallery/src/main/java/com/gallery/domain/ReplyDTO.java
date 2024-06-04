@@ -1,10 +1,10 @@
 package com.gallery.domain;
 
 public class ReplyDTO {
-	private long replyNum;
+	private long r_num;
 	private long num;
-	private String member_Id;
-	private String userName;
+	private String member_id;
+	private String name;
 	private String content;
 	private String reg_date;
 	private long answer;
@@ -14,11 +14,11 @@ public class ReplyDTO {
 	private int likeCount;
 	private int disLikeCount;
 	
-	public long getReplyNum() {
-		return replyNum;
+	public long getr_num() {
+		return r_num;
 	}
-	public void setReplyNum(long replyNum) {
-		this.replyNum = replyNum;
+	public void setr_num(long r_num) {
+		this.r_num = r_num ;
 	}
 	public long getNum() {
 		return num;
@@ -26,17 +26,17 @@ public class ReplyDTO {
 	public void setNum(long num) {
 		this.num = num;
 	}
-	public String getmember_Id() {
-		return member_Id;
+	public String getmember_id() {
+		return member_id;
 	}
-	public void setmember_Id(String member_Id) {
-		this.member_Id = member_Id;
+	public void setmember_id(String member_id) {
+		this.member_id = member_id;
 	}
-	public String getUserName() {
-		return userName;
+	public String getname() {
+		return name;
 	}
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setname(String name) {
+		this.name = name;
 	}
 	public String getContent() {
 		return content;
