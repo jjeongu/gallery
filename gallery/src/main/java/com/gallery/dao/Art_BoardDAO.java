@@ -479,7 +479,7 @@ public class Art_BoardDAO {
 				pstmt.executeUpdate();
 			}
 			
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			throw e;
 		} finally {
@@ -497,7 +497,7 @@ public class Art_BoardDAO {
 		
 		try {
 			sql = "SELECT num, member_id "
-					+ " FORM Art_Board_Like "
+					+ " FROM Art_Board_Like "
 					+ " WHERE num = ? AND member_id = ? ";
 			pstmt = conn.prepareStatement(sql);
 			
@@ -707,7 +707,7 @@ public class Art_BoardDAO {
 		String sql;
 		
 		try {
-			sql = " SELECT r_num, num, r.member_id, userName ,content, r.reg_Date "
+			sql = " SELECT r_num, num, r.member_id, name, content, r.reg_Date "
 					+ " FROM Art_Board_Reply r"
 					+ " JOIN member1 m ON r.member_id = m.member_id "
 					+ " WHERE r_num = ? ";
@@ -743,14 +743,14 @@ public class Art_BoardDAO {
 		PreparedStatement pstmt = null;
 		String sql;
 		
-		if(!member_id.equals("admin")) {
+		if(! member_id.equals("admin")) {
 			Art_Board_ReplyDTO dto = readReply(r_num);
 			if(dto==null || (! member_id.equals(dto.getMember_id()))) {
 				return;
 			}
 		}
 		try {
-			sql ="DELETE FROM Art_Board_Reply "
+			sql ="DELETE FROM Art_Board_Reply_like "
 					+ " WHERE r_Num IN "
 					+ " (SELECT r_Num FROM Art_Board_Reply START WITH r_Num = ?  "
 					+ " CONNECT BY PRIOR r_Num = answer) ";
@@ -760,6 +760,15 @@ public class Art_BoardDAO {
 			pstmt.setLong(1, r_num);
 			
 			pstmt.executeUpdate();
+			DBUtil.close(pstmt);
+			
+			sql ="DELETE FROM Art_Board_Reply where r_num = ?";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, r_num);
+			
+			pstmt.executeUpdate();
+			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -839,5 +848,56 @@ public class Art_BoardDAO {
 			return result;
 		}
 		
+		public void insertReplyLike(Art_Board_ReplyDTO dto) throws SQLException {
+			PreparedStatement pstmt = null;
+			String sql;
+			
+			try {
+				sql = "INSERT INTO Art_Board_Like(r_num, member_id) VALUES (?, ?)";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, dto.getR_num());
+				pstmt.setString(2, dto.getMember_id());
+				
+				pstmt.executeUpdate();
+				
+			} catch (SQLException e) {
+				if(e.getErrorCode() == 1) {
+					throw e;
+				}
+				e.printStackTrace();
+			} finally {
+				DBUtil.close(pstmt);
+			}		
+		}
+		
+		public int countReplyLike(long r_num) {
+			int count = 0;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql;
+			
+			try {
+				sql = " SELECT NVL(COUNT(*), 0) likeCount FROM Art_Board_Reply_Like WHERE r_num = ? ";
+				pstmt = conn.prepareStatement(sql);
+				
+				pstmt.setLong(1, r_num);
+				
+				rs = pstmt.executeQuery();
+				
+				if(rs.next()) {
+					count = rs.getInt("likeCount");
+				}
+				
+			} catch (SQLException e) {
+				e.printStackTrace();
+			} finally {
+				DBUtil.close(rs);
+				DBUtil.close(pstmt);
+			}
+			
+			return count;
+		}	
 	}
+
 

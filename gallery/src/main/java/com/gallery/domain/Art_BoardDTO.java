@@ -9,7 +9,7 @@ public class Art_BoardDTO {
 	private int notice; 	    // 공지여부
 	private String subject;     // 제목
 	private String content;     // 내용
-	private String name;     // 내용
+	private String name;     	// 이름
 	
 	private String saveFilename;	// 저장된파일명
 	private String uploadfilename;	// 업로드 파일명
