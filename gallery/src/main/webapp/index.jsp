@@ -6,14 +6,27 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pat&amp;Mat gallery.</title>
+<title>spring</title>
 
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
 .container img {
-	width: 1000px;
-	height: 600px;
+	width: 80%;
+	animation-duration: 3s;
+  	animation-name: slidein;
+}
+
+@keyframes slidein {
+  from {
+    margin-left: 100%;
+    width: 80%;
+  }
+
+  to {
+    margin-left: 0%;
+    width: 80%;
+  }
 }
 </style>
 </head>
@@ -23,12 +36,10 @@
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
 </header>
 	
-<main class="container row row-cols-2">
-	<div class="col"></div>
-	<div class="col">
+<main class="container p-0" onclick="location.href='${pageContext.request.contextPath}/main'";>
+	<div class="text-center">
 		<img src="${pageContext.request.contextPath}/resources/images/door.png">
 	</div>
-	<div class="col"></div>
 </main>
 
 <footer>

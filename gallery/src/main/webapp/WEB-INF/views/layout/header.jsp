@@ -6,7 +6,7 @@
 
 <nav class="navbar navbar-expand-lg bg-transparent">
 	<div class="container-fluid">
-		<a class="navbar-brand" href="${pageContext.request.contextPath}/main">
+		<a class="navbar-brand" href="${pageContext.request.contextPath}/index.jsp">
 			<img src="${pageContext.request.contextPath}/resources/images/logo.png" style="width: 200px; height: 70px;">
 		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">

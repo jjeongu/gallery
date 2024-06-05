@@ -61,11 +61,11 @@ $(function() {
 	<div class="container">
 		<div class="body-container">	
 
-	        <div class="row">
-	            <div class="col-md-6 offset-md-3">
+	        <div class="row justify-content-center">
+	            <div class="col">
 	                <div class="border mt-5 p-4">
 	                    <form name="loginForm" action="" method="post" class="row g-3">
-	                        <h3 class="text-center"><i class="bi bi-lock"></i> 회원 로그인</h3>
+	                        <h3 class="text-center"><img src="${pageContext.request.contextPath}/resources/images/logo.png"></h3>
 	                        <div class="col-12">
 	                            <label class="mb-1">아이디</label>
 	                            <input type="text" name="userId" class="form-control" placeholder="아이디">
@@ -82,23 +82,16 @@ $(function() {
 	                            </div>
 	                        </div>
 	                        <div class="col-12">
-	                            <button type="button" class="btn btn-primary float-end" onclick="sendLogin();">&nbsp;Login&nbsp;<i class="bi bi-check2"></i></button>
+	                        	 <button type="button" class="btn btn-warning w-100" onclick="sendLogin();">Login</button>
+	                        </div>
+	                        <div class="col-12">
+	                            <button type="button" class="btn btn-danger w-100" onclick="location.href='${pageContext.request.contextPath}/member/member'">Sign in</button>
 	                        </div>
 	                    </form>
-	                    <hr class="mt-4">
-	                    <div class="col-12">
-	                        <p class="text-center mb-0">
-	                        	<a href="#" class="text-decoration-none me-2">아이디 찾기</a>
-	                        	<a href="#" class="text-decoration-none me-2">패스워드 찾기</a>
-	                        	<a href="${pageContext.request.contextPath}/member/member" class="text-decoration-none">회원가입</a>
-	                        </p>
-	                    </div>
 	                </div>
-
 	                <div class="d-grid">
 							<p class="form-control-plaintext text-center text-primary">${message}</p>
 	                </div>
-
 	            </div>
 	        </div>
 
