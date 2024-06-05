@@ -17,6 +17,13 @@
 
 </style>
 
+<script type="text/javascript">
+function searchList() {
+	const f = document.searchForm;
+	f.submit();
+}
+</script>
+
 </head>
 <body>
 
@@ -64,7 +71,7 @@
 						<div class="col">
 							<div class="card h-100" onclick="location.href='${articleUrl}&num=${dto.num}'">
 								<img src="${pageContext.request.contextPath}/uploads/fanArt/${dto.img}" class="card-img-top">
-								<div class="card-body">[${dto.artName}에게] ${dto.name} 작성.
+								<div class="card-body"><c:if test="${not empty dto.artName}">[${dto.artName}에게]</c:if> ${dto.name} 작성.
 								<h5 class="card-title">${dto.subject}</h5>
 								<!-- 
 								<p>${dto.hitcount}</p>
@@ -81,6 +88,32 @@
 				</div>
 				<div class="page-navigation">
 					${dataCount == 0 ? "등록된 게시물이 없습니다." : paging}
+				</div>
+				
+				<div>
+				<div class="row board-list-footer position-relative">
+					<div class="col">
+						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/fanArt_board/list';"><i class="bi bi-arrow-clockwise"></i></button>
+					</div>
+					<div class="col-auto text-center position-absolute start-50 translate-middle-x">
+						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/fanArt_board/list" method="post">
+							<div class="col-auto p-1">
+								<select name="schType" class="form-select">
+									<option value="artist" ${schType=="artist"?"selected":""}>아티스트</option>
+									<option value="name" ${schType=="name"?"selected":""}>작성자</option>
+									<option value="reg_date" ${schType=="reg_date"?"selected":""}>등록일</option>
+									<option value="subject" ${schType=="subject"?"selected":""}>제목</option>
+								</select>
+							</div>
+							<div class="col-auto p-1">
+								<input type="text" name="kwd" value="${kwd}" class="form-control">
+							</div>
+							<div class="col-auto p-1">
+								<button type="button" class="btn btn-light" onclick="searchList()"> <i class="bi bi-search"></i> </button>
+							</div>
+						</form>
+					</div>
+				</div>
 				</div>
 			</div>
 		</div>

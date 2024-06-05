@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.gallery.domain.FanArtDTO;
 import com.gallery.domain.FanArt_ReplyDTO;
-import com.gallery.domain.MemberDTO;
 import com.gallery.util.DBConn;
 import com.gallery.util.DBUtil;
 
@@ -88,6 +87,63 @@ public class FanArtDAO {
 		return list;
 	}
 	
+	public List<FanArtDTO> list(int offset, int size, String schType, String kwd) {
+		List<FanArtDTO> list = new ArrayList<FanArtDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		FanArtDTO dto = null;
+		StringBuilder sb= new StringBuilder();
+		
+		try {
+			// 작성자 m.name, 아티스트 art.name
+			if(schType.equals("artist")) schType = "art.name";
+			if(schType.equals("name")) schType = "m.name";
+			
+			sb.append(" select num, f.member_id, m.name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img, artist, art.name artname from fanArt f ");
+			sb.append(" join member1 m on f.member_id=m.member_id left outer join member1 art on f.artist=art.member_id where notice = 0 ");
+			
+			if (schType.equals("reg_date")) {
+				kwd = kwd.replaceAll("(\\-|\\/|\\.)", "");
+				sb.append(" AND TO_CHAR(f.reg_date, 'YYYYMMDD') = ? ");
+			} else {
+				sb.append(" AND INSTR(" + schType + ", ?) >= 1 ");
+			}
+			sb.append(" order by num desc offset ? rows fetch first ? rows only");
+
+			pstmt = conn.prepareStatement(sb.toString());
+			
+			pstmt.setString(1, kwd);
+			pstmt.setInt(2, offset);
+			pstmt.setInt(3, size);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				dto = new FanArtDTO();
+				
+				dto.setNum(rs.getLong("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				dto.setNotice(rs.getInt("notice"));
+				dto.setSubject(rs.getString("subject"));
+				dto.setContent(rs.getString("content"));
+				dto.setHitcount(rs.getInt("hitcount"));
+				dto.setReg_date(rs.getString("reg_date"));
+				dto.setImg(rs.getString("img"));
+				dto.setArtist(rs.getString("artist"));
+				dto.setArtName(rs.getString("artname"));
+				
+				list.add(dto);
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return list;
+	}
+	
 	public List<FanArtDTO> noticeList() {
 		List<FanArtDTO> list = new ArrayList<FanArtDTO>();
 		PreparedStatement pstmt = null;
@@ -147,6 +203,45 @@ public class FanArtDAO {
 			DBUtil.close(pstmt);
 		}
 		
+		return result;
+	}
+	
+	public int dataCount(String schType, String kwd) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+
+		try {
+			// 작성자 m.name, 아티스트 art.name
+			if(schType.equals("artist")) schType = "art.name";
+			if(schType.equals("name")) schType = "m.name";
+			
+			sql = " SELECT COUNT(*) FROM fanArt f JOIN member1 m ON f.member_id = m.member_id left outer join member1 art on f.artist=art.member_id WHERE notice = 0 ";
+			if (schType.equals("reg_date")) {
+				kwd = kwd.replaceAll("(\\-|\\/|\\.)", "");
+				sql += "  AND TO_CHAR(f.reg_date, 'YYYYMMDD') = ? ";
+			} else {
+				sql += "  AND INSTR(" + schType + ", ?) >= 1 ";
+			}
+
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setString(1, kwd);
+
+			rs = pstmt.executeQuery();
+			
+			if (rs.next()) {
+				result = rs.getInt(1);
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+
 		return result;
 	}
 	
@@ -573,35 +668,4 @@ public class FanArtDAO {
 		return count;
 	}
 	
-	public List<MemberDTO> artistList() {
-		List<MemberDTO> list = new ArrayList<>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
-		
-		try {
-			sql = "select member_id, name from member1 where member_id in(select member_id from art)";
-			
-			pstmt = conn.prepareStatement(sql);
-			
-			rs = pstmt.executeQuery();
-			
-			while (rs.next()) {
-				MemberDTO dto = new MemberDTO();
-				
-				dto.setUserId(rs.getString("member_id"));
-				dto.setName(rs.getString("name"));
-				
-				list.add(dto);
-			}
-			
-		} catch (Exception e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.close(rs);
-			DBUtil.close(pstmt);
-		}
-		
-		return list;
-	}
 }

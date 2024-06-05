@@ -2,6 +2,8 @@ package com.gallery.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -12,6 +14,7 @@ import com.gallery.annotation.RequestMapping;
 import com.gallery.annotation.RequestMethod;
 import com.gallery.annotation.ResponseBody;
 import com.gallery.dao.FanArtDAO;
+import com.gallery.dao.MemberDAO;
 import com.gallery.domain.FanArtDTO;
 import com.gallery.domain.FanArt_ReplyDTO;
 import com.gallery.domain.MemberDTO;
@@ -49,7 +52,25 @@ public class FanArt_BoardController {
 			
 			int size = 9;
 			
-			int dataCount = dao.dataCount();
+			String schType = req.getParameter("schType");
+			String kwd = req.getParameter("kwd");
+			if (schType == null) {
+				schType = "artist";
+				kwd = "";
+			}
+
+			// GET 방식인 경우 디코딩
+			if (req.getMethod().equalsIgnoreCase("GET")) {
+				kwd = URLDecoder.decode(kwd, "utf-8");
+			}
+
+			int dataCount;
+			if (kwd.length() == 0) {
+				dataCount = dao.dataCount();
+			} else {
+				dataCount = dao.dataCount(schType, kwd);
+			}
+			
 			int total_page = util.pageCount(dataCount, size);
 			if(current_page > total_page) {
 				current_page = total_page;
@@ -58,14 +79,32 @@ public class FanArt_BoardController {
 			int offset = (current_page - 1) * size;
 			if(offset < 0) offset = 0;
 
-			List<FanArtDTO> list = dao.list(offset, size);
-			List<FanArtDTO> noticeList = dao.noticeList();
+			List<FanArtDTO> list = null;
+			if (kwd.length() == 0) {
+				list = dao.list(offset, size);
+			} else {
+				list = dao.list(offset, size, schType, kwd);
+			}
+			
+			String query = "";
+			if (kwd.length() != 0) {
+				query = "schType=" + schType + "&kwd=" + URLEncoder.encode(kwd, "utf-8");
+			}
+			
 			
 			String cp = req.getContextPath();
 			String listUrl = cp + "/fanArt_board/list";
 			String articleUrl = cp + "/fanArt_board/article?page="+current_page;
+			
+			if (query.length() != 0) {
+				listUrl += "?" + query;
+				articleUrl += "&" + query;
+			}
+			
 			String paging = util.paging(current_page, total_page, listUrl);
 			
+			List<FanArtDTO> noticeList = dao.noticeList();
+
 			mav.addObject("noticeList", noticeList);
 			mav.addObject("list", list);
 			mav.addObject("dataCount", dataCount);
@@ -73,6 +112,8 @@ public class FanArt_BoardController {
 			mav.addObject("page", current_page);
 			mav.addObject("total_page", total_page);
 			mav.addObject("paging", paging);
+			mav.addObject("schType", schType);
+			mav.addObject("kwd", kwd);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -92,7 +133,7 @@ public class FanArt_BoardController {
 			return new ModelAndView("redirect:/fanArt_board/list");
 		}
 		
-		FanArtDAO dao = new FanArtDAO();
+		MemberDAO dao = new MemberDAO();
 		List<MemberDTO> list = dao.artistList();
 		
 		model.addObject("mode", "write");
@@ -204,7 +245,8 @@ public class FanArt_BoardController {
 				return new ModelAndView("redirect:/fanAat_borad/list?page="+page);
 			}
 			
-			List<MemberDTO> list = dao.artistList();
+			MemberDAO dao2 = new MemberDAO();
+			List<MemberDTO> list = dao2.artistList();
 			
 			mav.addObject("dto", dto);
 			mav.addObject("page", page);

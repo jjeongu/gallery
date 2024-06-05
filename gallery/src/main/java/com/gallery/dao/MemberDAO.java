@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.gallery.domain.MemberDTO;
 import com.gallery.util.DBConn;
@@ -167,5 +169,37 @@ public class MemberDAO {
 		} finally {
 			DBUtil.close(pstmt);
 		}
+	}
+	
+	public List<MemberDTO> artistList() {
+		List<MemberDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "select member_id, name from member1 where member_id in(select member_id from art)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				MemberDTO dto = new MemberDTO();
+				
+				dto.setUserId(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return list;
 	}
 }
