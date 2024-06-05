@@ -14,6 +14,7 @@ import com.gallery.annotation.ResponseBody;
 import com.gallery.dao.FanArtDAO;
 import com.gallery.domain.FanArtDTO;
 import com.gallery.domain.FanArt_ReplyDTO;
+import com.gallery.domain.MemberDTO;
 import com.gallery.domain.SessionInfo;
 import com.gallery.servlet.ModelAndView;
 import com.gallery.util.FileManager;
@@ -58,12 +59,14 @@ public class FanArt_BoardController {
 			if(offset < 0) offset = 0;
 
 			List<FanArtDTO> list = dao.list(offset, size);
+			List<FanArtDTO> noticeList = dao.noticeList();
 			
 			String cp = req.getContextPath();
 			String listUrl = cp + "/fanArt_board/list";
 			String articleUrl = cp + "/fanArt_board/article?page="+current_page;
 			String paging = util.paging(current_page, total_page, listUrl);
 			
+			mav.addObject("noticeList", noticeList);
 			mav.addObject("list", list);
 			mav.addObject("dataCount", dataCount);
 			mav.addObject("articleUrl", articleUrl);
@@ -82,7 +85,18 @@ public class FanArt_BoardController {
 	public ModelAndView writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		ModelAndView model = new ModelAndView("fanArt_board/write");
 		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		if(info.getUserRole() == 1) {
+			return new ModelAndView("redirect:/fanArt_board/list");
+		}
+		
+		FanArtDAO dao = new FanArtDAO();
+		List<MemberDTO> list = dao.artistList();
+		
 		model.addObject("mode", "write");
+		model.addObject("list", list);
 		
 		return model;
 	}
@@ -100,10 +114,11 @@ public class FanArt_BoardController {
 		
 		FanArtDAO dao = new FanArtDAO();
 		
-		String subject = req.getParameter("subject");
-		String content = req.getParameter("content");
 		
 		try {
+			String subject = req.getParameter("subject");
+			String content = req.getParameter("content");
+			String artist = req.getParameter("artist");
 			FanArtDTO dto = new FanArtDTO();
 			
 			int notice = 0;
@@ -115,6 +130,7 @@ public class FanArt_BoardController {
 			dto.setSubject(subject);
 			dto.setContent(content);
 			dto.setNotice(notice);
+			dto.setArtist(artist);
 			
 			String filename = null;
 			Part p = req.getPart("selectFile");
@@ -188,9 +204,12 @@ public class FanArt_BoardController {
 				return new ModelAndView("redirect:/fanAat_borad/list?page="+page);
 			}
 			
+			List<MemberDTO> list = dao.artistList();
+			
 			mav.addObject("dto", dto);
 			mav.addObject("page", page);
 			mav.addObject("mode", "update");
+			mav.addObject("list", list);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -226,6 +245,7 @@ public class FanArt_BoardController {
 			dto.setNotice(notice);
 			String img = req.getParameter("img");
 			dto.setImg(img);
+			dto.setArtist(req.getParameter("artist"));
 			
 			Part p = req.getPart("selectFile");
 			MyMultipartFile multipart = fileManager.doFileUpload(p, path);
@@ -444,4 +464,36 @@ public class FanArt_BoardController {
 		
 		return model;
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/fanArt_board/deleteReply", method = RequestMethod.POST)
+	public Map<String, Object> deleteReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		FanArtDAO dao = new FanArtDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo  info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		
+		try {
+			long r_num = Long.parseLong(req.getParameter("r_num"));
+			FanArt_ReplyDTO dto = dao.findByReply(r_num);
+			
+			if(info.getUserRole() == 0 || dto.getMember_id().equals(info.getUserId())) {
+				dao.deleteReply(r_num);
+				
+				state = "true";
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.put("state", state);
+		
+		return model;
+	}
+	
 }

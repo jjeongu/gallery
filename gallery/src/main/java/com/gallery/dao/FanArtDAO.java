@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.gallery.domain.FanArtDTO;
 import com.gallery.domain.FanArt_ReplyDTO;
+import com.gallery.domain.MemberDTO;
 import com.gallery.util.DBConn;
 import com.gallery.util.DBUtil;
 
@@ -21,7 +22,7 @@ public class FanArtDAO {
 		
 		try {
 			
-			sql = "insert into FanArt(num, member_id, notice, subject, content, hitcount, reg_date, img) values(FanArt_seq.nextval, ?, ?, ?, ?, 0, sysdate, ?)";
+			sql = "insert into FanArt(num, member_id, notice, subject, content, hitcount, reg_date, img, artist) values(FanArt_seq.nextval, ?, ?, ?, ?, 0, sysdate, ?, ?)";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getMember_id());
@@ -29,6 +30,7 @@ public class FanArtDAO {
 			pstmt.setString(3, dto.getSubject());
 			pstmt.setString(4, dto.getContent());
 			pstmt.setString(5, dto.getImg());
+			pstmt.setString(6, dto.getArtist());
 			
 			pstmt.executeUpdate();
 			
@@ -48,8 +50,8 @@ public class FanArtDAO {
 		String sql;
 		
 		try {
-			sql = "select num, f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img from fanArt f join member1 m on f.member_id=m.member_id "
-					+ " where notice = 0 order by num desc offset ? rows fetch first ? rows only ";
+			sql = "select num, f.member_id, m.name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img, artist, m2.name artname from fanArt f join member1 m on f.member_id=m.member_id "
+					+ " left outer join member1 m2 on f.artist=m2.member_id where notice = 0 order by num desc offset ? rows fetch first ? rows only ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -70,6 +72,8 @@ public class FanArtDAO {
 				dto.setHitcount(rs.getInt("hitcount"));
 				dto.setReg_date(rs.getString("reg_date"));
 				dto.setImg(rs.getString("img"));
+				dto.setArtist(rs.getString("artist"));
+				dto.setArtName(rs.getString("artname"));
 				
 				list.add(dto);
 			}
@@ -92,7 +96,7 @@ public class FanArtDAO {
 		FanArtDTO dto = null;
 		
 		try {
-			sql = "select f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img from fanArt f join member1 m on f.member_id=m.member_id where notice = 1 order by num desc";
+			sql = "select num, f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img from fanArt f join member1 m on f.member_id=m.member_id where notice = 1 order by num desc";
 			
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();
@@ -153,8 +157,8 @@ public class FanArtDAO {
 		String sql;
 		
 		try {
-			sql = "select f.num, f.member_id, name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img, boardLikeCount from fanArt f join member1 m on f.member_id=m.member_id"
-					+ " LEFT OUTER JOIN ( SELECT num, NVL(COUNT(*), 0) boardLikeCount FROM FanArt_Like GROUP BY num ) fl ON f.num = fl.num where f.num = ?";
+			sql = "select f.num, f.member_id, m.name, notice, subject, content, hitcount, to_char(f.reg_date, 'YYYY-MM-DD HH24:mm:dd') reg_date, img, NVL(boardLikeCount, 0) boardLikeCount, artist, m2.name artname from fanArt f join member1 m on f.member_id=m.member_id "
+					+ "  left outer join member1 m2 on f.artist=m2.member_id LEFT OUTER JOIN ( SELECT num, NVL(COUNT(*), 0) boardLikeCount FROM FanArt_Like GROUP BY num ) fl ON f.num = fl.num where f.num = ?";
 			
 			pstmt = conn.prepareStatement(sql);
 			
@@ -174,6 +178,8 @@ public class FanArtDAO {
 				dto.setReg_date(rs.getString("reg_date"));
 				dto.setImg(rs.getString("img"));
 				dto.setBoardLikeCount(rs.getInt("boardLikeCount"));
+				dto.setArtist(rs.getString("artist"));
+				dto.setArtName(rs.getString("artname"));
 			}
 			
 		} catch (Exception e) {
@@ -191,14 +197,15 @@ public class FanArtDAO {
 		String sql;
 
 		try {
-			sql = "update fanArt set subject = ?, content = ?, img = ?, notice = ? where num = ?";
+			sql = "update fanArt set subject = ?, content = ?, img = ?, notice = ?, artist=? where num = ?";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, dto.getSubject());
 			pstmt.setString(2, dto.getContent());
 			pstmt.setString(3, dto.getImg());
 			pstmt.setInt(4, dto.getNotice());
-			pstmt.setLong(5, dto.getNum());
+			pstmt.setString(5, dto.getArtist());
+			pstmt.setLong(6, dto.getNum());
 			
 			pstmt.executeUpdate();
 			
@@ -214,6 +221,28 @@ public class FanArtDAO {
 		String sql;
 		
 		try {
+			
+			// 해당 글에 달린 댓글의 좋아요 삭제 
+			sql = " delete from FanArt_Reply_Like l WHERE r_num IN (select r_num FROM FanArt_Reply where num = ?)";
+			
+			pstmt= conn.prepareStatement(sql);
+			pstmt.setLong(1, num);
+			pstmt.executeUpdate();
+			
+			DBUtil.close(pstmt);
+			
+			
+			// 글에 달린 댓글 삭제
+			sql = "delete FROM FanArt_Reply r WHERE r.num IN  (SELECT num FROM fanArt f START WITH r.num = ? CONNECT BY PRIOR r.num = f.num)";
+			
+			pstmt= conn.prepareStatement(sql);
+			pstmt.setLong(1, num);
+			pstmt.executeUpdate();
+			
+			DBUtil.close(pstmt);
+			
+			
+			//글 삭제
 			sql = "delete fanArt where num = ?";
 			
 			pstmt= conn.prepareStatement(sql);
@@ -364,9 +393,64 @@ public class FanArtDAO {
 		} finally {
 			DBUtil.close(pstmt);
 		}
-		
 	}
 	
+	public void deleteReply(long r_num) {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = "delete from FanArt_Reply_Like where r_num = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, r_num);
+			pstmt.executeUpdate();
+			
+			DBUtil.close(pstmt);
+			
+			sql = "delete from FanArt_Reply where r_num = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, r_num);
+			pstmt.executeUpdate();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
+	public FanArt_ReplyDTO findByReply(long r_num) {
+		FanArt_ReplyDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "select r_num, num, r.member_id, name, content, r.reg_date from FanArt_Reply r join member1 m on r.member_id = m.member_id where r_num = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setLong(1, r_num);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new FanArt_ReplyDTO();
+				
+				dto.setR_num(rs.getLong("r_num"));
+				dto.setNum(rs.getLong("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				dto.setContent(rs.getString("content"));
+				dto.setReg_date(rs.getString("reg_date"));
+			}
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return dto;
+	}
 	public int dataCountReply(long num) {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -487,5 +571,37 @@ public class FanArtDAO {
 		}
 		
 		return count;
-	}	
+	}
+	
+	public List<MemberDTO> artistList() {
+		List<MemberDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "select member_id, name from member1 where member_id in(select member_id from art)";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				MemberDTO dto = new MemberDTO();
+				
+				dto.setUserId(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return list;
+	}
 }

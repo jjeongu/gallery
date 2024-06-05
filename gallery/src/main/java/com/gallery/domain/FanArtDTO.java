@@ -10,6 +10,8 @@ public class FanArtDTO {
 	private String content;
 	private String img;
 	private String name;
+	private String artist;
+	private String artName;
 	
 	private int replyCount;
 	private int boardLikeCount;
@@ -79,6 +81,18 @@ public class FanArtDTO {
 	}
 	public void setBoardLikeCount(int boardLikeCount) {
 		this.boardLikeCount = boardLikeCount;
+	}
+	public String getArtist() {
+		return artist;
+	}
+	public void setArtist(String artist) {
+		this.artist = artist;
+	}
+	public String getArtName() {
+		return artName;
+	}
+	public void setArtName(String artName) {
+		this.artName = artName;
 	}
 	
 	

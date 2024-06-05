@@ -48,6 +48,7 @@
 					<thead>
 						<tr>
 							<td colspan="2" align="center">
+								<c:if test="${not empty dto.artName}">[${dto.artName}에게]</c:if>
 								${dto.subject}
 							</td>
 						</tr>

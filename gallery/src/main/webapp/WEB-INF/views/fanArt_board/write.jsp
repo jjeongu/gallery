@@ -120,14 +120,27 @@ $(function() {
 						<tr>
 							<td class="bg-light col" scope="row">제 목</td>
 							<td>
-								<select name="artistName" class="form-select d-inline" style="max-width: 25% !important;">
-									<option value="PAT">패트</option>
-									<option value="MAT">매트</option>
+								<select name="artist" class="form-select d-inline" style="max-width: 25% !important;">
+								<c:if test="${sessionScope.member.userRole==0}">
+									<option value="">공지</option>
+								</c:if>
+								<c:forEach var="art" items="${list}">
+									<option value="${art.userId}" ${art.userId eq dto.artist ? "selected":""}>${art.name}</option>
+								</c:forEach>
 								</select>
 								<input type="text" name="subject" class="form-control d-inline" style="max-width: 70% !important;" value="${dto.subject}">
 							</td>
 						</tr>
-	        
+	        			
+	        			<c:if test="${sessionScope.member.userRole==0}">
+	        			<tr>
+							<td class="bg-light col-sm-2" scope="row">공지여부</td>
+							<td>
+								<input type="checkbox" class="form-check-input" name="notice" id="notice" value="1" ${dto.notice==1 ? "checked ":"" } >
+								<label class="form-check-label" for="notice"> 공지</label>
+							</td>
+						</tr>
+	        			</c:if>
 						<tr>
 							<td class="bg-light col-sm-2" scope="row">작성자명</td>
 	 						<td>
