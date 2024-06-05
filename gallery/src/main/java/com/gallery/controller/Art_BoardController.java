@@ -528,7 +528,7 @@ public class Art_BoardController {
 			ModelAndView mav = new ModelAndView("art_board/listReply");
 			
 			mav.addObject("listReply", listReply);
-			mav.addObject("paging", paging);
+			mav.addObject("pageNo", current_page);
 			mav.addObject("replyCount", replyCount);
 			mav.addObject("total_page", total_page);
 			mav.addObject("paging", paging);
@@ -540,6 +540,7 @@ public class Art_BoardController {
 			throw e;
 		}
 	}
+	
 	@ResponseBody
 	@RequestMapping(value = "/art_board/insertReply", method = RequestMethod.POST)
 	public Map<String, Object> insertReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
