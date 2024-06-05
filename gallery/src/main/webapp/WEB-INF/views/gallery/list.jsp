@@ -19,27 +19,19 @@
 .body-title {
 	text-align: center;	
 }
-
-
-
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/main.css">
 
 </head>
-<body>
+<body class="is-preload">
 
 <header>
 	<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
 </header>
 	
 <main>
-
-
-
 	<div class="container" id="wrapper">
 		<section id="main">
-		
-
 						<!-- Items -->
 							<div class="items">
 

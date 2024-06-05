@@ -417,7 +417,7 @@ public class Fan_BoardDAO {
 						pstmt.setString(3, kwd);
 					}
 				} else {
-					sb.append(" SELECT num, subject FROM art_board ");
+					sb.append(" SELECT num, subject FROM fan_board ");
 					sb.append(" WHERE num < ? ");
 					sb.append(" ORDER BY num DESC ");
 					sb.append(" FETCH FIRST 1 ROWS ONLY ");
