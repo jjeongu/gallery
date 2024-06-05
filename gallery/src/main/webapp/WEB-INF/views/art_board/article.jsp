@@ -430,7 +430,7 @@ $(function() {
 			if(state === "true"){
 				let likeCount = data.likeCount;
 				
-				$btn.parent("td").children().eq(0).find("span").html(likeCount);
+				$btn.parent("td").children().eq(1).find("span").html(likeCount);
 			} else if(state = "liked") {
 				alert("게시물 공감 여부는 한번만 가능합니다");
 			} else {
