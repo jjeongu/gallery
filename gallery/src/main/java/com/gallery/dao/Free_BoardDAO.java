@@ -115,6 +115,48 @@ public class Free_BoardDAO {
 	}
 	
 	// 리스트
+	public List<Free_BoardDTO> listFree_Board() {
+		List<Free_BoardDTO> list = new ArrayList<Free_BoardDTO>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		Free_BoardDTO dto = null;
+		String sql;
+		
+		try {
+			sql = " select num, f.member_id, subject, "
+					+ " hitCount, to_char(f.reg_date, 'YYYY-MM-DD') reg_date"
+					+ " from free_board f "
+					+ " join member1 m on f.member_id=m.member_id "
+					+ " where notice = 1 order by num desc ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				dto = new Free_BoardDTO();
+				
+				dto.setNum(rs.getInt("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setSubject(rs.getString("subject"));
+				dto.setHitcount(rs.getInt("hitCount"));
+				dto.setReg_date(rs.getString("reg_date"));
+				
+				list.add(dto);
+			}
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return list;
+	}
+	
+	
 	public List<Free_BoardDTO> listFree_Board(int offset, int size) {
 		List<Free_BoardDTO> list = new ArrayList<Free_BoardDTO>();
 		PreparedStatement pstmt = null;
@@ -248,7 +290,7 @@ public class Free_BoardDAO {
 		
 		try {
 			sql = " select f.num, f.member_id, hitCount, f.reg_date, subject, content,"
-					+ " saveFileName, uploadFileName, fileSize "
+					+ " saveFileName, uploadFileName, fileSize, notice "
 					+ " from free_board f  "
 					+ " join member1 m on f.member_id = m.member_id"
 					+ " where f.num = ? ";
@@ -270,6 +312,7 @@ public class Free_BoardDAO {
 				dto.setSaveFileName(rs.getString("saveFileName"));
 				dto.setUploadFileName(rs.getString("uploadFileName"));
 				dto.setFileSize(rs.getLong("fileSize"));
+				dto.setNotice(rs.getInt("notice"));
 				
 			}
 			
@@ -410,13 +453,17 @@ public class Free_BoardDAO {
 		String sql;
 
 		try {
-			sql = "UPDATE free_board SET subject=?, content=? WHERE num=? AND member_id=?";
+			sql = "UPDATE free_board SET subject=?, content=?, saveFilename=?, uploadFilename=?, filesize=? "
+					+ " WHERE num=? AND member_id=? ";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getSubject());
 			pstmt.setString(2, dto.getContent());
-			pstmt.setLong(3, dto.getNum());
-			pstmt.setString(4, dto.getMember_id());
+			pstmt.setString(3, dto.getSaveFileName());
+			pstmt.setString(4, dto.getUploadFileName());
+			pstmt.setLong(5, dto.getFileSize());
+			pstmt.setLong(6, dto.getNum());
+			pstmt.setString(7, dto.getMember_id());
 			
 			pstmt.executeUpdate();
 
@@ -460,6 +507,7 @@ public class Free_BoardDAO {
 		}
 	}
 	
+	// 게시글 공감 확인
 	public boolean isUserFree_boardLike(long num, String member_id) {
 		boolean result = false;
 		PreparedStatement pstmt = null;
@@ -490,6 +538,7 @@ public class Free_BoardDAO {
 		
 	}
 	
+	// 공감 추가
 	public void insertFree_board_like(long num, String member_id) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
@@ -512,6 +561,7 @@ public class Free_BoardDAO {
 		}
 	}
 	
+	// 공감 삭제
 	public void deleteFree_board_like(long num, String member_id) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
@@ -532,7 +582,9 @@ public class Free_BoardDAO {
 		}
 	}
 	
-	public int  countFree_board_Like(int num) {
+	
+	// 게시글 공감 개수
+	public int countFree_board_Like(long num) {
 		int result = 0;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -559,18 +611,21 @@ public class Free_BoardDAO {
 		return result;
 	}
 	
+	// 게시물의 댓글 및 답글 추가
 	public void insertReply(Free_Board_ReplyDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
 		
 		try {
-			sql = " insert into free_board_reply(r_num, num, content, reg_date) "
-					+ " values(free_board_reply_seq.NEXTVAL, ?, ?, sysdate) ";
+			sql = " insert into free_board_reply(r_num, num, content, reg_date, member_id, answer) "
+					+ " values(free_board_reply_seq.NEXTVAL, ?, ?, sysdate, ?, ?) ";
 			
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setLong(1, dto.getNum());
 			pstmt.setString(2, dto.getContent());
+			pstmt.setString(3, dto.getMember_id());
+			pstmt.setLong(4, dto.getAnswer());
 			
 			pstmt.executeUpdate();
 			
@@ -582,6 +637,7 @@ public class Free_BoardDAO {
 		}
 	}
 	
+	// 게시글 댓글 개수
 	public int dataCountReply(long num) {
 		int result = 0;
 		PreparedStatement pstmt = null;
@@ -591,7 +647,7 @@ public class Free_BoardDAO {
 		try {
 			sql = "SELECT NVL(COUNT(*), 0) "
 					+ " FROM free_board_reply "
-					+ " WHERE num = ?";
+					+ " WHERE num = ? AND answer = 0 ";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setLong(1, num);
@@ -611,6 +667,7 @@ public class Free_BoardDAO {
 		return result;
 	}
 	
+	// 게시글 댓글 리스트
 	public List<Free_Board_ReplyDTO> listReply(long num, int offset, int size) {
 		List<Free_Board_ReplyDTO> list = new ArrayList<>();
 		PreparedStatement pstmt = null;
@@ -618,10 +675,10 @@ public class Free_BoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" select r_num, num, content, reg_date, f.member_id ");
+			sb.append(" select r_num, f.member_id, num, content, f.reg_date, f.member_id ");
 			sb.append(" from free_board_reply f ");
 			sb.append(" join member1 m on f.member_id = m.member_id ");
-			sb.append(" where num = ? ");
+			sb.append(" where num = ? AND f.answer=0 ");
 			sb.append(" ORDER BY r_num DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 			
@@ -638,6 +695,7 @@ public class Free_BoardDAO {
 				
 				dto.setR_num(rs.getInt("r_num"));
 				dto.setNum(rs.getInt("num"));
+				dto.setMember_id(rs.getString("member_id"));
 				dto.setContent(rs.getString("content"));
 				dto.setReg_date(rs.getString("reg_date"));
 				
@@ -655,4 +713,143 @@ public class Free_BoardDAO {
 		
 		return list;
 	}	
+	
+	public Free_Board_ReplyDTO readReply(int r_num) {
+		Free_Board_ReplyDTO dto = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = " select r_num, num, f.member_id, content, reg_date"
+					+ " from free_board_reply f"
+					+ " join member1 m on f.member_id = m.member_id"
+					+ " where r_num = ? ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, r_num);
+			
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				dto = new Free_Board_ReplyDTO();
+				
+				dto.setR_num(rs.getInt("r_num"));
+				dto.setNum(rs.getInt("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setContent(rs.getString("content"));
+				dto.setReg_date(rs.getString("reg_date"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return dto;
+	}
+	
+	// 댓글 삭제
+	public void deleteReply(int r_num, String member_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		if(! member_id.equals("admin")) {
+			Free_Board_ReplyDTO dto = readReply(r_num);
+			if(dto == null || (! member_id.equals(dto.getMember_id()))) {
+				return;
+			}
+		}
+		
+		try {
+			sql = " delete from free_board_reply "
+					+ " where r_num in "
+					+ " (select r_num from free_board_reply start with r_num =? "
+					+ " CONNECT BY PRIOR r_num = answer) ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setInt(1, r_num);
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw e;
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
+	public List<Free_Board_ReplyDTO> listReplyAnswer(long answer) {
+		List<Free_Board_ReplyDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = " select r_num, num, f.member_id, content, f.reg_date, answer "
+					+ " from free_board_reply f "
+					+ " join member1 m on f.member_id = m.member_id "
+					+ " where answer = ? "
+					+ " order by r_num ";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, answer);;
+			
+			rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				Free_Board_ReplyDTO dto = new Free_Board_ReplyDTO();
+				
+				dto.setR_num(rs.getInt("r_num"));
+				dto.setNum(rs.getInt("num"));
+				dto.setMember_id(rs.getString("member_id"));
+				dto.setContent(rs.getString("content"));
+				dto.setReg_date(rs.getString("reg_date"));
+				dto.setAnswer(rs.getLong("answer"));
+				
+				list.add(dto);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return list;
+	}
+	
+	
+	public int dataCountReplyAnswer(long answer) {
+		int result = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = " select nvl(count(*),0) from free_board_reply where answer = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, answer);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				result = rs.getInt(1);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return result;
+	}
 }

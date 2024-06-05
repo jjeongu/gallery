@@ -2,6 +2,7 @@ package com.gallery.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -82,6 +83,14 @@ public class Free_BoardController {
 				list = dao.listFree_Board(offset, size, schType, kwd);
 			}
 			
+			
+			// 공지사항 리스트 가져오기
+			List<Free_BoardDTO> listFree_Board = null;
+			if (current_page == 1) {
+			    listFree_Board = dao.listFree_Board();
+			}
+
+			
 			String query = "";
 			if (kwd.length() != 0) {
 				query = "schType=" + schType + "&kwd=" + URLEncoder.encode(kwd, "utf-8");
@@ -106,6 +115,8 @@ public class Free_BoardController {
 			mav.addObject("paging", paging);
 			mav.addObject("schType", schType);
 			mav.addObject("kwd", kwd);
+			
+			mav.addObject("listFree_Board", listFree_Board);
 			
 	
 		} catch (Exception e) {
@@ -291,6 +302,54 @@ public class Free_BoardController {
 		return new ModelAndView("redirect:/free_board/list?page=" + page);
 	}
 	
+	@RequestMapping(value = "/free_board/deleteFile")
+	public ModelAndView deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		FileManager fileManager = new FileManager();
+		
+		String root = session.getServletContext().getRealPath("/");
+		String pathname = root + "uploads" + File.separator + "free_board";
+		
+		String page = req.getParameter("page");
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			Free_BoardDTO dto = dao.findById(num);
+			if(dto == null) {
+				return new ModelAndView("redirect:/free_board/list");
+			}
+			
+			if (!info.getUserId().equals(dto.getMember_id())) {
+				return new ModelAndView("redirect:/free_board/list");
+			}
+			
+			fileManager.doFiledelete(pathname, dto.getSaveFileName());
+			
+			dto.setUploadFileName("");
+			dto.setSaveFileName("");
+			dto.setFileSize(0);
+			dao.updateFree_board(dto);
+			
+			ModelAndView mav = new ModelAndView("free_board/write");
+			
+			mav.addObject("dto", dto);
+			mav.addObject("page", page);
+			
+			mav.addObject("mode", "update");
+			
+			return mav;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/free_board/list?page=" + page);
+	}
+	
 	// 삭제
 	@RequestMapping(value = "/free_board/delete", method = RequestMethod.GET)
 	public ModelAndView delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -325,6 +384,75 @@ public class Free_BoardController {
 		return new ModelAndView("redirect:/free_board/list?" + query);
 	}
 	
+	@RequestMapping(value = "/free_board/download")
+	public void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Free_BoardDAO dao = new Free_BoardDAO();
+		HttpSession session = req.getSession();
+		
+		FileManager fileManager = new FileManager();
+		
+		String root = session.getServletContext().getRealPath("/");
+		String pathname = root + "uploads" + File.separator + "free_board";
+		
+		boolean b = false;
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+
+			Free_BoardDTO dto = dao.findById(num);
+			if(dto != null) {
+				b = fileManager.doFiledownload(dto.getSaveFileName(), dto.getUploadFileName(), pathname, resp);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		if ( ! b ) {
+			resp.setContentType("text/html;charset=utf-8");
+			PrintWriter out = resp.getWriter();
+			out.print("<script>alert('파일다운로드가 실패 했습니다.');history.back();</script>");
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/free_board/insertFree_board_Like", method = RequestMethod.POST)
+	// 게시글 공감 저장
+	public Map<String, Object> insertFree_board_Like(HttpServletRequest req, HttpServletResponse resp)throws ServletException, IOException {
+		
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		long free_board_like = 0;
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			String isNoLike = req.getParameter("isNoLike");
+			
+			if(isNoLike.equals("true")) {
+				dao.insertFree_board_like(num, info.getUserId());
+			} else {
+				dao.deleteFree_board_like(num, info.getUserId());
+			}
+			
+			free_board_like = dao.countFree_board_Like(num);
+			
+			state = "true";
+			
+			
+		} catch (Exception e) {
+		}
+		
+		model.put("state", state);
+		model.put("free_board_like", free_board_like);
+		
+		return model;
+	}
+	
 	// 댓글 저장
 	@ResponseBody
 	@RequestMapping(value = "/free_board/insertReply", method = RequestMethod.POST)
@@ -343,7 +471,12 @@ public class Free_BoardController {
 			
 			int num = Integer.parseInt(req.getParameter("num"));
 			dto.setNum(num);
+			dto.setMember_id(info.getUserId());
 			dto.setContent(req.getParameter("content"));
+			String answer = req.getParameter("answer");
+			if(answer != null) {
+				dto.setAnswer(Long.parseLong(answer));
+			}
 			
 			dao.insertReply(dto);
 			
@@ -408,6 +541,75 @@ public class Free_BoardController {
 			e.printStackTrace();
 			throw e;
 		}
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/free_board/deleteReply", method = RequestMethod.POST)
+	public Map<String, Object> deleteReply(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		String state = "false";
+
+		try {
+			int r_num = Integer.parseInt(req.getParameter("r_num"));
+
+			dao.deleteReply(r_num, info.getUserId());
+			
+			state = "true";
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		model.put("state", state);
+
+		return model;
+	}
+	
+	@RequestMapping(value = "/free_board/listReplyAnswer", method = RequestMethod.GET)
+	public ModelAndView listReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		try {
+			long answer = Long.parseLong(req.getParameter("answer"));
+
+			List<Free_Board_ReplyDTO> listReplyAnswer = dao.listReplyAnswer(answer);
+			
+			for(Free_Board_ReplyDTO dto : listReplyAnswer) {
+				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+			}
+			
+			ModelAndView mav = new ModelAndView("free_board/listReplyAnswer");
+			mav.addObject("listReplyAnswer", listReplyAnswer);
+			
+			return mav;
+		} catch (Exception e) {
+			e.printStackTrace();
+			resp.sendError(400);
+			throw e;
+		}
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/free_board/countReplyAnswer", method = RequestMethod.POST)
+	public Map<String, Object> countReplyAnswer(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Free_BoardDAO dao = new Free_BoardDAO();
+		int count = 0;
+		
+		try {
+			long answer = Long.parseLong(req.getParameter("answer"));
+			count = dao.dataCountReplyAnswer(answer);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		Map<String, Object> model = new HashMap<String, Object>();
+		model.put("count", count);
+		
+		return model;
 	}
 	
 }

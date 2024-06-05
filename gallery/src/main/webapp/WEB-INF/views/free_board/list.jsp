@@ -14,6 +14,14 @@
 .body-container {
 	max-width: 800px;
 }
+.page-navigation ul {
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+}
+.page-navigation li {
+    list-style-type: none;
+}
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -58,15 +66,19 @@ function searchList() {
 					</thead>
 					
 					<tbody>
+			
+							
 						<c:forEach var="dto" items="${list}" varStatus="status">
 							<tr>
 								<td>${dataCount - (page-1) * size - status.index}</td>
 								<td class="left">
+									<c:if test="${dto.notice == 1}"><span class="badge bg-primary">공지</span></c:if>
 									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.subject}</a>
 								</td>
-								<td>${dto.member_id}</td>
+								<td>${dto.member_id}</td>	
 								<td>${dto.reg_date}</td>
 								<td>${dto.hitcount}</td>
+								
 							</tr>
 						</c:forEach>
 					</tbody>

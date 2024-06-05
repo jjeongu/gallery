@@ -18,7 +18,7 @@
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
-<c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userId=='admin'}">
+<c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
 	<script type="text/javascript">
 		function deleteBoard() {
 		    if(confirm("게시글을 삭제할거임 ? ")) {
@@ -249,6 +249,8 @@ function listPage(page) {
 	let selector = "#listReply";
 	
 	const fn = function(data){
+		console.log(data);
+		
 		$(selector).html(data);
 	};
 	ajaxFun(url, "get", query, "text", fn);
@@ -273,6 +275,8 @@ $(function(){
 			$tb.find("textarea").val("");
 			
 			let state = data.state;
+			console.log(state);
+			
 			if(state === "true") {
 				listPage(1);
 			} else if(state === "false") {
@@ -291,11 +295,11 @@ $(function(){
 		    return false;
 		}
 		
-		let replyNum = $(this).attr("data-replyNum");
+		let r_num = $(this).attr("data-replyNum");
 		let page = $(this).attr("data-pageNo");
 		
 		let url = "${pageContext.request.contextPath}/free_board/deleteReply";
-		let query = "replyNum="+replyNum+"&mode=reply";
+		let query = "r_num="+r_num+"&mode=reply";
 		
 		const fn = function(data){
 			// var state = data.state;
@@ -313,6 +317,7 @@ function listReplyAnswer(answer) {
 	let selector = "#listReplyAnswer" + answer;
 	
 	const fn = function(data){
+		console.log(data);
 		$(selector).html(data);
 	};
 	ajaxFun(url, "get", query, "text", fn);
@@ -393,11 +398,11 @@ $(function(){
 		    return false;
 		}
 		
-		let replyNum = $(this).attr("data-replyNum");
+		let r_num = $(this).attr("data-replyNum");
 		let answer = $(this).attr("data-answer");
 		
 		let url = "${pageContext.request.contextPath}/free_board/deleteReply";
-		let query = "replyNum=" + replyNum;
+		let query = "r_num=" + r_num;
 		
 		const fn = function(data){
 			listReplyAnswer(answer);

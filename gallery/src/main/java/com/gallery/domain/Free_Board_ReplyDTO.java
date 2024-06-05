@@ -6,7 +6,21 @@ public class Free_Board_ReplyDTO {
 	private int num;
 	private String content;
 	private String reg_date;
+	private String member_id;
+	private long answer;
 	
+	public String getMember_id() {
+		return member_id;
+	}
+	public void setMember_id(String member_id) {
+		this.member_id = member_id;
+	}
+	public long getAnswer() {
+		return answer;
+	}
+	public void setAnswer(long answer) {
+		this.answer = answer;
+	}
 	public int getR_num() {
 		return r_num;
 	}

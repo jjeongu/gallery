@@ -69,16 +69,30 @@ public class FaqController {
 		return new ModelAndView("redirect:/faq/list");
 	}
 	
+	@RequestMapping(value = "/faq/update", method = RequestMethod.GET)
 	public ModelAndView updateForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		/*
+		
 		FaqDAO dao = new FaqDAO();
 		
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
-		*/
+		
 		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			FAQDTO dto = dao.findById(num);
+			
+			if(dto==null) {
+				return new ModelAndView("redirect:/faq/list");
+			}
+			
+			if(! dto.getMember_id().equals(info.getUserId())) {
+				return new ModelAndView("redirect:/faq/list");
+			}
+			
+			
 			ModelAndView mav = new ModelAndView("faq/write");
 			
+			mav.addObject("dto", dto);
 			mav.addObject("mode", "update");
 
 			return mav;
@@ -88,5 +102,50 @@ public class FaqController {
 		
 		return new ModelAndView("redirect:/faq/list");
 
+	}
+
+	@RequestMapping(value = "/faq/update", method = RequestMethod.POST)
+	public ModelAndView updateSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		FaqDAO dao = new FaqDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		try {
+			
+			FAQDTO dto = new FAQDTO();
+			
+			dto.setNum(Long.parseLong(req.getParameter("num")));
+			dto.setSubject(req.getParameter("subject"));
+			dto.setContent(req.getParameter("content"));
+			
+			dto.setMember_id(info.getUserId());
+			
+			dao.updateFaq(dto);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/faq/list");
+	}
+	
+	@RequestMapping(value = "/faq/delete", method = RequestMethod.GET )
+	public ModelAndView delete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		
+		FaqDAO dao = new FaqDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			
+			dao.deleteFaq(num, info.getUserId());
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/faq/list");
 	}
 }

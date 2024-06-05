@@ -20,7 +20,25 @@
  margin-top: 15px;
 }
 
+
 </style>
+
+<c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
+<script type="text/javascript">
+	function deleteFaq(num) {
+		if(confirm("게시글 삭제 갈겨~~~~")){
+			let query = "num="+num;
+			let url = "${pageContext.request.contextPath}/faq/delete?" + query;
+			location.href = url;
+		}
+	}
+	
+	function updateFaq(num) {
+		
+	}
+</script>
+
+</c:if>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
@@ -48,8 +66,19 @@
 						<div id="collapse-${status.index}" class="accordion-collapse collapse" aria-labelledby="heading-${status.index}" data-parent="#accordionPanelsStayOpenExample">
 							<div class="accordion-body">
 								${dto.content}
-								<button type="button" class="btn btn-light" onclick="location.href='#';">수정</button>
-								<button type="button" class="btn btn-light" onclick="location.href='#';">삭제</button>
+								
+								<c:choose>
+									<c:when test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
+										<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/faq/update?num=${dto.num}';">수정</button>
+									</c:when>
+								</c:choose>
+								
+								<c:choose>
+									<c:when test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
+										<button type="button" class="btn btn-light" onclick="deleteFaq(${dto.num});">삭제</button>
+									</c:when>
+								</c:choose>
+								
 							</div>
 						</div>
 					</div>

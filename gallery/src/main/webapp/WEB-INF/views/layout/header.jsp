@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 
-
+<iframe style="display: none;" src="https://www.youtube.com/embed/r2ko422xW0w?autoplay=1" title="지능이 떨어지는 브금" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 <nav class="navbar navbar-expand-lg bg-transparent">
 	<div class="container-fluid">
@@ -112,13 +112,13 @@
 	<div class="modal fade" id="loginModal" tabindex="-1" data-bs-keyboard="false" 
 			aria-labelledby="loginModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header justify-content-center">
+			<div class="modal-content border=primary border-5" style="border-radius: 50%;">
+				<div class="modal-header justify-content-center" style="border-bottom-color: transparent;">
 					<img src="${pageContext.request.contextPath}/resources/images/logo.png">
 				</div>
 				<div class="modal-body">
 	                <div class="p-3">
-	                    <form name="modelLoginForm" action="" method="post" class="row g-3">
+	                    <form name="modelLoginForm" action="" method="post" class="row g-3 justify-content-center">
 	                    	<div class="mt-0">
 	                    		 <p class="form-control-plaintext">로그인 후 이용하실 수 있습니다</p>
 	                    	</div>
@@ -134,11 +134,13 @@
 	                                <label class="form-check-label" for="rememberMeModel"> 아이디 저장</label>
 	                            </div>
 	                        </div>
-	                        <div>
-	                            <button type="button" class="btn btn-warning w-100" onclick="sendModelLogin();">Login</button>
-	                        </div>
-	                        <div>
-	                            <button type="button" class="btn btn-danger w-100" onclick="location.href='${pageContext.request.contextPath}/member/member'">Sign in</button>
+	                        <div class="p-0 row row-cols-2 justify-content-center" style="width: 200px; height: 75px;">
+	                        	<div class="col align-self-center w-50 h-100">
+		                            <button type="button" class="w-100 h-100 border" onclick="sendModelLogin();" style="border: none; border-radius: 50%; background: #ffc107;">Login</button>
+	                        	</div>
+	                        	<div class="col align-self-center w-50 h-100">
+		                            <button type="button" class="w-100 h-100 border" onclick="location.href='${pageContext.request.contextPath}/member/member'" style="border: none; border-radius: 50%; background: #dc3545;">Sign in</button>
+	                        	</div>
 	                        </div>
 	                    </form>
 	                </div>
