@@ -19,6 +19,9 @@
 .body-title {
 	text-align: center;	
 }
+
+
+
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/assets/css/main.css">
 
@@ -42,7 +45,7 @@
 
 								<div class="item intro span-2">
 									<h1>Parallelism</h1>
-									<p>A responsive portfolio site<br />
+									<p>A responsive portfolio site<br/>
 									template by KYJ</p>
 									
 								</div>
@@ -77,9 +80,12 @@
 					</section>
 					 <div class="col-auto">
 				   		<c:if test="${sessionScope.member.userId=='admin'}">
-				   			<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/gallery/write';">사진올리기</button>
+				   			<button type="button" class="btn btn-light" style="background: #ffffff;" onclick="location.href='${pageContext.request.contextPath}/gallery/write';">작품 등록</button>
 				   		</c:if>
 				   </div>
+
+						
+
 
 				<!-- Footer -->
 					<section id="footer">
@@ -102,7 +108,7 @@
 					</section>
 					
 					
-					
+				
 					
 					
 

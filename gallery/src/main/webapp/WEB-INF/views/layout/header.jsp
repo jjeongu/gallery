@@ -31,7 +31,7 @@
             			<li><hr class="dropdown-divider"></li>
            				<li><a class="dropdown-item" href="${pageContext.request.contextPath}/fanArt_board/list">팬아트 게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
-            			<li><a class="dropdown-item" href="#">팬 게시판</a></li>
+            			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/fan_board/list">팬 게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
             			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/art_board/list">작가 게시판</a></li>
 					</ul>

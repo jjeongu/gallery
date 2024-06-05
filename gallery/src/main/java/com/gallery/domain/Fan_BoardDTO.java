@@ -2,20 +2,28 @@ package com.gallery.domain;
 
 public class Fan_BoardDTO {
 
-	private int num;
+	private long num;
 	private String member_id;
 	private int notice;
 	private int hitcount;
-	private int reg_date;	
+	private String reg_date;	
 	private String subject;
-	private String content;
+	private String content; 
+	private String name;     
 	private String nickname;
 	
+	private String saveFilename;
+	private String uploadfilename;
+	private long fileSize;
 	
-	public int getNum() {
+	private int likeCount;
+	
+	
+	
+	public long getNum() {
 		return num;
 	}
-	public void setNum(int num) {
+	public void setNum(long num) {
 		this.num = num;
 	}
 	public String getMember_id() {
@@ -36,10 +44,10 @@ public class Fan_BoardDTO {
 	public void setHitcount(int hitcount) {
 		this.hitcount = hitcount;
 	}
-	public int getReg_date() {
+	public String getReg_date() {
 		return reg_date;
 	}
-	public void setReg_date(int reg_date) {
+	public void setReg_date(String reg_date) {
 		this.reg_date = reg_date;
 	}
 	public String getSubject() {
@@ -59,6 +67,36 @@ public class Fan_BoardDTO {
 	}
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
+	}
+	public String getUploadfilename() {
+		return uploadfilename;
+	}
+	public void setUploadfilename(String uploadfilename) {
+		this.uploadfilename = uploadfilename;
+	}
+	public long getFileSize() {
+		return fileSize;
+	}
+	public void setFileSize(long filesize) {
+		this.fileSize = filesize;
+	}
+	public String getSaveFilename() {
+		return saveFilename;
+	}
+	public void setSaveFilename(String saveFilename) {
+		this.saveFilename = saveFilename;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public int getLikeCount() {
+		return likeCount;
+	}
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
 	}
 	
 	
