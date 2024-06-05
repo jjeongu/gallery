@@ -45,7 +45,7 @@ function check() {
 		if( !confirm("파일을 삭제하시겠습니까 ?") ) {
 			return;
 		}
-		let url = "${pageContext.request.contextPath}/art_board/deleteFile?num=" + num ;
+		let url = "${pageContext.request.contextPath}/art_board/deleteFile?num=" + num+"&page="+${page} ;
 		location.href = url;
 	}
 </c:if>
