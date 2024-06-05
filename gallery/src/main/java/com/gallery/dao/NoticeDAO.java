@@ -450,8 +450,6 @@ public class NoticeDAO {
 			DBUtil.close(pstmt);
 			pstmt=null;
 			
-			deleteNoticeFile(dto.getNum());
-			
 			sb=new StringBuilder();
 			sb.append(" INSERT INTO NOTICEFILE(FILENUM, NUM, SAVEFILENAME, UPLOADFILENAME) ");
 			sb.append(" VALUES(NOTICEFILE_SEQ.NEXTVAL, ?, ?, ?) ");
@@ -477,6 +475,23 @@ public class NoticeDAO {
 			sb.append(" DELETE FROM NOTICE WHERE NUM=? ");
 			pstmt=conn.prepareStatement(sb.toString());
 			pstmt.setLong(1, num);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+
+	public void deleteNoticeFile(long num, long filenum) {
+		PreparedStatement pstmt=null;
+		StringBuilder sb=new StringBuilder();
+		
+		try {
+			sb.append(" DELETE FROM NOTICEFILE WHERE NUM=? AND FILENUM=?");
+			pstmt=conn.prepareStatement(sb.toString());
+			pstmt.setLong(1, num);
+			pstmt.setLong(2, filenum);
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();
