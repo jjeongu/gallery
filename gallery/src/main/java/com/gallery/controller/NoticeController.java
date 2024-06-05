@@ -269,6 +269,45 @@ public class NoticeController {
 		return new ModelAndView("redirect:/notice/article?page="+page+"&num="+num+"&schType="+schType+"&kwd="+kwd);
 	}
 	
+	@RequestMapping(value = "/notice/deleteFile", method = RequestMethod.GET)
+	public ModelAndView deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		// 수정에서 파일 삭제
+		// 넘어온 파라미터 : 글번호, 파일번호, page, size
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String root = session.getServletContext().getRealPath("/");
+		String pathname = root + "uploads" + File.separator + "notice";
+		
+		String page = req.getParameter("page");
+		String size = req.getParameter("size");
+		
+		NoticeDAO dao = new NoticeDAO();
+		FileManager fileManager = new FileManager();
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			long fileNum = Long.parseLong(req.getParameter("fileNum"));
+			
+			NoticeDTO dto = dao.findByFileId(fileNum);
+			if(dto != null) {
+				// 파일 지우기
+				fileManager.doFiledelete(pathname, dto.getSaveFilename());
+				
+				// 테이블의 파일 정보 지우기
+				dao.deleteNoticeFile(num, fileNum);
+			}
+			
+			// 다시 수정화면으로
+			return new ModelAndView("redirect:/notice/update?num="+num+"&page="+page+"&size="+size);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/notice/list");
+	}
+	
 	@RequestMapping(value="/notice/delete", method=RequestMethod.GET)
 	public ModelAndView deleteNotice(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// parameters : num, page [, schType, kwd]
