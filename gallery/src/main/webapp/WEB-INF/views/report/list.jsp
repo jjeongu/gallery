@@ -18,7 +18,6 @@
 	text-align: center;
 }
 .body-title h3 {
-	 font-size: 50px;
 	 padding-bottom: 20px;
 }
 .page-navigation ul {
@@ -29,7 +28,9 @@
 .page-navigation li {
     list-style-type: none;
 }
-
+h3 {
+	font-family: DNFBitBitv2;
+}
 </style>
 
 </head>
@@ -42,10 +43,7 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
-				<h3><i class="bi bi-exclamation-triangle"></i></i> 신고 </h3>
-			</div>
-			
+				<h3 class="border-bottom border-danger border-3"><i class="bi bi-exclamation-triangle"></i></i> 신고 </h3>
 			<div class="body-main">
 				<c:if test="${sessionScope.member.userRole!=0}">
 					<div class="alert alert-danger" role="alert">

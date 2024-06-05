@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 
 <div class="container-fluid p-0" style="background: lightgray;">
-	<div style="background-color: black; color: white; height: 300px;">
+	<div style="background-color: black; color: white; min-height: 100px;">
 		<ul class="nav justify-content-center p-3">
 		 	<li class="nav-item"><span>&nbsp;&middot;&nbsp;</span></li>
 	        <li class="nav-item">서울 마포구 월드컵북로 21 풍성빌딩 c호</li>

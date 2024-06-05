@@ -523,6 +523,7 @@ public class Art_BoardController {
 			
 			for(Art_Board_ReplyDTO dto : listReply) {
 				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+				dto.setContent(dto.getContent().replaceAll(" ", "&nbsp;"));
 			}
 			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
@@ -565,6 +566,7 @@ public class Art_BoardController {
 			long num = Long.parseLong(req.getParameter("num"));
 			dto.setNum(num);
 			dto.setMember_id(info.getUserId());
+			
 			dto.setContent(req.getParameter("content"));
 			String answer = req.getParameter("answer");
 			if(answer!=null) {
@@ -623,6 +625,7 @@ public class Art_BoardController {
 
 			for (Art_Board_ReplyDTO dto : listReplyAnswer) {
 				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+				dto.setContent(dto.getContent().replaceAll(" ", "&nbsp;"));
 			}
 
 			ModelAndView mav = new ModelAndView("art_board/listReplyAnswer");

@@ -20,7 +20,7 @@
 .introduce {
 	text-align: center;
 	font-size: 80px;
-	font-family: DNFBitBitv2;
+	font-family: LOTTERIACHAB;
 }
 #context {
 	font-size: 30px;

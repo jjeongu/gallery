@@ -33,6 +33,9 @@
 .page-navigation li {
     list-style-type: none;
 }
+h3 {
+	font-family: DNFBitBitv2;
+}
 </style>
 
 <c:import url="/WEB-INF/views/layout/staticHeader.jsp"/>
@@ -62,8 +65,8 @@ function searchList() {
 <main>
 	<div class="container">
 		<div class="body-container">
-			<div >
-				<h3 class="border-bottom border-danger border-3"><i class="fa-solid fa-comment-dots"></i> ARTIST BOARD </h3>
+			 <div>
+				<h3 class="border-bottom border-danger border-3"><i class="fa-solid fa-comment-dots"></i> 작가 게시판 </h3>
 			</div>
 			
 			<div class="body-main">
@@ -73,7 +76,7 @@ function searchList() {
 		   		</div>				
 				
 				<table class="table table-hover board-list">
-					<thead class="table-light">
+					<thead class="table-warning">
 						<tr>
 							<th class="num">번호</th>
 							<th class="subject">제목</th>

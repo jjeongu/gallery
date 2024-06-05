@@ -124,11 +124,9 @@ public class Free_BoardController {
 		}
 		
 		return mav;
-		
 		  
 	}
 
-	
 	// 글 쓰기
 	@RequestMapping(value = "/free_board/write", method = RequestMethod.GET)
 	public ModelAndView writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

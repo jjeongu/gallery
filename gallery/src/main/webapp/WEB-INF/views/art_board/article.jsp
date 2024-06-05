@@ -42,10 +42,7 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
-				<h3 class="border-bottom border-danger border-3"><i class="fa-solid fa-comment-dots"></i> ARTIST BOARD </h3>
-			</div>
-			
+				<h3 class="border-bottom border-danger border-3"><i class="fa-solid fa-comment-dots"></i> 작가 게시판 </h3>
 			<div class="body-main">
 				
 				<table class="table table-article">

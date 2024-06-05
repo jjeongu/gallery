@@ -25,7 +25,7 @@
         		</li>
         		<li class="nav-item dropdown">
        				<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
-       				 aria-expanded="false" href="${pageContext.request.contextPath}/community/list">Community</a>
+       				 aria-expanded="false" href="#">Community</a>
 					<ul class="dropdown-menu dropdown-menu-warning">
             			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/free_board/list">자유게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
