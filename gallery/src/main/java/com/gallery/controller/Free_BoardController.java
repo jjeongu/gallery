@@ -116,6 +116,7 @@ public class Free_BoardController {
 			mav.addObject("schType", schType);
 			mav.addObject("kwd", kwd);
 			
+			
 			mav.addObject("listFree_Board", listFree_Board);
 			
 	
@@ -124,9 +125,11 @@ public class Free_BoardController {
 		}
 		
 		return mav;
+		
 		  
 	}
 
+	
 	// 글 쓰기
 	@RequestMapping(value = "/free_board/write", method = RequestMethod.GET)
 	public ModelAndView writeForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -160,6 +163,12 @@ public class Free_BoardController {
 			
 			dto.setSubject(req.getParameter("subject"));
 			dto.setContent(req.getParameter("content"));
+			
+			if(req.getParameter("notice")!=null) {
+				dto.setNotice(Integer.parseInt(req.getParameter("notice")));
+			} else {
+				dto.setNotice(0);
+			}
 			
 			Part p = req.getPart("selectFile");
 			MyMultipartFile multiFile = fileManager.doFileUpload(p, pathname);
@@ -281,23 +290,43 @@ public class Free_BoardController {
 		HttpSession session = req.getSession();
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
-		String page = req.getParameter("page");
+		FileManager fileManager = new FileManager();
 		
+		String root = session.getServletContext().getRealPath("/");
+		String pathname = root + "uploads" + File.separator + "free_board";
+		
+		String page = req.getParameter("page");
+		String num = req.getParameter("num");
+
 		try {
 			Free_BoardDTO dto = new Free_BoardDTO();
-			
-			dto.setNum(Integer.parseInt(req.getParameter("num")));
+
+			dto.setNum(Integer.parseInt(num));
 			dto.setSubject(req.getParameter("subject"));
 			dto.setContent(req.getParameter("content"));
-			
 			dto.setMember_id(info.getUserId());
+			
+			Part p = req.getPart("selectFile");
+			MyMultipartFile multiFile = fileManager.doFileUpload(p, pathname);
+			if(multiFile != null) {
+				if(req.getParameter("saveFileName").length() !=0 ) {
+					fileManager.doFiledelete(pathname, req.getParameter("saveFileName"));
+				}
+				
+				String saveFilename = multiFile.getSaveFilename();
+				String uploadfilename = multiFile.getOriginalFilename();
+				long size = multiFile.getSize();
+				dto.setSaveFileName(saveFilename);
+				dto.setUploadFileName(uploadfilename);
+				dto.setFileSize(size);
+			}
 			
 			dao.updateFree_board(dto);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return new ModelAndView("redirect:/free_board/list?page=" + page);
+		return new ModelAndView("redirect:/free_board/article?page="+page+"&num="+num);
 	}
 	
 	@RequestMapping(value = "/free_board/deleteFile")

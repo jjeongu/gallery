@@ -123,8 +123,8 @@ public class Free_BoardDAO {
 		String sql;
 		
 		try {
-			sql = " select num, f.member_id, subject, "
-					+ " hitCount, to_char(f.reg_date, 'YYYY-MM-DD') reg_date"
+			sql = " select num, f.member_id, m.name, subject, "
+					+ " hitCount, to_char(f.reg_date, 'YYYY-MM-DD') reg_date, notice"
 					+ " from free_board f "
 					+ " join member1 m on f.member_id=m.member_id "
 					+ " where notice = 1 order by num desc ";
@@ -138,9 +138,11 @@ public class Free_BoardDAO {
 				
 				dto.setNum(rs.getInt("num"));
 				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
 				dto.setSubject(rs.getString("subject"));
 				dto.setHitcount(rs.getInt("hitCount"));
 				dto.setReg_date(rs.getString("reg_date"));
+				dto.setNotice(rs.getInt("notice"));
 				
 				list.add(dto);
 			}
@@ -164,7 +166,7 @@ public class Free_BoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" select num, f.member_id, subject, hitCount, ");
+			sb.append(" select num, f.member_id, m.name, subject, hitCount, ");
 			sb.append(" to_char(f.reg_date, 'YYYY-MM-DD') reg_date ");
 			sb.append(" from free_board f");
 			sb.append(" join member1 m on f.member_id=m.member_id ");
@@ -183,6 +185,7 @@ public class Free_BoardDAO {
 				
 				dto.setNum(rs.getInt("num"));
 				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
 				dto.setSubject(rs.getString("subject"));
 				dto.setHitcount(rs.getInt("hitCount"));
 				dto.setReg_date(rs.getString("reg_date"));
@@ -208,7 +211,7 @@ public class Free_BoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" select num, f.member_id, subject, hitCount, ");
+			sb.append(" select num, f.member_id, m.name, subject, hitCount, ");
 			sb.append(" to_char(f.reg_date, 'YYYY-MM-DD') reg_date ");
 			sb.append(" from free_board f");
 			sb.append(" join member1 m on f.member_id=m.member_id ");
@@ -243,6 +246,7 @@ public class Free_BoardDAO {
 				
 				dto.setNum(rs.getInt("num"));
 				dto.setMember_id(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
 				dto.setSubject(rs.getString("subject"));
 				dto.setHitcount(rs.getInt("hitCount"));
 				dto.setReg_date(rs.getString("reg_date"));
@@ -451,14 +455,13 @@ public class Free_BoardDAO {
 	public void updateFree_board(Free_BoardDTO dto) throws SQLException {
 		PreparedStatement pstmt = null;
 		String sql;
-
 		try {
 			sql = "UPDATE free_board SET subject=?, content=?, saveFilename=?, uploadFilename=?, filesize=? "
 					+ " WHERE num=? AND member_id=? ";
 			pstmt = conn.prepareStatement(sql);
 			
 			pstmt.setString(1, dto.getSubject());
-			pstmt.setString(2, dto.getContent());
+			pstmt.setString(2, dto.getContent());			
 			pstmt.setString(3, dto.getSaveFileName());
 			pstmt.setString(4, dto.getUploadFileName());
 			pstmt.setLong(5, dto.getFileSize());

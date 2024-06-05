@@ -39,7 +39,18 @@ function sendOk() {
     f.submit();
 }
 </script>
-
+<c:if test="${mode == 'update'}">
+<script type="text/javascript">
+function deleteFile(fileNum) {
+	if(! confirm('파일 삭제할거임?')){
+		return;
+	}
+	
+	let q = 'num=${dto.num}&page=${page}&size=${size}&fileNum=' + fileNum;
+	location.href = '${pageContext.request.contextPath}/free_board/deleteFile?' + q;
+}
+</script>
+</c:if>
 </head>
 <body>
 
@@ -118,7 +129,7 @@ function sendOk() {
 									<input type="hidden" name="num" value="${dto.num}">
 									<input type="hidden" name="page" value="${page}">
 									<input type="hidden" name="fileSize" value="${dto.fileSize}">
-									<input type="hidden" name="saveFilename" value="${dto.saveFileName}">
+									<input type="hidden" name="saveFileName" value="${dto.saveFileName}">
 									<input type="hidden" name="uploadFileName" value="${dto.uploadFileName}">
 								</c:if>
 							</td>

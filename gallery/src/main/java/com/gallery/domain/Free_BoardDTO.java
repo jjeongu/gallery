@@ -8,7 +8,14 @@ public class Free_BoardDTO {
 	private int notice;
 	private String subject;
 	private String content;
+	private String name;
 	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	private int replyCount;
 	private int free_boardLikeCount;
 	

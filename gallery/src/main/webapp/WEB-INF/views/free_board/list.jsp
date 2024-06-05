@@ -66,16 +66,25 @@ function searchList() {
 					</thead>
 					
 					<tbody>
+					<c:forEach var="dto" items="${listFree_Board}">
+								<tr>
+									<td><span class="badge bg-primary">공지</span></td>
+									<td class="left">
+										<span class="d-inline-block text-truncate align-middle" style="max-width: 390px;"><a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.subject}</a></span>
+									</td>
+									<td>${dto.name}</td>	
+									<td>${dto.reg_date}</td>
+									<td>${dto.hitcount}</td>
+								</tr>
+							</c:forEach>
 			
-							
 						<c:forEach var="dto" items="${list}" varStatus="status">
 							<tr>
 								<td>${dataCount - (page-1) * size - status.index}</td>
 								<td class="left">
-									<c:if test="${dto.notice == 1}"><span class="badge bg-primary">공지</span></c:if>
 									<a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.subject}</a>
 								</td>
-								<td>${dto.member_id}</td>	
+								<td>${dto.name}</td>	
 								<td>${dto.reg_date}</td>
 								<td>${dto.hitcount}</td>
 								
