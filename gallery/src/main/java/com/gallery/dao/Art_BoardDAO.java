@@ -655,7 +655,7 @@ public class Art_BoardDAO {
 		
 		try {
 			sb.append(" SELECT r.r_num, r.member_id, r.num,name, r.content, r.reg_date, ");
-			sb.append(" NVL(a.answerCount,0) answerCount, a.answer");
+			sb.append(" NVL(a.answerCount,0) answerCount, a.answer, NVL(likeCount, 0) likeCount ");
 			sb.append(" FROM Art_Board_Reply r ");
 			sb.append(" JOIN Member1 m ON r.member_id = m.member_id");
 			sb.append(" LEFT OUTER JOIN ( ");
@@ -664,9 +664,26 @@ public class Art_BoardDAO {
 			sb.append(" 	WHERE answer != 0 ");
 			sb.append(" GROUP BY answer ");
 			sb.append(" ) a ON r.r_num = a.answer ");
+			
+			sb.append(" LEFT OUTER  JOIN ( ");
+			sb.append(" SELECT r_num, COUNT(*) likeCount ");
+			sb.append(" from Art_Board_Reply_Like ");
+			sb.append(" GROUP BY r_num ");
+			sb.append(" ) b ON r.r_num = b.r_num ");
+			
 			sb.append(" WHERE r.num =? AND r.answer = 0");
 			sb.append(" ORDER BY r.r_num DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
+			
+			/*
+			 * 			sb.append(" LEFT OUTER  JOIN ( ");
+			sb.append("	    SELECT replyNum, ");
+			sb.append("         COUNT(DECODE(replyLike, 1, 1)) likeCount, ");
+			sb.append("         COUNT(DECODE(replyLike, 0, 1)) disLikeCount ");
+			sb.append("     FROM bbsReplyLike ");
+			sb.append("     GROUP BY replyNum ");
+			sb.append(" ) b ON r.replyNum = b.replyNum  ");
+			 */
 			
 			pstmt = conn.prepareStatement(sb.toString());
 			
@@ -687,6 +704,7 @@ public class Art_BoardDAO {
 				dto.setReg_date(rs.getString("reg_date"));
 				dto.setAnswer(rs.getLong("answer"));
 				dto.setAnswerCount(rs.getInt("answerCount"));
+				dto.setLikeCount(rs.getInt("likeCount"));
 				
 				list.add(dto);
 			}
@@ -848,12 +866,13 @@ public class Art_BoardDAO {
 			return result;
 		}
 		
+		
 		public void insertReplyLike(Art_Board_ReplyDTO dto) throws SQLException {
 			PreparedStatement pstmt = null;
 			String sql;
 			
 			try {
-				sql = "INSERT INTO Art_Board_Like(r_num, member_id) VALUES (?, ?)";
+				sql = "INSERT INTO Art_Board_Reply_Like(r_num, member_id) VALUES (?, ?)";
 				pstmt = conn.prepareStatement(sql);
 				
 				pstmt.setLong(1, dto.getR_num());
@@ -881,8 +900,7 @@ public class Art_BoardDAO {
 				sql = " SELECT NVL(COUNT(*), 0) likeCount FROM Art_Board_Reply_Like WHERE r_num = ? ";
 				pstmt = conn.prepareStatement(sql);
 				
-				pstmt.setLong(1, r_num);
-				
+				pstmt.setLong(1, r_num);				
 				rs = pstmt.executeQuery();
 				
 				if(rs.next()) {
@@ -897,7 +915,8 @@ public class Art_BoardDAO {
 			}
 			
 			return count;
-		}	
+		}
+		
 	}
 
 

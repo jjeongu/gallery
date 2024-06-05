@@ -29,6 +29,7 @@
 		<tr>
 			<td>
 				<button type='button' class='btn btn-light btnReplyAnswerLayout' data-replyNum='${dto.r_num}'>답글 <span id="answerCount${dto.r_num}">${dto.answerCount}</span></button>
+				<button type='button' class='btn btn-light btnSendReplyLike' data-r_num='${dto.r_num}' data-replyLike='1' title="좋아요"><i class="bi bi-hand-thumbs-up"></i> <span>${dto.likeCount}</span></button>
 			</td>
 			<td align='right'>
 				&nbsp;
@@ -47,12 +48,7 @@
 	            </div>
 			</td>
 	    </tr>
-	    <tr>
-			<td colspan='3' align='right'>
-				<button type='button' class='btn btn-light btnSendReplyLike' data-r_num='${dto.r_num}' data-replyLike='1' title="좋아요"><i class="bi bi-hand-thumbs-up"></i> <span>${dto.likeCount}</span></button>
-			</td>
-		</tr>
-	    
+	 
 	</c:forEach>
 </table>
 

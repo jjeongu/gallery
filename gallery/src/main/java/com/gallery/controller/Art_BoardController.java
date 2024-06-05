@@ -209,6 +209,8 @@ public class Art_BoardController {
 			Art_BoardDTO prevDto = dao.findByPrev(dto.getNum(), schType, kwd);
 			Art_BoardDTO nextDto = dao.findByNext(dto.getNum(), schType, kwd);
 			
+			
+			
 			// 삭제할수있음
 			HttpSession session = req.getSession();
 			SessionInfo info = (SessionInfo)session.getAttribute("member");
@@ -527,6 +529,9 @@ public class Art_BoardController {
 			
 			ModelAndView mav = new ModelAndView("art_board/listReply");
 			
+			int likeCount = dao.countReplyLike(num);
+			mav.addObject("likeCount", likeCount);
+			
 			mav.addObject("listReply", listReply);
 			mav.addObject("pageNo", current_page);
 			mav.addObject("replyCount", replyCount);
@@ -651,6 +656,8 @@ public class Art_BoardController {
 		return model;
 	}
 	
+	
+	
 	@ResponseBody
 	@RequestMapping(value = "/art_board/insertReplyLike", method = RequestMethod.POST)
 	public Map<String, Object> insertReplyLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -663,7 +670,6 @@ public class Art_BoardController {
 		
 		String state = "false";
 		int likeCount = 0;
-	
 		try {
 			long r_num = Long.parseLong(req.getParameter("r_num"));
 			
