@@ -17,9 +17,8 @@
 .body-title {
 	text-align: center;
 }
-.body-title h3 {
-	 font-size: 50px;
-	 padding-bottom: 20px;
+.body-container h3 {
+	font-family: DNFBitBitv2;
 }
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -39,14 +38,17 @@
 		let url='${pageContext.request.contextPath}/report/delete';
 		location.href=url+'?page=${page}&num=${dto.num}&schType=${schType}&kwd=${kwd}';
 	}
+	
+	function sendMail() {
+		let url='${pageContext.request.contextPath}/report/send';
+		location.href=url+'?page=${page}&num=${dto.num}';
+	}
 	</script>
 </c:if>
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title mb-0">
-				<h3><i class="bi bi-exclamation-triangle"></i></i> 신고 </h3>
-			</div>
+			<h3 class="border-bottom border-danger border-3"><i class="bi bi-exclamation-triangle"></i> 신고 </h3>
 			
 			<div class="body-main">
 				
@@ -116,14 +118,15 @@
 					<tr>
 						<td width="50%">
 							<c:if test="${sessionScope.member.userRole==0}">
-								<button type="button" class="btn btn-light" onclick="deleteReport();">삭제</button>	
+								<button type="button" class="btn btn-light" onclick="deleteReport();">삭제</button>
+								<button type="button" class="btn btn-light" onclick="sendMail();">신고 접수</button>		
 							</c:if>
 							<c:if test="${sessionScope.member.userRole==2}">
 								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/update?num=${dto.num}&page=${page}';">수정</button>
 							</c:if>
 						</td>
 						<td class="text-end">
-							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/list?${query}';">리스트</button>
+							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/list?page=${page}&num=${dto.num}&schType=${schType}&kwd=${kwd}';">리스트</button>
 						</td>
 					</tr>
 				</table>

@@ -249,7 +249,7 @@ public class ReportDAO {
 					sb.append(" AND INSTR(SUBJECT, ?)>=1 OR INSTR(CONTENT, ?)>=1 ");
 				} else if(schType.equals("reg_date")) {
 					kwd = kwd.replaceAll("(\\-|\\/|\\.)", "");
-					sb.append(" AND TO_CHAR(REG_DATE, 'YYYYMMDD')=? ");
+					sb.append(" AND TO_CHAR(R.REG_DATE, 'YYYYMMDD')=? ");
 				} else {
 					sb.append(" AND INSTR("+schType+", ?)>=1 ");
 				}
@@ -258,12 +258,13 @@ public class ReportDAO {
 				pstmt=conn.prepareStatement(sb.toString());
 				
 				if(schType.equals("all")) {
-					pstmt.setString(1, kwd);
+					pstmt.setLong(1, num);
 					pstmt.setString(2, kwd);
-					pstmt.setLong(3, num);
+					pstmt.setString(3, kwd);
+					
 				} else {
-					pstmt.setString(1, kwd);
-					pstmt.setLong(2, num);
+					pstmt.setLong(1, num);
+					pstmt.setString(2, kwd);
 				}
 			} else {
 				sb.append(" SELECT R.NUM, NAME, SUBJECT, ");
@@ -312,7 +313,7 @@ public class ReportDAO {
 					sb.append(" AND INSTR(SUBJECT, ?)>=1 OR INSTR(CONTENT, ?)>=1 ");
 				} else if(schType.equals("reg_date")) {
 					kwd = kwd.replaceAll("(\\-|\\/|\\.)", "");
-					sb.append(" AND TO_CHAR(REG_DATE, 'YYYYMMDD')=? ");
+					sb.append(" AND TO_CHAR(R.REG_DATE, 'YYYYMMDD')=? ");
 				} else {
 					sb.append(" AND INSTR("+schType+", ?)>=1 ");
 				}
@@ -321,12 +322,12 @@ public class ReportDAO {
 				pstmt=conn.prepareStatement(sb.toString());
 				
 				if(schType.equals("all")) {
-					pstmt.setString(1, kwd);
+					pstmt.setLong(1, num);
 					pstmt.setString(2, kwd);
-					pstmt.setLong(3, num);
+					pstmt.setString(3, kwd);
 				} else {
-					pstmt.setString(1, kwd);
-					pstmt.setLong(2, num);
+					pstmt.setLong(1, num);
+					pstmt.setString(2, kwd);
 				}
 			} else {
 				sb.append(" SELECT R.NUM, NAME, SUBJECT, ");
@@ -562,6 +563,22 @@ public class ReportDAO {
 			sb.append(" DELETE FROM REPORT_FILE WHERE NUM=? ");
 			pstmt=conn.prepareStatement(sb.toString());
 			pstmt.setLong(1, num);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	public void deleteNoticeFile(long num, long fileNum) {
+		PreparedStatement pstmt=null;
+		StringBuilder sb=new StringBuilder();
+		
+		try {
+			sb.append(" DELETE FROM REPORT_FILE WHERE NUM=? AND FILENUM=? ");
+			pstmt=conn.prepareStatement(sb.toString());
+			pstmt.setLong(1, num);
+			pstmt.setLong(2, fileNum);
 			pstmt.executeUpdate();
 		} catch (Exception e) {
 			e.printStackTrace();

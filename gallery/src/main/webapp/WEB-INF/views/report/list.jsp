@@ -17,8 +17,8 @@
 .body-title {
 	text-align: center;
 }
-.body-title h3 {
-	 padding-bottom: 20px;
+.body-container h3 {
+	font-family: DNFBitBitv2;
 }
 .page-navigation ul {
     display: flex;
@@ -27,9 +27,6 @@
 }
 .page-navigation li {
     list-style-type: none;
-}
-h3 {
-	font-family: DNFBitBitv2;
 }
 </style>
 
@@ -70,7 +67,7 @@ h3 {
 						<h3 class="text-center">나의 신고 목록</h3>
 					</c:if>
 					<table class="table table-hover board-list">
-						<thead class="table-light">
+						<thead class="table-warning">
 							<tr>
 								<th class="num">번호</th>
 								<th class="subject">제목</th>

@@ -14,6 +14,9 @@
 .body-container {
 	max-width: 800px;
 }
+.body-container h3 {
+	font-family: DNFBitBitv2;
+}
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
@@ -60,9 +63,7 @@ function sendOk() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
-				<h3><i class="bi bi-info-circle"></i> 공지사항 </h3>
-			</div>
+			<h3 class="border-bottom border-danger border-3"><i class="bi bi-info-circle"></i> 공지사항 </h3>
 			
 			<div class="body-main">
 				<form name="noticeForm" method="post" enctype="multipart/form-data">

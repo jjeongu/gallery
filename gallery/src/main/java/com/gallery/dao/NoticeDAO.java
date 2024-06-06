@@ -274,12 +274,12 @@ public class NoticeDAO {
 				pstmt=conn.prepareStatement(sb.toString());
 			
 				if(schType.equals("all")) {
-					pstmt.setString(1, kwd);
+					pstmt.setLong(1, num);
 					pstmt.setString(2, kwd);
-					pstmt.setLong(3, num);
+					pstmt.setString(3, kwd);
 				} else {
-					pstmt.setString(1, kwd);
-					pstmt.setLong(2, num);
+					pstmt.setLong(1, num);
+					pstmt.setString(2, kwd);
 				}
 			} else {
 				sb.append(" SELECT NUM, MEMBER_ID, SUBJECT, ");
@@ -335,12 +335,12 @@ public class NoticeDAO {
 				pstmt=conn.prepareStatement(sb.toString());
 			
 				if(schType.equals("all")) {
-					pstmt.setString(1, kwd);
+					pstmt.setLong(1, num);
 					pstmt.setString(2, kwd);
-					pstmt.setLong(3, num);
+					pstmt.setString(3, kwd);
 				} else {
-					pstmt.setString(1, kwd);
-					pstmt.setLong(2, num);
+					pstmt.setLong(1, num);
+					pstmt.setString(2, kwd);
 				}
 			} else {
 				sb.append(" SELECT NUM, MEMBER_ID, SUBJECT, ");

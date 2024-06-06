@@ -33,7 +33,7 @@
 .page-navigation li {
     list-style-type: none;
 }
-h3 {
+.body-container h3 {
 	font-family: DNFBitBitv2;
 }
 </style>

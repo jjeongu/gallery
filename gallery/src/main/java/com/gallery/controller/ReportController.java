@@ -10,9 +10,13 @@ import java.util.List;
 import com.gallery.annotation.Controller;
 import com.gallery.annotation.RequestMapping;
 import com.gallery.annotation.RequestMethod;
+import com.gallery.dao.MemberDAO;
 import com.gallery.dao.ReportDAO;
+import com.gallery.domain.MemberDTO;
 import com.gallery.domain.ReportDTO;
 import com.gallery.domain.SessionInfo;
+import com.gallery.mail.Mail;
+import com.gallery.mail.MailSender;
 import com.gallery.servlet.ModelAndView;
 import com.gallery.util.FileManager;
 import com.gallery.util.MyMultipartFile;
@@ -41,7 +45,7 @@ public class ReportController {
 		String kwd=req.getParameter("kwd");
 		String page=req.getParameter("page");
 		int current_page=1;
-		
+
 		if(schType==null) {
 			schType="all";
 			kwd="";
@@ -118,7 +122,7 @@ public class ReportController {
 			mav.addObject("page", current_page);
 			mav.addObject("dataCount", dataCount);
 			mav.addObject("total_page", total_page);
-			mav.addObject("size", size);	
+			mav.addObject("size", size);			
 			mav.addObject("schType", schType);
 			mav.addObject("kwd", kwd);
 
@@ -203,6 +207,8 @@ public class ReportController {
 			mav.addObject("nextDto", nextDto);
 			mav.addObject("page", page);
 			mav.addObject("num", num);
+			mav.addObject("schType", schType);
+			mav.addObject("kwd", kwd);
 			mav.addObject("listFile", listFile);
 			
 			return mav;
@@ -247,12 +253,6 @@ public class ReportController {
 		FileManager fileManager=new FileManager();
 		String page=req.getParameter("page");
 		String num=req.getParameter("num");
-		String schType=req.getParameter("schType");
-		String kwd=req.getParameter("kwd");		
-		if(schType==null) {
-			schType="all";
-			kwd="";
-		}
 		
 		String root=session.getServletContext().getRealPath("/");
 		String pathname=root+"uploads"+File.separator+"notice";
@@ -269,7 +269,7 @@ public class ReportController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ModelAndView("redirect:/report/article?page="+page+"&num="+num+"&schType="+schType+"&kwd="+kwd);
+		return new ModelAndView("redirect:/report/article?page="+page+"&num="+num);
 	}
 	
 	@RequestMapping(value="/report/delete", method=RequestMethod.GET)
@@ -281,16 +281,6 @@ public class ReportController {
 
 		String page=req.getParameter("page");
 		String num=req.getParameter("num");
-		String schType=req.getParameter("schType");
-		String kwd=req.getParameter("kwd");		
-		if(schType==null) {
-			schType="all";
-			kwd="";
-		}
-		
-		if(kwd.length()!=0) {
-			kwd=URLDecoder.decode(kwd, "UTF-8");
-		}
 		
 		String root=session.getServletContext().getRealPath("/");
 		String pathname=root+"uploads"+File.separator+"notice";
@@ -305,14 +295,48 @@ public class ReportController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ModelAndView("redirect:/report/list?page="+page+"&num="+num+"&schType="+schType+"&kwd="+kwd);
+		return new ModelAndView("redirect:/report/list?page="+page+"&num="+num);
+	}
+	
+	@RequestMapping(value = "/report/deleteFile", method = RequestMethod.GET)
+	public ModelAndView deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		HttpSession session = req.getSession();
+		
+		String root = session.getServletContext().getRealPath("/");
+		String pathname = root + "uploads" + File.separator + "report";
+		
+		String page = req.getParameter("page");
+		
+		ReportDAO dao = new ReportDAO();
+		FileManager fileManager = new FileManager();
+		
+		try {
+			long num = Long.parseLong(req.getParameter("num"));
+			long fileNum = Long.parseLong(req.getParameter("fileNum"));
+			
+			ReportDTO dto = dao.findByFileId(fileNum);
+			if(dto != null) {
+				// 파일 지우기
+				fileManager.doFiledelete(pathname, dto.getSaveFilename());
+				
+				// 테이블의 파일 정보 지우기
+				dao.deleteNoticeFile(num, fileNum);
+			}
+			
+			// 다시 수정화면으로
+			return new ModelAndView("redirect:/report/update?num="+num+"&page="+page);
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/notice/list");
 	}
 	
 	@RequestMapping(value="/report/download", method=RequestMethod.GET)
 	public void download(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		// parameters : filenum
 		ReportDAO dao=new ReportDAO();
-		
 		HttpSession session=req.getSession();
 		FileManager fileManager=new FileManager();
 		
@@ -335,5 +359,67 @@ public class ReportController {
 			PrintWriter out=resp.getWriter();
 			out.print("<script>alert('파일 다운로드가 실패했습니다.');history.back();</script>");
 		}
+	}
+	@RequestMapping(value = "/report/send", method = RequestMethod.GET)
+	public ModelAndView sendForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ModelAndView mav=new ModelAndView("report/send");
+		ReportDAO dao=new ReportDAO();
+		MemberDAO mdao=new MemberDAO();
+		MemberDTO mdto=null;
+		String num=req.getParameter("num");
+		String page=req.getParameter("page");
+		
+		try {
+			ReportDTO dto=dao.findById(Long.parseLong(num));
+			mdto=mdao.findById(dto.getMember_id());
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		mav.addObject("email", mdto.getEmail());
+		mav.addObject("name", mdto.getName());
+		mav.addObject("num", num);
+		mav.addObject("page", page);
+		return mav;
+	}
+	
+	@RequestMapping(value = "/report/send", method = RequestMethod.POST)
+	public ModelAndView sendSubmit(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		ReportDAO dao=new ReportDAO();
+		FileManager fileManager = new FileManager();
+		HttpSession session=req.getSession();
+		String root = session.getServletContext().getRealPath("/");
+		String pathname = root + "uploads" + File.separator + "report";
+		SessionInfo info = (SessionInfo) session.getAttribute("member");
+		
+		String num=req.getParameter("num");
+		String page=req.getParameter("page");
+
+		try {
+			Mail dto = new Mail();
+			
+			dto.setSenderName(info.getUserName());
+			dto.setSenderEmail(req.getParameter("senderEmail"));
+			dto.setReceiverEmail(req.getParameter("receiverEmail"));
+			dto.setSubject(req.getParameter("subject"));
+			dto.setContent(req.getParameter("content"));
+			
+			session.setAttribute("receiver", dto.getReceiverEmail());
+			
+			MailSender sender = new MailSender();
+			boolean b = sender.mailSend(dto);
+			
+			List<ReportDTO> listFile=dao.listReportFile(Long.parseLong(num));
+			for(ReportDTO dto2:listFile) {
+				fileManager.doFiledelete(pathname, dto2.getSaveFilename());
+			}
+			dao.deleteReportFile(Long.parseLong(num));
+			dao.deleteReport(Long.parseLong(num));
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return new ModelAndView("redirect:/report/list?page="+page);
 	}
 }

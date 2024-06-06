@@ -17,9 +17,8 @@
 .body-title {
 	text-align: center;
 }
-.body-title h3 {
-	 font-size: 50px;
-	 padding-bottom: 20px;
+.body-container h3 {
+	 font-family: DNFBitBitv2;
 }
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -46,6 +45,16 @@ function sendOk() {
     f.action = "${pageContext.request.contextPath}/report/${mode}";
     f.submit();
 }
+<c:if test="${mode=='update'}">
+function deleteFile(fileNum) {
+	if(! confirm('파일을 삭제하시겠습니까')) {
+		return;
+	}
+	
+	let q='num=${dto.num}&page=${page}&size=${size}&fileNum='+fileNum;
+	location.href='${pageContext.request.contextPath}/report/deleteFile?'+q;
+}
+</c:if>
 </script>
 </head>
 <body>
@@ -57,10 +66,8 @@ function sendOk() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
-				<h3><i class="bi bi-exclamation-triangle"></i> 신고 </h3>
-			</div>
-			
+			<h3 class="border-bottom border-danger border-3"><i class="bi bi-exclamation-triangle"></i> 신고 </h3>
+
 			<div class="body-main">
 				<form name="noticeForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
@@ -86,14 +93,6 @@ function sendOk() {
 						<c:if test="${mode=='update'}">
 							<input type="hidden" name="page" value="${page}">
 							<input type="hidden" name="num" value="${dto.num}">
-							<c:forEach var="vo" items="${listFile}">
-								<tr>
-									<td class="bg-light col-sm-2">첨부된 파일</td>
-									<td>
-										<p class="form-contRole-plaintext">${vo.uploadFilename}</p>
-									</td>
-								</tr>
-							</c:forEach>
 						</c:if>
 						<tr>
 							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
@@ -101,6 +100,17 @@ function sendOk() {
 								<input type="file" name="selectFile" multiple class="form-control">
 							</td>
 						</tr>
+						<c:forEach var="vo" items="${listFile}">
+								<tr>
+									<td class="bg-light col-sm-2">첨부된 파일</td>
+									<td>
+										<p class="form-contRole-plaintext">
+											<a href="javascript:deleteFile(${vo.fileNum})"><i class="bi bi-trash"></i></a>
+											${vo.uploadFilename}
+										</p>
+									</td>
+								</tr>
+							</c:forEach>
 					</table>
 					
 					<table class="table table-borderless">

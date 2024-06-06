@@ -119,7 +119,7 @@ public class NoticeController {
 		SessionInfo info=(SessionInfo) session.getAttribute("member");
 		String path=session.getServletContext().getRealPath("/");
 		String pathname=path+"uploads"+File.separator+"notice";	
-		try {
+		try {  
 			NoticeDTO dto=new NoticeDTO();
 					
 			dto.setMember_id(info.getUserId());
@@ -244,12 +244,6 @@ public class NoticeController {
 		FileManager fileManager=new FileManager();
 		String page=req.getParameter("page");
 		String num=req.getParameter("num");
-		String schType=req.getParameter("schType");
-		String kwd=req.getParameter("kwd");		
-		if(schType==null) {
-			schType="all";
-			kwd="";
-		}
 		
 		String root=session.getServletContext().getRealPath("/");
 		String pathname=root+"uploads"+File.separator+"notice";
@@ -266,21 +260,17 @@ public class NoticeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}	
-		return new ModelAndView("redirect:/notice/article?page="+page+"&num="+num+"&schType="+schType+"&kwd="+kwd);
+		return new ModelAndView("redirect:/notice/article?page="+page+"&num="+num);
 	}
 	
 	@RequestMapping(value = "/notice/deleteFile", method = RequestMethod.GET)
 	public ModelAndView deleteFile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		// 수정에서 파일 삭제
-		// 넘어온 파라미터 : 글번호, 파일번호, page, size
 		HttpSession session = req.getSession();
-		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
 		String root = session.getServletContext().getRealPath("/");
 		String pathname = root + "uploads" + File.separator + "notice";
 		
 		String page = req.getParameter("page");
-		String size = req.getParameter("size");
 		
 		NoticeDAO dao = new NoticeDAO();
 		FileManager fileManager = new FileManager();
@@ -299,7 +289,7 @@ public class NoticeController {
 			}
 			
 			// 다시 수정화면으로
-			return new ModelAndView("redirect:/notice/update?num="+num+"&page="+page+"&size="+size);
+			return new ModelAndView("redirect:/notice/update?num="+num+"&page="+page);
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -317,16 +307,6 @@ public class NoticeController {
 
 		String page=req.getParameter("page");
 		String num=req.getParameter("num");
-		String schType=req.getParameter("schType");
-		String kwd=req.getParameter("kwd");		
-		if(schType==null) {
-			schType="all";
-			kwd="";
-		}
-		
-		if(kwd.length()!=0) {
-			kwd=URLDecoder.decode(kwd, "UTF-8");
-		}
 		
 		String root=session.getServletContext().getRealPath("/");
 		String pathname=root+"uploads"+File.separator+"notice";
@@ -341,7 +321,7 @@ public class NoticeController {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return new ModelAndView("redirect:/notice/list?page="+page+"&num="+num+"&schType="+schType+"&kwd="+kwd);
+		return new ModelAndView("redirect:/notice/list?page="+page+"&num="+num);
 	}
 	@RequestMapping(value="/notice/deleteList", method=RequestMethod.POST)
 	public ModelAndView deleteList(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {

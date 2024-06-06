@@ -24,7 +24,6 @@ public class ReportDTO {
 	public void setNum(long num) {
 		this.num = num;
 	}
-
 	public String getSubject() {
 		return subject;
 	}

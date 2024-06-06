@@ -2,8 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 
-<iframe style="display: none;" src="https://www.youtube.com/embed/r2ko422xW0w?autoplay=1" title="지능이 떨어지는 브금" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-
+<iframe style="display: none;" src="https://www.youtube.com/embed/ZRyxH-db4iY?autoplay=1" title="패트와 매트 브금 한시간 버전" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 <nav class="navbar navbar-expand-lg bg-transparent">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="${pageContext.request.contextPath}/index.jsp">

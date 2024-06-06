@@ -28,9 +28,8 @@
 .body-title {
 	text-align: center;
 }
-.body-title h3 {
-	 font-size: 50px;
-	 padding-bottom: 20px;
+.body-container h3 {
+	font-family: DNFBitBitv2;
 }
 .hover:hover {
 	cursor: pointer;
@@ -75,10 +74,8 @@
  
 <main>
 	<div class="container">
-		<div class="body-container">	
-			<div class="body-title mb-0">
-				<h3><i class="bi bi-info-circle"></i> 공지사항 </h3>
-			</div>
+		<div class="body-container">
+			<h3 class="border-bottom border-danger border-3"><i class="bi bi-info-circle"></i> 공지사항 </h3>
 			<div class="body-main">
 				<form name="listForm" method="post">
 					<input type="hidden" name="page" value="${page}">
