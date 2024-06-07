@@ -39,8 +39,6 @@
           			<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="#">Contact</a>
 				<ul class="dropdown-menu dropdown-menu-warning">
-					<li><a class="dropdown-item" href="#">연락처</a></li>
-					<li><hr class="dropdown-divider"></li>
 					<li><a class="dropdown-item" href="${pageContext.request.contextPath}/faq/list">FAQ</a></li>
 					<li><hr class="dropdown-divider"></li>
 					<li><a class="dropdown-item" href="#">Q&amp;A</a></li>
