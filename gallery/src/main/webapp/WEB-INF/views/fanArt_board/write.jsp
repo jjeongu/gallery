@@ -111,7 +111,7 @@ $(function() {
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3><i class="bi bi-image"></i> 팬아트 </h3>
+				<h3><i class="bi bi-image"></i> <a href="${pageContext.request.contextPath}/fanArt_board/list">팬아트</a> </h3>
 			</div>
 			
 			<div class="body-main">

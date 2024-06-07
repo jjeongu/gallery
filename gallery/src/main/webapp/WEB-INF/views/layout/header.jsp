@@ -2,11 +2,22 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core"%>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 
-<iframe style="display: none;" src="https://www.youtube.com/embed/ZRyxH-db4iY?autoplay=1" title="패트와 매트 브금 한시간 버전" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<script type="text/javascript">
+$(function() {
+	const f = $("form[name='searchForm'] input[name='kwd']");
+	f.keydown(function(e) {
+		if(e.key==='Enter'){
+			f.closest("form").submit();
+		}
+	})
+})
+</script>
+
+<div style="display: none;"><iframe src="https://www.youtube-nocookie.com/embed/ZRyxH-db4iY?autoplay=1&loop=1" allowtransparency="true" title="패트와 매트 브금 한시간 버전" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen"></iframe></div>
 <nav class="navbar navbar-expand-lg bg-transparent">
 	<div class="container-fluid">
 		<a class="navbar-brand" href="${pageContext.request.contextPath}/index.jsp">
-			<img src="${pageContext.request.contextPath}/resources/images/logo.png" style="width: 200px; height: 70px;">
+			<img src="${pageContext.request.contextPath}/resources/images/logo.png" style="max-width: 200px; max-height: 70px;">
 		</a>
 		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
       		<span class="navbar-toggler-icon"></span>
@@ -25,7 +36,7 @@
         		<li class="nav-item dropdown">
        				<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="#">Community</a>
-					<ul class="dropdown-menu dropdown-menu-warning">
+					<ul class="dropdown-menu dropdown-menu-warning bg-transparent">
             			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/free_board/list">자유게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
            				<li><a class="dropdown-item" href="${pageContext.request.contextPath}/fanArt_board/list">팬아트 게시판</a></li>
@@ -38,13 +49,13 @@
         		<li class="nav-item dropdown">
           			<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="#">Contact</a>
-				<ul class="dropdown-menu dropdown-menu-warning">
-					<li><a class="dropdown-item" href="${pageContext.request.contextPath}/faq/list">FAQ</a></li>
-					<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="#">Q&amp;A</a></li>
-					<li><hr class="dropdown-divider"></li>
-					<li><a class="dropdown-item" href="${pageContext.request.contextPath}/report/list">신고</a></li>
-				</ul>
+					<ul class="dropdown-menu dropdown-menu-warning bg-transparent">
+						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/faq/list">FAQ</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/qna/list">Q&amp;A</a></li>
+						<li><hr class="dropdown-divider"></li>
+						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/report/list">신고</a></li>
+					</ul>
 				</li>
         		<li class="nav-item">
 				<c:if test="${empty sessionScope.member}">
@@ -127,7 +138,7 @@
 	                        </div>
 	                        <div>
 	                            <div class="form-check">
-	                                <input class="form-check-input" type="checkbox" id="rememberMeModel" name="rememberMe" value="chk" ${check=='checked' ? 'checked':'checked'}>
+	                                <input class="form-check-input" type="checkbox" id="rememberMeModel" name="rememberMe" value="chk" ${check=='checked' ? 'checked':''}>
 	                                <label class="form-check-label" for="rememberMeModel"> 아이디 저장</label>
 	                            </div>
 	                        </div>

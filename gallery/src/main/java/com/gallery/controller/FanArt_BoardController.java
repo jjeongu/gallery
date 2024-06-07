@@ -59,7 +59,6 @@ public class FanArt_BoardController {
 				kwd = "";
 			}
 
-			// GET 방식인 경우 디코딩
 			if (req.getMethod().equalsIgnoreCase("GET")) {
 				kwd = URLDecoder.decode(kwd, "utf-8");
 			}
@@ -194,36 +193,57 @@ public class FanArt_BoardController {
 		return new ModelAndView("redirect:/fanArt_board/list");
 	}
 	
-	@RequestMapping(value = "/fanArt_board/article")
+	@RequestMapping(value = "/fanArt_board/article", method = RequestMethod.GET)
 	public ModelAndView article(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		ModelAndView mav = new ModelAndView("fanArt_board/article");
 		
 		FanArtDAO dao = new FanArtDAO();
+		String page = req.getParameter("page");
+		String query = "page=" + page;
 		
 		try {
-			String page = req.getParameter("page");
 			
 			long num = Long.parseLong(req.getParameter("num"));
+			String schType = req.getParameter("schType");
+			String kwd = req.getParameter("kwd");
+			if (schType == null) {
+				schType = "artist";
+				kwd = "";
+			}
+
+			kwd = URLDecoder.decode(kwd, "utf-8");
+			
+			if (kwd.length() != 0) {
+				query += "&schType=" + schType + "&kwd=" + URLEncoder.encode(kwd, "UTF-8");
+			}
 			
 			dao.updateHitCount(num);
 			
 			FanArtDTO dto = dao.findById(num);
 			if(dto == null) {
-				return new ModelAndView("redirect:/fanArt_board/list?page="+page);
+				return new ModelAndView("redirect:/fanArt_board/list?" + query);
 			}
 			HttpSession session = req.getSession();
 			SessionInfo info = (SessionInfo)session.getAttribute("member");
 			boolean isUserLike = dao.isUserBoardLike(num, info.getUserId());
 			
+			FanArtDTO prevDto = dao.findByPrev(dto.getNotice(), num, schType, kwd);
+			FanArtDTO nextDto = dao.findByNext(dto.getNotice(), num, schType, kwd);
+			
+			ModelAndView mav = new ModelAndView("fanArt_board/article");
+			
 			mav.addObject("dto", dto);
+			mav.addObject("query", "&"+query);
+			mav.addObject("prevDto", prevDto);
+			mav.addObject("nextDto", nextDto);
 			mav.addObject("page", page);
 			mav.addObject("isUserLike", isUserLike);
 			
+			return mav;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		
-		return mav;
+		return new ModelAndView("redirect:/fanArt_board/list?" + query);
 	}
 	
 	@RequestMapping(value = "/fanArt_board/update", method = RequestMethod.GET)

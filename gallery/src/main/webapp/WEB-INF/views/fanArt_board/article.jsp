@@ -39,7 +39,7 @@
 	<div class="container">
 		<div class="body-container">	
 			<div class="body-title">
-				<h3><i class="bi bi-image"></i> 팬아트 </h3>
+				<h3><i class="bi bi-image"></i> <a href="${pageContext.request.contextPath}/fanArt_board/list">팬아트</a> </h3>
 			</div>
 			
 			<div class="body-main">
@@ -80,6 +80,22 @@
 								<button type="button" class="btn btn-outline-secondary btnSendBoardLike" title="좋아요"><i class="far fa-hand-point-up" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.boardLikeCount}</span></button>
 							</td>
 						</tr>
+						<tr>
+							<td colspan="2">
+								이전글 :
+								<c:if test="${not empty prevDto}">
+											<a href="${pageContext.request.contextPath}/fanArt_board/article?num=${prevDto.num}${query}">${prevDto.subject}</a>
+								</c:if>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2">
+								다음글 :
+								<c:if test="${not empty nextDto}">
+											<a href="${pageContext.request.contextPath}/fanArt_board/article?num=${nextDto.num}${query}">${nextDto.subject}</a>
+								</c:if>
+							</td>
+						</tr>
 					</tbody>
 				</table>
 				
@@ -103,7 +119,6 @@
 									<button type="button" class="btn btn-light" disabled>삭제</button>
 								</c:otherwise>
 							</c:choose>
-							
 							
 						</td>
 						<td class="text-end">
