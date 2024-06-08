@@ -10,18 +10,27 @@ public class Free_BoardDTO {
 	private String content;
 	private String name;
 	
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	private int replyCount;
 	private int free_boardLikeCount;
 	
 	private String saveFileName;
 	private String uploadFileName;
 	private long fileSize;
+	
+	private int likeCount; 
+	
+	public int getLikeCount() {
+		return likeCount;
+	}
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public String getSaveFileName() {
 		return saveFileName;

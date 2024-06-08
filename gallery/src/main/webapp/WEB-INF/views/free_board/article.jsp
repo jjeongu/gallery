@@ -73,13 +73,13 @@
 						
 						<tr>
 							<td colspan="2" class="text-center p-3" style="border-bottom: none;">
-								<button type="button" class="btn btn-outline-secondary btnSendLectureLike" title="좋아요"><i class="far fa-hand-point-up" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.free_boardLikeCount}</span></button>
+								<button type="button" class="btn btn-outline-secondary btnSendFree_boardLike" title="좋아요"><i class="far fa-hand-point-up" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.likeCount}</span></button>
 							</td>
 						</tr>
 						
 						<tr>
 							<td colspan="2">
-								<c:if test="${not empty dto.saveFileName}">
+									<c:if test="${not empty dto.saveFileName}">
 									<p class="border text-secondary mb-1 p-2">
 										<i class="bi bi-folder2-open"></i>
 										<a href="${pageContext.request.contextPath}free_board/download?num=${dto.num}">${dto.uploadFileName}</a>
@@ -213,7 +213,7 @@ $(function(){
 			return false;
 		}
 		
-		let url = "${pageContext.request.contextPath}/free_board/insertFree_boardLike";
+		let url = "${pageContext.request.contextPath}/free_board/insertFree_board_Like";
 		let num = "${dto.num}";
 		// var query = {num:num, isNoLike:isNoLike};
 		let query = "num=" + num + "&isNoLike=" + isNoLike;;

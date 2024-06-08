@@ -510,7 +510,7 @@ public class Free_BoardDAO {
 		}
 	}
 	
-	// 게시글 공감 확인
+	// 유저의 게시글 공감 여부
 	public boolean isUserFree_boardLike(long num, String member_id) {
 		boolean result = false;
 		PreparedStatement pstmt = null;

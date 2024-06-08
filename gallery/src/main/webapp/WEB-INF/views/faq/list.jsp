@@ -1,26 +1,23 @@
-<%@ page contentType="text/html; charset=UTF-8"%>
-<%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core"%>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<title>FAQ</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>spring</title>
 
-<jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
-
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+<c:import url="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
 .body-container {
 	max-width: 800px;
+	
 }
 
-.text-end {
- margin-top: 15px;
-}
-
-
+#ex {
+margin-top: 10px;}
 </style>
 
 <c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
@@ -40,32 +37,32 @@
 
 </c:if>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
-
 </head>
 <body>
 
 <header>
-	<jsp:include page="/WEB-INF/views/layout/header.jsp"/>
+	<c:import url="/WEB-INF/views/layout/header.jsp"/>
 </header>
-
+	
 <main>
-		<div class="body-container">
+	<div class="container">
+		<div class="body-container">	
 			<div class="body-title">
 				<h3> 🔺 FAQ </h3>
 			</div>
 			
-			<div class="accordion" id="accordionPanelsStayOpenExample">
+			<div class="body-main">
+				<div class="accordion" id="accordionFlushExample">
 				<c:forEach var="dto" items="${list}" varStatus="status">
 					<div class="accordion-item">
 						<h2 class="accordion-header" id="heading-${status.index}">
-							<button class="accordion-button collapsed" type="button" data-toggle="collapse" data-target="#collapse-${status.index}" aria-expanded="false" aria-controls="collapse-${status.index}">
+							<button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapse${status.index}" aria-expanded="false" aria-controls="flush-collapse${status.index}">
 								${dto.subject}
 							</button>
 						</h2>
-						<div id="collapse-${status.index}" class="accordion-collapse collapse" aria-labelledby="heading-${status.index}" data-parent="#accordionPanelsStayOpenExample">
+						<div id="flush-collapse${status.index}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
 							<div class="accordion-body">
-								${dto.content}
+							${dto.content}
 								
 								<c:choose>
 									<c:when test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
@@ -78,22 +75,25 @@
 										<button type="button" class="btn btn-light" onclick="deleteFaq(${dto.num});">삭제</button>
 									</c:when>
 								</c:choose>
-								
 							</div>
 						</div>
 					</div>
 				</c:forEach>
+				</div>
 			</div>
-	
-			<div class="col text-end">
-				<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/faq/write';">글올리기</button>
-			</div>
+				<div class="col text-end" id="ex">
+					<c:if test="${sessionScope.member.userRole == 0}">
+						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/free_board/write';">글올리기</button>
+					</c:if>
+				</div>
 		</div>
+	</div>
 </main>
 
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<footer>
+	<c:import url="/WEB-INF/views/layout/footer.jsp"/>
+</footer>
 
+<c:import url="/WEB-INF/views/layout/staticFooter.jsp"/>
 </body>
 </html>

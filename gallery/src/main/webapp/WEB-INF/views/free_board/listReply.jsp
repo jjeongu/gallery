@@ -16,7 +16,7 @@
 			<td width='50%' align='right'>
 				<span>${vo.reg_date}</span> |
 				<c:choose>
-					<c:when test="${sessionScope.member.userId==vo.member_id || sessionScope.member.member_id=='admin'}">
+					<c:when test="${sessionScope.member.userId==vo.member_id || sessionScope.member.userId=='admin'}">
 						<span class='deleteReply' data-replyNum='${vo.r_num}' data-pageNo='${pageNo}'>삭제</span>
 					</c:when>
 					<c:otherwise>

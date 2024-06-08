@@ -454,7 +454,7 @@ public class Free_BoardController {
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
 		String state = "false";
-		long free_board_like = 0;
+		long boardLikeCount = 0;
 		
 		try {
 			long num = Long.parseLong(req.getParameter("num"));
@@ -466,7 +466,7 @@ public class Free_BoardController {
 				dao.deleteFree_board_like(num, info.getUserId());
 			}
 			
-			free_board_like = dao.countFree_board_Like(num);
+			boardLikeCount = dao.countFree_board_Like(num);
 			
 			state = "true";
 			
@@ -475,7 +475,7 @@ public class Free_BoardController {
 		}
 		
 		model.put("state", state);
-		model.put("free_board_like", free_board_like);
+		model.put("boardLikeCount", boardLikeCount);
 		
 		return model;
 	}
