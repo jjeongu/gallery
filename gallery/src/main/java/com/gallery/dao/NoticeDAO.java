@@ -31,7 +31,7 @@ public class NoticeDAO {
 			pstmt=null;
 			
 			sb=new StringBuilder();
-			sb.append(" INSERT INTO NOTICEFILE(FILENUM, NUM, SAVEFILENAME, ORIGINALFILENAME) ");
+			sb.append(" INSERT INTO NOTICEFILE(FILENUM, NUM, SAVEFILENAME, UPLOADFILENAME) ");
 			sb.append(" VALUES(NOTICEFILE_SEQ.NEXTVAL, NOTICE_SEQ.CURRVAL, ?, ?) ");
 			pstmt=conn.prepareStatement(sb.toString());
 			for(MyMultipartFile mf:dto.getListFile()) {

@@ -48,7 +48,7 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<h3 class="border-bottom border-danger border-3"><i class="bi bi-exclamation-triangle"></i> 신고 </h3>
+			<h3 class="border-bottom border-danger border-3"><i class="bi bi-exclamation-triangle"></i> 신고 및 건의사항 </h3>
 			
 			<div class="body-main">
 				
@@ -119,7 +119,7 @@
 						<td width="50%">
 							<c:if test="${sessionScope.member.userRole==0}">
 								<button type="button" class="btn btn-light" onclick="deleteReport();">삭제</button>
-								<button type="button" class="btn btn-light" onclick="sendMail();">신고 접수</button>		
+								<button type="button" class="btn btn-light" onclick="sendMail();">접수 완료</button>		
 							</c:if>
 							<c:if test="${sessionScope.member.userRole==2}">
 								<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/report/update?num=${dto.num}&page=${page}';">수정</button>
