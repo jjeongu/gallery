@@ -67,7 +67,7 @@ function deleteFile(fileNum) {
 	<div class="container">
 		<div class="body-container">	
 			<h3><i class="bi bi-exclamation-triangle"></i> 신고 및 건의사항 </h3>
-			<hr class="border border-warning border-2 opacity-75">
+			<hr class="border border-danger border-2 opacity-75">
 
 			<div class="body-main">
 				<form name="noticeForm" method="post" enctype="multipart/form-data">

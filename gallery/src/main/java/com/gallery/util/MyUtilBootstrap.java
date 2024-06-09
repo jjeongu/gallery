@@ -32,7 +32,7 @@ public class MyUtilBootstrap extends MyUtil {
 		if(current_page-1>0) {
 			sb.append("<li class='p-1'><a class='fs-6' href='"+list_url +"page="+(current_page-1)+"'>"+(current_page-1)+"</a></li>");
 		}
-		sb.append("<li class='active p-1'><span class='fs-6'>" +current_page+ "</span></li>");
+		sb.append("<li class='active p-1 text-danger'><span class='fs-6'>" +current_page+ "</span></li>");
 		if(current_page+1<=total_page) {
 			sb.append("<li class='p-1'><a class='fs-6' href='"+list_url +"page="+(current_page+1)+"'>"+(current_page+1)+"</a></li>");
 		}

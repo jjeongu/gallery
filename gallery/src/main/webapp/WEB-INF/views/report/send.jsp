@@ -75,7 +75,6 @@ function cancelSend() {
 					<input type="hidden" name="num" value="${num}">
 					<input type="hidden" name="page" value="${page}">
 					<input type="hidden" name="senderName" value="관리자">
-					<input type="hidden" name="senderEmail" value="이메일">
 					<table class="table write-form mt-5">
 						<tr>
 							<td class="bg-warning-subtle col-sm-3" scope="row">받는 사람 E-Mail</td>
