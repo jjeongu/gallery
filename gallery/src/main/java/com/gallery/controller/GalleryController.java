@@ -8,7 +8,9 @@ import com.gallery.annotation.Controller;
 import com.gallery.annotation.RequestMapping;
 import com.gallery.annotation.RequestMethod;
 import com.gallery.dao.GalleryDAO;
+import com.gallery.dao.MemberDAO;
 import com.gallery.domain.GalleryDTO;
+import com.gallery.domain.MemberDTO;
 import com.gallery.domain.SessionInfo;
 import com.gallery.servlet.ModelAndView;
 import com.gallery.util.FileManager;
@@ -55,7 +57,14 @@ public class GalleryController {
 				int offset = (current_page - 1) * size;
 				if(offset < 0) offset = 0;
 				
-				List<GalleryDTO> list = dao.listPhoto(offset, size);
+				//List<GalleryDTO> list = dao.listPhoto(offset, size);
+				MemberDAO dao2 = new MemberDAO();
+                List<MemberDTO> artistList = dao2.artistList();
+                List<GalleryDTO> list1 = dao.listPhoto(offset, size, "PAT");
+                List<GalleryDTO> list2 = dao.listPhoto(offset, size, "MAT");
+				
+				
+				
 				
 				// 페이징
 				String cp = req.getContextPath();
@@ -64,7 +73,8 @@ public class GalleryController {
 				String paging = util.paging(current_page, total_page, listUrl);
 				
 				// 포워딩할 list에 전달할 속성
-				mav.addObject("list", list);
+				mav.addObject("list1", list1);
+				mav.addObject("list2", list2);
 				mav.addObject("dataCount", dataCount);
 				mav.addObject("articleUrl", articleUrl);
 				mav.addObject("page", current_page);
@@ -103,12 +113,24 @@ public class GalleryController {
 			}
 			
 			
+			
+			
 			FileManager fileManager = new FileManager();
 			
 			// 파일 저장 경로
 			String root = session.getServletContext().getRealPath("/");
 			String pathname = root + "uploads" + File.separator + "gallery";
 			String artistName=req.getParameter("artistName");
+			
+			
+			/*
+			// 작가 이름에 따라 디렉토리 분기
+			if ("PAT".equals(artistName)) {
+			    pathname = root + "uploads" + File.separator + "gallery1";
+			} else if ("MAT".equals(artistName)) {
+			    pathname = root + "uploads" + File.separator + "gallery2";
+			}
+			*/
 			
 			try {
 				GalleryDTO dto=new GalleryDTO();
@@ -149,6 +171,7 @@ public class GalleryController {
 			try {
 				long num = Long.parseLong(req.getParameter("num"));
 				
+				
 				GalleryDTO dto = dao.findById(num);
 				
 				if(dto == null) {
@@ -186,6 +209,8 @@ public class GalleryController {
 			String pathname = root + "uploads" + File.separator + "gallery";
 			
 			String page = req.getParameter("page");
+			
+			
 			
 					
 			try {
@@ -253,6 +278,9 @@ public class GalleryController {
 			
 			String root = session.getServletContext().getRealPath("/");
 			String pathname = root + "uploads" + File.separator + "gallery";
+		    // artistName 변수를 요청 파라미터에서 가져옵니다.
+		    String artistName = req.getParameter("artistName");
+			
 			
 			String page = req.getParameter("page");
 			
@@ -261,6 +289,7 @@ public class GalleryController {
 				
 				dto.setNum(Long.parseLong(req.getParameter("num")));
 				dto.setIntroduce(req.getParameter("introduce"));
+				dto.setMember_id(artistName);
 				
 				String img = req.getParameter("img");
 				dto.setImg(img);

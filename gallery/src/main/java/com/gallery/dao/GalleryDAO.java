@@ -72,46 +72,50 @@ public class GalleryDAO {
 	
 	
 	
-	public List<GalleryDTO> listPhoto(int offset, int size) {
-		List<GalleryDTO> list = new ArrayList<GalleryDTO>();
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		String sql;
-		
-		try {
-			sql = "SELECT num, p.member_id, Img, introduce,  "
-					+ " TO_CHAR(p.reg_date, 'YYYY-MM-DD') reg_date "
-					+ " FROM gallery p "
-					+ " JOIN member1 m ON p.member_id = m.member_id "
-					+ " ORDER BY num DESC " 
-					+ " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
-			pstmt = conn.prepareStatement(sql);
-			
-			pstmt.setInt(1, offset);
-			pstmt.setInt(2, size);
-			
-			rs = pstmt.executeQuery();
-			
-			while(rs.next()) {
-				GalleryDTO dto = new GalleryDTO();
-				
-				dto.setNum(rs.getLong("num"));
-				dto.setMember_id(rs.getString("member_id"));
-				dto.setImg(rs.getString("img"));
-				dto.setIntroduce(rs.getString("introduce"));
-				dto.setReg_date(rs.getString("reg_date"));
-				
-				list.add(dto);
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.close(rs);
-			DBUtil.close(pstmt);
-		}
-		
-		return list;
+	public List<GalleryDTO> listPhoto(int offset, int size, String artist) {
+        List<GalleryDTO> list = new ArrayList<GalleryDTO>();
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        String sql;
+
+        try {
+            sql = "SELECT num, p.member_id, Img, introduce, name,  "
+                    + " TO_CHAR(p.reg_date, 'YYYY-MM-DD') reg_date "
+                    + " FROM gallery p  "
+                    + " JOIN member1 m ON p.member_id = m.member_id "
+                    + " WHERE p.member_id = ? "
+                    + " ORDER BY num DESC " 
+                    + " OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ";
+            pstmt = conn.prepareStatement(sql);
+
+            pstmt.setString(1, artist);
+            pstmt.setInt(2, offset);
+            pstmt.setInt(3, size);
+            
+
+            rs = pstmt.executeQuery();
+
+            while(rs.next()) {
+                GalleryDTO dto = new GalleryDTO();
+
+                dto.setNum(rs.getLong("num"));
+                dto.setMember_id(rs.getString("member_id"));
+                dto.setImg(rs.getString("img"));
+                dto.setIntroduce(rs.getString("introduce"));
+                dto.setReg_date(rs.getString("reg_date"));
+                dto.setArtistName(rs.getString("name"));
+
+                list.add(dto);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DBUtil.close(rs);
+            DBUtil.close(pstmt);
+        }
+
+        return list;
 	}
 	
 	
@@ -126,7 +130,7 @@ public class GalleryDAO {
 			
 			try {
 				sql = "SELECT num, name, "
-						+ " Img, introduce, p.reg_date "
+						+ " Img, introduce, p.reg_date  "
 						+ " FROM gallery p "
 						+ " JOIN member1 m ON p.member_id = m.member_id "
 						+ " WHERE num  = ? ";
@@ -187,14 +191,15 @@ public class GalleryDAO {
 					String sql;
 					
 					try {
-						sql = "UPDATE gallery SET introduce=?, img=?"
+						sql = "UPDATE gallery SET introduce=?, img=?, member_id=? "
 								+ " where num = ? ";
 						
 						pstmt = conn.prepareStatement(sql);
 						
 						pstmt.setString(1, dto.getIntroduce());
 						pstmt.setString(2, dto.getImg());
-						pstmt.setLong(3,  dto.getNum());
+						pstmt.setString(3,  dto.getMember_id());
+						pstmt.setLong(4,  dto.getNum());
 						
 						pstmt.executeUpdate();
 						
