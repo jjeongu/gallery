@@ -42,7 +42,8 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-				<h3 class="border-bottom border-danger border-3"><i class="fa-solid fa-comment-dots"></i> 작가 게시판 </h3>
+				<h3><i class="fa-solid fa-comment-dots"></i> 작가 게시판 </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			<div class="body-main">
 				
 				<table class="table table-article">

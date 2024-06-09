@@ -60,43 +60,44 @@ function check() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 			<h3><i class="fa-solid fa-pen"></i> 작가게시판 </h3>
+			<hr class="border border-warning border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
 				<form name="Art_BoardForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">제 목</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">제 목</td>
 							<td>
 								<input type="text" name="subject" class="form-control" value="${dto.subject}">
 							</td>
 						</tr>
 	        
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작가명</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작가명</td>
 	 						<td>
 								<p class="form-control-plaintext">${sessionScope.member.userId}</p>
 							</td>
 						</tr>
 	
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">내 용</td>
 							<td>
 								<textarea name="content" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.content}</textarea>
 							</td>
 						</tr>
 						
 						<tr>
-							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+							<td class="bg-warning-subtle col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
 							<td> 
 								<input type="file" name="selectFile" class="form-control">
 							</td>
 						</tr>
 						<c:if test="${mode=='update'}">
 							<tr>
-								<td class="bg-light col-sm-2" scope="row">첨부된파일</td>
+								<td class="bg-warning-subtle col-sm-2" scope="row">첨부된파일</td>
 								<td> 
 									<p class="form-control-plaintext">
 										<c:if test="${not empty dto.saveFilename}">

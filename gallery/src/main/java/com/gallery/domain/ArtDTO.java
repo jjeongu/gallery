@@ -2,7 +2,6 @@ package com.gallery.domain;
 
 public class ArtDTO {
 
-	
 	private String member_id;
 	private String birth;
 	private String career;
@@ -11,7 +10,7 @@ public class ArtDTO {
 	private String img;
 	private String upload_img;
 	private String nickname;
-	
+	private String name;
 	
 	
 	public String getMember_id() {
@@ -62,6 +61,11 @@ public class ArtDTO {
 	public void setNickname(String nickname) {
 		this.nickname = nickname;
 	}
-	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 }

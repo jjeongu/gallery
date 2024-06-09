@@ -8,8 +8,8 @@
 </div>
 
 <table class='table table-borderless reply-list'>
-	<c:forEach var="dto" items="${listReply}">
-		<tr class='list-header'>
+	<c:forEach var="dto" items="${listReply}" >
+		<tr class="table-warning" class='list-header '>
 			<td width='50%'>
 				<span class='bold'>${dto.name}</span>
 			</td>
