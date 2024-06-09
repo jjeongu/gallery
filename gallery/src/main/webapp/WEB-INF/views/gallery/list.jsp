@@ -11,6 +11,11 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
+
+
+
+
+
 .body-container {
 	max-width: 100%;
 	background-color: lightred;

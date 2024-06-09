@@ -55,8 +55,9 @@
 <main>
 	<div class="container">
 		<div class="body-container">
-			<div >
-				<h3 class="border-bottom border-warning border-3"><i class="fa-solid fa-pen"></i> 팬게시판 </h3>
+			<div>
+				<h3><i class="fa-solid fa-pen"></i> 팬 게시판 </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
