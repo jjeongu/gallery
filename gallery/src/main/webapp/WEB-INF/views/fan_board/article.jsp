@@ -6,6 +6,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>팬 게시판 본문</title>
 
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
@@ -18,10 +19,7 @@
 }
 
 .table-article img { max-width: 100%; }
-
 </style>
-
-
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
 
@@ -30,13 +28,13 @@
 
 <script type="text/javascript">
 	//deleteArt_board 라는 함수를 정의
-	function deleteArt_board() {
+	function deleteFan_Board() {
 		
 	    if(confirm("게시글을 삭제 하시겠습니까 ? ")) {
 	    	//삭제 요청에 필요한 쿼리 문자열을 생성
 		    let query = "num=${dto.num}&${query}";
 		    //art_board/delete(+쿼리랑)로 보낼 url생성
-		    let url = "${pageContext.request.contextPath}/art_board/delete?" + query;
+		    let url = "${pageContext.request.contextPath}/fan_board/delete?" + query;
 		    //생성된 URL로 사용자를 이동시켜 삭제 요청을 실행
 	    	location.href = url;
 	    }
@@ -57,8 +55,8 @@
 <main>
 	<div class="container">
 		<div class="body-container">
-			<div class="body-title">
-				<h3 class="border-bottom border-danger border-3"><i class="fa-solid fa-comment-dots"></i> FAN BOARD </h3>
+			<div >
+				<h3 class="border-bottom border-warning border-3"><i class="fa-solid fa-pen"></i> 팬게시판 </h3>
 			</div>
 			
 			<div class="body-main">
@@ -90,7 +88,7 @@
 						
 						<tr>
 							<td colspan="2" class="text-center p-3" style="border-bottom: none;">
-								<button type="button" class="btn btn-outline-secondary btnSendfan_boardLike" title="좋아요"><i class="fa-solid fa-heart-circle-plus" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.likeCount}</span></button>
+								<button type="button" class="btn btn-outline-secondary btnSendFan_BoardLike" title="좋아요"><i class="fa-solid fa-heart-circle-plus" style="color: ${isUserLike?'blue':'black'}"></i>&nbsp;&nbsp;<span id="boardLikeCount">${dto.likeCount}</span></button>
 							</td>
 						</tr>
 						
@@ -134,16 +132,16 @@
 									<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/fan_board/update?num=${dto.num}&page=${page}';">수정</button>
 								</c:when>
 								<c:otherwise>
-									<button type="button" class="btn btn-light" disabled>수정</button>
+									<button type="button" class="btn btn-light" style="display: none "  >수정</button>
 								</c:otherwise>
 							</c:choose>
 					    	
 							<c:choose>
 					    		<c:when test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
-					    			<button type="button" class="btn btn-light" onclick="deleteFan_board();">삭제</button>
+					    			<button type="button" class="btn btn-light" onclick="deleteFan_Board();">삭제</button>
 					    		</c:when>
 					    		<c:otherwise>
-					    			<button type="button" class="btn btn-light" disabled>삭제</button>
+					    			<button type="button" class="btn btn-light" style="display: none " >삭제</button>
 					    		</c:otherwise>
 					    	</c:choose>
 						</td>
@@ -473,7 +471,7 @@ $(function() {
 			if(state === "true"){
 				let likeCount = data.likeCount;
 				
-				$btn.parent("td").children().eq(0).find("span").html(likeCount);
+				$btn.parent("td").children().eq(1).find("span").html(likeCount);
 			} else if(state = "liked") {
 				alert("게시물 공감 여부는 한번만 가능합니다");
 			} else {

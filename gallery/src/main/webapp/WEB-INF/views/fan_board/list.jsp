@@ -34,6 +34,20 @@
 .page-navigation li {
     list-style-type: none;
 }
+
+h3 {
+	font-family: DNFBitBitv2;
+}
+
+
+</style>
+
+<c:import url="/WEB-INF/views/layout/staticHeader.jsp"/>
+
+<style type="text/css">
+.body-container {
+	max-width: 800px;
+}
 </style>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
@@ -57,18 +71,17 @@ function searchList() {
 <div class="container">
 		<div class="body-container">	
 			<div>
-				<h3><i class="fa-solid fa-comment-dots"></i> FAN BOARD </h3>
-				<hr class="border border-danger border-2 opacity-75">
+				<h3 class="border-bottom border-warning border-3"><i class="fa-solid fa-pen"></i> 팬 게시판 </h3>
 			</div>
 			
-						<div class="body-main">
+			<div class="body-main">
 		        <div class="row board-list-header">
 		            <div class="col-auto me-auto">${dataCount}개(${page}/${total_page} 페이지)</div>
 		            <div class="col-auto">&nbsp;</div>
 		        </div>				
 				
 				<table class="table table-hover board-list">
-					<thead class="table-light">
+					<thead class="table-warning">
 						<tr>
 							<th class="num">번호</th>
 							<th class="subject">제목</th>

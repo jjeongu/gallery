@@ -468,9 +468,9 @@ public class Fan_BoardController {
 			}
 		}
 		
-		// 강좌 공감 저장 - AJAX : JSON
+		// 게시글 공감 저장 - AJAX : JSON
 		@ResponseBody
-		@RequestMapping(value = "/fan_board/insertfan_boardLike", method = RequestMethod.POST)
+		@RequestMapping(value = "/fan_board/insertFan_BoardLike", method = RequestMethod.POST)
 		public Map<String, Object> insertfan_boardLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 			Map<String, Object> model = new HashMap<String, Object>();
 			
@@ -487,7 +487,7 @@ public class Fan_BoardController {
 				String isNoLike = req.getParameter("isNoLike");
 				
 				if(isNoLike.equals("true")) {
-					dao.insertFan_BoardLike(num, isNoLike);
+					dao.insertFan_BoardLike(num, info.getUserId()); // 영진아... 누나 힘들어.. 이거 왜 잘못했냐구 ........... 임뫄...
 				}else {
 					dao.deleteFan_BoardLike(num, info.getUserId());
 				}
@@ -576,6 +576,7 @@ public class Fan_BoardController {
 				long num = Long.parseLong(req.getParameter("num"));
 				dto.setNum(num);
 				dto.setMember_id(info.getUserId());
+				
 				dto.setContent(req.getParameter("content"));
 				String answer = req.getParameter("answer");
 				if(answer!=null) {

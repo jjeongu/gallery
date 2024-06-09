@@ -63,22 +63,22 @@ function deleteFile(num) {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
-			<h3><i class="fa-solid fa-pen"></i> 팬 게시판 </h3>
+			<div >
+			<h3 class="border-bottom border-warning border-3"><i class="fa-solid fa-pen"></i> 팬 게시판 </h3>
 			</div>
 			
 			<div class="body-main">
 				<form name="Fan_BoardForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">제 목</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">제 목</td>
 							<td>
 								<input type="text" name="subject" class="form-control" value="${dto.subject}">
 							</td>
 						</tr>
 	        
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작가명</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작가명</td>
 	 						<td>
 								<select name="artistName">
 									<option value="PAT">패트</option>
@@ -88,21 +88,21 @@ function deleteFile(num) {
 						</tr>
 	
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">내 용</td>
 							<td>
 								<textarea name="content" id="ir1" class="form-control" style="width: 95%; height: 270px;">${dto.content}</textarea>
 							</td>
 						</tr>
 						
 						<tr>
-							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+							<td class="bg-warning-subtle col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
 							<td> 
 								<input type="file" name="selectFile" class="form-control">
 							</td>
 						</tr>
 						<c:if test="${mode=='update'}">
 							<tr>
-								<td class="bg-light col-sm-2" scope="row">첨부된파일</td>
+								<td class="bg-warning-subtle col-sm-2" scope="row">첨부된파일</td>
 								<td> 
 									<p class="form-control-plaintext">
 										<c:if test="${not empty dto.saveFilename}">

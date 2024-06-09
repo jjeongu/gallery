@@ -86,7 +86,6 @@ public class Fan_BoardDAO {
 				sql = "SELECT NVL(COUNT(*),0) "
 						+ " FROM fan_board fb "
 						+ " JOIN Fan f ON fb.member_id = f.member_id ";
-				
 				if(schType.equals("all")) {
 					sql += " WHERE INSTR(subject, ? ) >= 1 OR INSTR(content, ?) >= 1 ";
 				} else if ( schType.equals("reg_date")) {
@@ -169,10 +168,6 @@ public class Fan_BoardDAO {
 		}
 	
 	
-		
-		
-		
-		
 		//팬게시판 리스트
 		public List<Fan_BoardDTO> listFan_Board(int offset, int size, String schType, String kwd) {
 			List<Fan_BoardDTO> list = new ArrayList<Fan_BoardDTO>();
@@ -258,9 +253,7 @@ public class Fan_BoardDAO {
 			}
 		}
 	
-		
-		
-		
+
 		// 해당 게시판 보기
 		public Fan_BoardDTO findById(long num) {
 			Fan_BoardDTO dto = null;
@@ -476,8 +469,6 @@ public class Fan_BoardDAO {
 		}
 		
 		
-		
-		
 		// 게시판 삭제
 		public void deleteFan_Board(long num, String member_id) throws SQLException {
 			PreparedStatement pstmt = null;
@@ -491,6 +482,7 @@ public class Fan_BoardDAO {
 					pstmt.setLong(1, num);
 					
 					pstmt.executeUpdate();
+					
 				}else {
 					sql = "DELETE FROM fan_board WHERE num =? AND member_id = ?" ;
 					pstmt = conn.prepareStatement(sql);
@@ -508,9 +500,7 @@ public class Fan_BoardDAO {
 				DBUtil.close(pstmt);
 			}
 		}
-		
-		
-		
+
 		
 		// 로그인 유저의 게시판 공감 유무 
 		public boolean isUserFan_BoardLike(long num, String member_id) {
@@ -544,7 +534,6 @@ public class Fan_BoardDAO {
 			return result;
 		}
 		
-		
 		// 게시판 공감 추가 
 		public void insertFan_BoardLike(long num, String member_id) throws SQLException {
 			PreparedStatement pstmt = null;
@@ -566,8 +555,6 @@ public class Fan_BoardDAO {
 				DBUtil.close(pstmt);
 			}
 		}
-		
-		
 		
 		
 		// 게시판 공감 삭제
@@ -680,9 +667,7 @@ public class Fan_BoardDAO {
 			
 			return result;
 		}
-	
-		
-		
+
 		
 		// 게시판 댓글 리스트
 		public List<Fan_Board_ReplyDTO> listReply(long num, int offset, int size) {
@@ -693,7 +678,7 @@ public class Fan_BoardDAO {
 			
 			try {
 				sb.append(" SELECT r.r_num, r.member_id, r.num,name, r.content, r.reg_date, ");
-				sb.append(" NVL(a.answerCount,0) answerCount, a.answer");
+				sb.append(" NVL(a.answerCount,0) answerCount, a.answer, NVL(likeCount, 0) likeCount ");
 				sb.append(" FROM Fan_Board_Reply r ");
 				sb.append(" JOIN Member1 m ON r.member_id = m.member_id");
 				sb.append(" LEFT OUTER JOIN ( ");
@@ -702,6 +687,14 @@ public class Fan_BoardDAO {
 				sb.append(" 	WHERE answer != 0 ");
 				sb.append(" GROUP BY answer ");
 				sb.append(" ) a ON r.r_num = a.answer ");
+				
+				// 유진
+				sb.append(" LEFT OUTER  JOIN ( ");
+				sb.append(" SELECT r_num, COUNT(*) likeCount ");
+				sb.append(" from Fan_Board_Reply_Like ");
+				sb.append(" GROUP BY r_num ");
+				sb.append(" ) b ON r.r_num = b.r_num ");
+				
 				sb.append(" WHERE r.num =? AND r.answer = 0");
 				sb.append(" ORDER BY r.r_num DESC ");
 				sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
@@ -725,6 +718,7 @@ public class Fan_BoardDAO {
 					dto.setReg_date(rs.getString("reg_date"));
 					dto.setAnswer(rs.getLong("answer"));
 					dto.setAnswerCount(rs.getInt("answerCount"));
+					dto.setLikeCount(rs.getInt("likeCount"));
 					
 					list.add(dto);
 				}
@@ -777,10 +771,6 @@ public class Fan_BoardDAO {
 			}
 			return dto;
 		}
-		
-		
-		
-		
 		
 		// 게시판 댓글 삭제
 		public void deleteReply(long r_num, String member_id) throws SQLException {
@@ -897,13 +887,12 @@ public class Fan_BoardDAO {
 				}
 		
 		
-		
 				public void insertReplyLike(Fan_Board_ReplyDTO dto) throws SQLException {
 					PreparedStatement pstmt = null;
 					String sql;
 					
 					try {
-						sql = "INSERT INTO Fan_Board_Like(r_num, member_id) VALUES (?, ?)";
+						sql = "INSERT INTO Fan_Board_Reply_Like(r_num, member_id) VALUES (?, ?)";
 						pstmt = conn.prepareStatement(sql);
 						
 						pstmt.setLong(1, dto.getR_num());
