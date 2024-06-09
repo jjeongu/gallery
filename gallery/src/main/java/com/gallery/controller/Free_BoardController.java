@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -164,12 +165,6 @@ public class Free_BoardController {
 			dto.setSubject(req.getParameter("subject"));
 			dto.setContent(req.getParameter("content"));
 			
-			if(req.getParameter("notice")!=null) {
-				dto.setNotice(Integer.parseInt(req.getParameter("notice")));
-			} else {
-				dto.setNotice(0);
-			}
-			
 			Part p = req.getPart("selectFile");
 			MyMultipartFile multiFile = fileManager.doFileUpload(p, pathname);
 			if (multiFile != null) {
@@ -221,11 +216,12 @@ public class Free_BoardController {
 				return new ModelAndView("redirect:/free_board/list?" + query);
 			}
 			
+			HttpSession session = req.getSession();
+			SessionInfo info = (SessionInfo)session.getAttribute("member");
+			boolean isUserFree_boardLike = dao.isUserFree_boardLike(num, info.getUserId());
+			
 			Free_BoardDTO prevDto = dao.findByPrev(dto.getNum(), schType, kwd);
 			Free_BoardDTO nextDto = dao.findByNext(dto.getNum(), schType, kwd);
-			
-			//HttpSession session = req.getSession();
-			//SessionInfo info = (SessionInfo)session.getAttribute("member");
 			
 			ModelAndView mav = new ModelAndView("free_board/article");
 			
@@ -234,6 +230,7 @@ public class Free_BoardController {
 			mav.addObject("query", query);
 			mav.addObject("prevDto", prevDto);
 			mav.addObject("nextDto", nextDto);
+			mav.addObject("isUserFree_boardLike", isUserFree_boardLike);
 			
 			return mav;
 			
@@ -454,7 +451,7 @@ public class Free_BoardController {
 		SessionInfo info = (SessionInfo)session.getAttribute("member");
 		
 		String state = "false";
-		long boardLikeCount = 0;
+		long free_boardLikeCount = 0;
 		
 		try {
 			long num = Long.parseLong(req.getParameter("num"));
@@ -466,7 +463,7 @@ public class Free_BoardController {
 				dao.deleteFree_board_like(num, info.getUserId());
 			}
 			
-			boardLikeCount = dao.countFree_board_Like(num);
+			free_boardLikeCount = dao.countFree_board_Like(num);
 			
 			state = "true";
 			
@@ -475,7 +472,7 @@ public class Free_BoardController {
 		}
 		
 		model.put("state", state);
-		model.put("boardLikeCount", boardLikeCount);
+		model.put("free_boardLikeCount", free_boardLikeCount);
 		
 		return model;
 	}
@@ -550,12 +547,16 @@ public class Free_BoardController {
 			
 			for(Free_Board_ReplyDTO dto : listReply) {
 				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+				dto.setContent(dto.getContent().replaceAll(" ", "&nbsp;"));
 			}
 			
 			String paging = util.pagingMethod(current_page, total_page, "listPage");
 
 			ModelAndView mav = new ModelAndView("free_board/listReply");
 
+			
+			int likeCount = dao.countReplyLike(num);
+			mav.addObject("likeCount", likeCount);
 			mav.addObject("listReply", listReply);
 			mav.addObject("pageNo", current_page);
 			mav.addObject("replyCount", replyCount);
@@ -607,6 +608,7 @@ public class Free_BoardController {
 			
 			for(Free_Board_ReplyDTO dto : listReplyAnswer) {
 				dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+				dto.setContent(dto.getContent().replaceAll(" ", "&nbsp;"));
 			}
 			
 			ModelAndView mav = new ModelAndView("free_board/listReplyAnswer");
@@ -635,6 +637,44 @@ public class Free_BoardController {
 		
 		Map<String, Object> model = new HashMap<String, Object>();
 		model.put("count", count);
+		
+		return model;
+	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/free_board/insertReplyLike", method = RequestMethod.POST)
+	public Map<String, Object> insertReplyLike(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		Map<String, Object> model = new HashMap<String, Object>();
+		
+		Free_BoardDAO dao = new Free_BoardDAO();
+		
+		HttpSession session = req.getSession();
+		SessionInfo info = (SessionInfo)session.getAttribute("member");
+		
+		String state = "false";
+		int likeCount = 0;
+		try {
+			int r_num = Integer.parseInt(req.getParameter("r_num"));
+
+			Free_Board_ReplyDTO dto = new Free_Board_ReplyDTO();
+			dto.setR_num(r_num);
+			dto.setMember_id(info.getUserId());
+			
+			dao.insertReplyLike(dto);
+			
+			likeCount = dao.countReplyLike(r_num);
+			
+			state = "true";
+		} catch (SQLException e) {
+			if(e.getErrorCode() == 1) {
+				state = "liked";
+			}	
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.put("state", state);
+		model.put("likeCount", likeCount);
 		
 		return model;
 	}

@@ -45,7 +45,7 @@ public class FaqDAO {
 		String sql;
 		
 		try {
-			sql = " select num, subject, content from faq ";
+			sql = " select num, subject, content from faq order by num ";
 			
 			pstmt = conn.prepareStatement(sql);
 			rs = pstmt.executeQuery();

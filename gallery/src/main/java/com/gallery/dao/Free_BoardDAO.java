@@ -294,9 +294,14 @@ public class Free_BoardDAO {
 		
 		try {
 			sql = " select f.num, f.member_id, hitCount, f.reg_date, subject, content,"
-					+ " saveFileName, uploadFileName, fileSize, notice "
+					+ " saveFileName, uploadFileName, fileSize, notice, "
+					+ " NVL(free_boardLikeCount, 0) free_boardLikeCount "
 					+ " from free_board f  "
-					+ " join member1 m on f.member_id = m.member_id"
+					+ " join member1 m on f.member_id = m.member_id "
+					+ " LEFT OUTER JOIN ( "
+					+ " SELECT num, count(*) free_boardLikeCount FROM free_board_like "
+					+ " group by num "
+					+ " ) fl on f.num = fl.num "
 					+ " where f.num = ? ";
 			pstmt = conn.prepareStatement(sql);
 			
@@ -318,6 +323,7 @@ public class Free_BoardDAO {
 				dto.setFileSize(rs.getLong("fileSize"));
 				dto.setNotice(rs.getInt("notice"));
 				
+				dto.setFree_boardLikeCount(rs.getInt("free_boardLikeCount"));
 			}
 			
 		} catch (SQLException e) {
@@ -678,11 +684,25 @@ public class Free_BoardDAO {
 		StringBuilder sb = new StringBuilder();
 		
 		try {
-			sb.append(" select r_num, f.member_id, num, content, f.reg_date, f.member_id ");
+			sb.append(" select f.r_num, f.member_id, f.num, f.content, f.reg_date, name, ");
+			sb.append(" nvl(fr.answerCount,0) answerCount, fr.answer, nvl(likeCount, 0) likeCount ");
 			sb.append(" from free_board_reply f ");
 			sb.append(" join member1 m on f.member_id = m.member_id ");
-			sb.append(" where num = ? AND f.answer=0 ");
-			sb.append(" ORDER BY r_num DESC ");
+			sb.append(" left outer join ( ");
+			sb.append(" select answer, count(*) answerCount ");
+			sb.append(" from free_board_reply ");
+			sb.append(" where answer !=0 ");
+			sb.append(" group by answer ");
+			sb.append(" ) fr on f.r_num = fr.answer ");
+			
+			sb.append(" left outer join ( ");
+			sb.append(" select r_num, count(*) likeCount ");
+			sb.append(" from free_board_reply_like ");
+			sb.append(" group by r_num ");
+			sb.append(" ) fl on f.r_num = fl.r_num ");
+			
+			sb.append(" where f.num = ? AND f.answer=0 ");
+			sb.append(" ORDER BY f.r_num DESC ");
 			sb.append(" OFFSET ? ROWS FETCH FIRST ? ROWS ONLY ");
 			
 			pstmt = conn.prepareStatement(sb.toString());
@@ -696,16 +716,19 @@ public class Free_BoardDAO {
 			while(rs.next()) {
 				Free_Board_ReplyDTO dto = new Free_Board_ReplyDTO();
 				
-				dto.setR_num(rs.getInt("r_num"));
-				dto.setNum(rs.getInt("num"));
+				dto.setR_num(rs.getLong("r_num"));
 				dto.setMember_id(rs.getString("member_id"));
+				dto.setNum(rs.getLong("num"));
 				dto.setContent(rs.getString("content"));
 				dto.setReg_date(rs.getString("reg_date"));
+				dto.setName(rs.getString("name"));
+				dto.setAnswerCount(rs.getInt("answerCount"));
+				dto.setAnswer(rs.getLong("answer"));
+				dto.setLikeCount(rs.getInt("likeCount"));
 				
 				list.add(dto);
 				
 			}
-			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -724,7 +747,7 @@ public class Free_BoardDAO {
 		String sql;
 		
 		try {
-			sql = " select r_num, num, f.member_id, content, reg_date"
+			sql = " select r_num, num, f.member_id, content, reg_date, name"
 					+ " from free_board_reply f"
 					+ " join member1 m on f.member_id = m.member_id"
 					+ " where r_num = ? ";
@@ -743,6 +766,8 @@ public class Free_BoardDAO {
 				dto.setMember_id(rs.getString("member_id"));
 				dto.setContent(rs.getString("content"));
 				dto.setReg_date(rs.getString("reg_date"));
+				dto.setName(rs.getString("name"));
+
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -793,7 +818,7 @@ public class Free_BoardDAO {
 		String sql;
 		
 		try {
-			sql = " select r_num, num, f.member_id, content, f.reg_date, answer "
+			sql = " select r_num, num, f.member_id, content, f.reg_date, answer, name "
 					+ " from free_board_reply f "
 					+ " join member1 m on f.member_id = m.member_id "
 					+ " where answer = ? "
@@ -814,6 +839,8 @@ public class Free_BoardDAO {
 				dto.setContent(rs.getString("content"));
 				dto.setReg_date(rs.getString("reg_date"));
 				dto.setAnswer(rs.getLong("answer"));
+				dto.setName(rs.getString("name"));
+
 				
 				list.add(dto);
 			}
@@ -855,4 +882,53 @@ public class Free_BoardDAO {
 		
 		return result;
 	}
+	
+	public void insertReplyLike(Free_Board_ReplyDTO dto) throws SQLException {
+		PreparedStatement pstmt = null;
+		String sql;
+		
+		try {
+			sql = " insert into free_board_reply_like(r_num, member_id) values(?, ?) ";
+		
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, dto.getR_num());;
+			pstmt.setString(2, dto.getMember_id());
+			
+			pstmt.executeUpdate();
+			
+		} catch (SQLException e) {
+			throw e;
+		} finally {
+			DBUtil.close(pstmt);
+		}
+	}
+	
+	public int countReplyLike(long r_num) {
+		int count = 0;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = " select nvl(count(*), 0) likeCount from free_board_reply_like where r_num = ? ";
+			pstmt = conn.prepareStatement(sql);
+			
+			pstmt.setLong(1, r_num);				
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				count = rs.getInt("likeCount");
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return count;
+	}
+	
 }

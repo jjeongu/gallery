@@ -7,16 +7,13 @@
 		<div class='answer-article-header'>
 			<div class='answer-left'>└</div>
 			<div class='answer-right'>
-				<div><span class='bold'>${vo.member_id}</span></div>
+				<div><span class='bold'>${vo.name}</span></div>
 				<div>
 					<span>${vo.reg_date}</span> |
 					<c:choose>
 						<c:when test="${sessionScope.member.userId==vo.member_id || sessionScope.member.member_id=='admin'}">
 							<span class='deleteReplyAnswer' data-replyNum='${vo.r_num}' data-answer='${vo.answer}'>삭제</span>
 						</c:when>
-						<c:otherwise>
-							<span class='notifyReply'>신고</span>
-						</c:otherwise>
 					</c:choose>
 				</div>
 			</div>

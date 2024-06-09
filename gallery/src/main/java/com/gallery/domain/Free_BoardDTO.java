@@ -16,15 +16,7 @@ public class Free_BoardDTO {
 	private String saveFileName;
 	private String uploadFileName;
 	private long fileSize;
-	
-	private int likeCount; 
-	
-	public int getLikeCount() {
-		return likeCount;
-	}
-	public void setLikeCount(int likeCount) {
-		this.likeCount = likeCount;
-	}
+
 	public String getName() {
 		return name;
 	}

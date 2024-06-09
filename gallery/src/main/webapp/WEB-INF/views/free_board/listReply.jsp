@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt"%>
 
 <div class='reply-info'>
-	<span class='reply-count'>질문 ${replyCount}개</span>
+	<span class='reply-count'>댓글${replyCount}개</span>
 	<span>[목록, ${pageNo}/${total_page} 페이지]</span>
 </div>
 
@@ -11,17 +11,14 @@
 	<c:forEach var="vo" items="${listReply}">
 		<tr class='list-header'>
 			<td width='50%'>
-				<span class='bold'>${vo.member_id}</span>
+				<span class='bold'>${vo.name}</span>
 			</td>
 			<td width='50%' align='right'>
-				<span>${vo.reg_date}</span> |
+				<span>${vo.reg_date}</span>
 				<c:choose>
 					<c:when test="${sessionScope.member.userId==vo.member_id || sessionScope.member.userId=='admin'}">
 						<span class='deleteReply' data-replyNum='${vo.r_num}' data-pageNo='${pageNo}'>삭제</span>
 					</c:when>
-					<c:otherwise>
-						<span class='notifyReply'>신고</span>
-					</c:otherwise>
 				</c:choose>
 			</td>
 		</tr>
@@ -32,6 +29,7 @@
 		<tr>
 			<td>
 				<button type='button' class='btn btn-light btnReplyAnswerLayout' data-replyNum='${vo.r_num}'>답글 <span id="answerCount${vo.r_num}"></span></button>
+				<button type='button' class='btn btn-light btnSendReplyLike' data-r_num='${vo.r_num}' data-replyLike='1' title="좋아요"><i class="bi bi-hand-thumbs-up"></i> <span>${dto.likeCount}</span></button>
 			</td>
 			<td align='right'>
 				&nbsp;

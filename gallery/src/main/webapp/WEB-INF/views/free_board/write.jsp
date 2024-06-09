@@ -13,6 +13,9 @@
 .body-container {
 	max-width: 800px;
 }
+
+
+
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
@@ -34,6 +37,8 @@ function sendOk() {
         f.content.focus();
         return;
     }
+    
+    f.content.value = f.content.value.replace(/\n/g, "<br>");
 
     f.action = "${pageContext.request.contextPath}/free_board/${mode}";
     f.submit();
@@ -42,7 +47,7 @@ function sendOk() {
 <c:if test="${mode == 'update'}">
 <script type="text/javascript">
 function deleteFile(fileNum) {
-	if(! confirm('파일 삭제할거임?')){
+	if(! confirm('파일을 삭제하시겠습니까?')){
 		return;
 	}
 	
@@ -61,29 +66,30 @@ function deleteFile(fileNum) {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 				<h3>🔺 자유 게시판 </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
 				<form name="boardForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">제 목</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">제 목</td>
 							<td>
 								<input type="text" name="subject" class="form-control" value="${dto.subject}">
 							</td>
 						</tr>
 	        
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작성자명</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작성자명</td>
 	 						<td>
 								<p class="form-control-plaintext">${sessionScope.member.userName}</p>
 							</td>
 						</tr>
 						
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">공지선택</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">공지선택</td>
 							<td>
 								<input type="checkbox" class="form-check-input" name="notice" id="notice" value="1" ${dto.notice==1 ? "checked ":"" } >
 								<label class="form-check-label" for="notice"> 공지</label>
@@ -91,21 +97,21 @@ function deleteFile(fileNum) {
 						</tr>
 	
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">내 용</td>
 							<td>
 								<textarea name="content" id="content" class="form-control">${dto.content}</textarea>
 							</td>
 						</tr>
 						
 						<tr>
-							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+							<td class="bg-warning-subtle col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
 							<td> 
 								<input type="file" name="selectFile" class="form-control">
 							</td>
 						</tr>
 						<c:if test="${mode=='update'}">
 							<tr>
-								<td class="bg-light col-sm-2" scope="row">첨부된파일</td>
+								<td class="bg-warning-subtle col-sm-2" scope="row">첨부된파일</td>
 								<td> 
 									<p class="form-control-plaintext">
 										<c:if test="${not empty dto.saveFileName}">

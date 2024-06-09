@@ -6,7 +6,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>spring</title>
+<title>FAQ</title>
 
 <c:import url="/WEB-INF/views/layout/staticHeader.jsp"/>
 
@@ -23,7 +23,7 @@ margin-top: 10px;}
 <c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
 <script type="text/javascript">
 	function deleteFaq(num) {
-		if(confirm("게시글 삭제 갈겨~~~~")){
+		if(confirm("게시글 삭제 하시겠습니까?")){
 			let query = "num="+num;
 			let url = "${pageContext.request.contextPath}/faq/delete?" + query;
 			location.href = url;
@@ -47,8 +47,9 @@ margin-top: 10px;}
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 				<h3> 🔺 FAQ </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
@@ -61,7 +62,7 @@ margin-top: 10px;}
 							</button>
 						</h2>
 						<div id="flush-collapse${status.index}" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
-							<div class="accordion-body">
+							<div class="accordion-body" style="color: DarkRed">
 							${dto.content}
 								
 								<c:choose>
@@ -83,7 +84,7 @@ margin-top: 10px;}
 			</div>
 				<div class="col text-end" id="ex">
 					<c:if test="${sessionScope.member.userRole == 0}">
-						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/free_board/write';">글올리기</button>
+						<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/faq/write';">글올리기</button>
 					</c:if>
 				</div>
 		</div>
