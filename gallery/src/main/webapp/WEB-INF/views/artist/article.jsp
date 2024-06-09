@@ -94,10 +94,11 @@ font-family: ONE-Mobile-POP;
         <div class="col-6" >
             <h1 class="fs-1 , fw-bold" >Profile</h1>
            	<p class="fs-3 , fw-bold" > ${dto.name} </p> 
-            <p class="fs-5" > ${dto.birth} </p>
-            <p class="fs-5"  >
+            <p class="fs-5" > Birth :  ${dto.birth} </p>
+            <p class="fs-5"  > Site :
             	<a href="#" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><i class="fa-brands fa-square-instagram"></i></a> |
-            	<a href="#" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><i class="fa-brands fa-twitter "></i></a>
+            	<a href="#" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><i class="fa-brands fa-twitter "></i></a> |
+            	<a href="#" class="link-danger link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"><i class="fa-brands fa-youtube"></i></a>
             </p>
         </div>
         
