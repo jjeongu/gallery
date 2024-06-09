@@ -158,6 +158,9 @@ public class NoticeController {
 				return new ModelAndView("redirect:/notice/list?page="+page+"num="+num);
 			}
 			
+			dto.setContent(dto.getContent().replaceAll(" ", "&nbsp;"));
+			dto.setContent(dto.getContent().replaceAll("\n", "<br>"));
+			
 			NoticeDTO prevDto=dao.findByPrev(num, schType, kwd);
 			NoticeDTO nextDto=dao.findByNext(num, schType, kwd);
 			List<NoticeDTO> listFile=dao.listNoticeFile(num);

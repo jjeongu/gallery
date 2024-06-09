@@ -63,26 +63,26 @@ function sendOk() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<h3 class="border-bottom border-danger border-3"><i class="bi bi-info-circle"></i> 공지사항 </h3>
-			
+			<h3><i class="bi bi-info-circle"></i> 공지사항 </h3>
+			<hr class="border border-danger border-2 opacity-75">
 			<div class="body-main">
 				<form name="noticeForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">제 목</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">제 목</td>
 							<td>
 								<input type="text" name="subject" class="form-control" value="${dto.subject}">
 							</td>
 						</tr>	        
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작성자명</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작성자명</td>
 	 						<td>
 								<p class="form-control-plaintext">${sessionScope.member.userName}</p>
 							</td>
 						</tr>
 	
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">내 용</td>
 							<td>
 								<textarea name="content" id="content" class="form-control">${dto.content}</textarea>
 							</td>
@@ -92,7 +92,7 @@ function sendOk() {
 							<input type="hidden" name="num" value="${dto.num}">
 						</c:if>
 						<tr>
-							<td class="bg-light col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
+							<td class="bg-warning-subtle col-sm-2">첨&nbsp;&nbsp;&nbsp;&nbsp;부</td>
 							<td> 
 								<input type="file" name="selectFile" multiple class="form-control">
 							</td>
@@ -100,7 +100,7 @@ function sendOk() {
 						<c:if test="${mode=='update'}">
 							<c:forEach var="vo" items="${listFile}">
 								<tr>
-									<td class="bg-light col-sm-2">첨부된파일</td>
+									<td class="bg-warning-subtle col-sm-2">첨부된파일</td>
 									<td>
 										<p class="form-control-plaintext">
 											<a href="javascript:deleteFile(${vo.fileNum})"><i class="bi bi-trash"></i></a>

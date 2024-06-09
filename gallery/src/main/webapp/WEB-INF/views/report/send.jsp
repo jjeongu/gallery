@@ -67,8 +67,8 @@ function cancelSend() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<h3 class="border-bottom border-danger border-3"><i class="bi bi-exclamation-triangle"></i> 신고 및 건의사항 </h3>
-			
+			<h3><i class="bi bi-exclamation-triangle"></i> 신고 및 건의사항 </h3>
+			<hr class="border border-danger border-2 opacity-75">
 			
 			<div class="body-main">
 				<form name="mailForm" method="post">				
@@ -78,21 +78,21 @@ function cancelSend() {
 					<input type="hidden" name="senderEmail" value="이메일">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="table-light col-sm-3" scope="row">받는 사람 E-Mail</td>
+							<td class="bg-warning-subtle col-sm-3" scope="row">받는 사람 E-Mail</td>
 							<td>
 								<input type="text" name="receiverEmail" class="form-control" value="${email}">
 							</td>
 						</tr>
 
 						<tr>
-							<td class="table-light col-sm-3" scope="row">제 목</td>
+							<td class="bg-warning-subtle col-sm-3" scope="row">제 목</td>
 							<td>
 								<input type="text" name="subject" class="form-control" value="${name}님 신고가 접수되었습니다.">
 							</td>
 						</tr>
 	
 						<tr>
-							<td class="table-light col-sm-3" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-3" scope="row">내 용</td>
 							<td>
 								<textarea name="content" class="form-control"></textarea>
 							</td>

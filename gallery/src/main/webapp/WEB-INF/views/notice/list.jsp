@@ -21,6 +21,9 @@
 	.regdate_small {
 		display: block;
 	}
+	input[type=checkbox], .board-list-footer>div>button {
+		display: none;
+	}
 }
 .body-container {
 	max-width: 800px;
@@ -75,7 +78,8 @@
 <main>
 	<div class="container">
 		<div class="body-container">
-			<h3 class="border-bottom border-danger border-3"><i class="bi bi-info-circle"></i> 공지사항 </h3>
+			<h3><i class="bi bi-info-circle"></i> 공지사항 </h3>
+			<hr class="border border-danger border-2 opacity-75">
 			<div class="body-main">
 				<form name="listForm" method="post">
 					<input type="hidden" name="page" value="${page}">
@@ -119,7 +123,7 @@
           			</div>
 					<div class="col-6 text-center">
 						<form class="row" name="searchForm" action="${pageContext.request.contextPath}/notice/list" method="post">
-							<div class="col-auto p-1">
+							<div class="col-4 p-1">
 								<select name="schType" class="form-select">
 									<option value="all" ${schType=="all"?"selected":""}>제목+내용</option>
 									<option value="userName" ${schType=="userName"?"selected":""}>작성자</option>
@@ -128,11 +132,10 @@
 									<option value="content" ${schType=="content"?"selected":""}>내용</option>
 								</select>
 							</div>
-							<div class="col-auto p-1">
+							<div class="col-6 p-1">
 								<input type="text" name="kwd" value="${kwd}" class="form-control">
 							</div>
-							<div class="col-auto p-1">
-								<input type="hidden" name="size" value="${size}">
+							<div class="col-2 p-1">
 								<button type="submit" class="btn btn-light"> <i class="bi bi-search"></i> </button>
 							</div>
 						</form>

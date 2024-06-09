@@ -40,18 +40,19 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-				<h3 class="border-bottom border-danger border-3"><i class="bi bi-exclamation-triangle"></i></i> 신고 </h3>
+				<h3><i class="bi bi-exclamation-triangle"></i></i> 신고 및 건의사항 </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			<div class="body-main">
 				<c:if test="${sessionScope.member.userRole!=0}">
 					<div class="alert alert-danger" role="alert">
-						패트와 매트 작가에 대해 악플, 비방 등을 목격하신 분은 아래를 통해 신고해주시기 바랍니다.<br>
-						신고하신 분의 신원은 익명으로 보호하며 조사 결과 허위사실일 경우 처벌받을 수 있습니다.
+						패트와 매트 작가에 대해 악플, 비방 등을 목격하셨거나 건의사항이 있는 회원님들은 아래를 통해 작성해주시기 바랍니다.<br>
+						작성하신 회원님의 신원은 익명으로 보호하며 조사 결과 허위사실일 경우 처벌받을 수 있습니다.
 					</div>
 				</c:if>
 				<c:if test="${sessionScope.member.userRole==0}">
 					<div class="alert alert-primary" role="alert">
-						패트와 매트 작가에 대해 악플, 비방 등을 목격하신 분은 아래를 통해 신고해주시기 바랍니다.<br>
-						신고하신 분의 신원은 익명으로 보호하며 조사 결과 허위사실일 경우 처벌받을 수 있습니다.
+						관리자님은 접수된 신고, 건의사항 등을 확인하고 처리해주세요<br>
+						접수 완료 시 해당 글을 작성하신 회원님께 이메일이 발송됩니다.
 					</div>
 				</c:if>
 				
@@ -60,12 +61,6 @@
 					<input type="hidden" name="page" value="${page}">
 					<input type="hidden" name="schType" value="${schType}">
 					<input type="hidden" name="kwd" value="${kwd}">
-					<c:if test="${sessionScope.member.userRole==0}">
-						<h3 class="text-center">전체 신고 목록</h3>
-					</c:if>
-					<c:if test="${sessionScope.member.userRole==2}">
-						<h3 class="text-center">나의 신고 목록</h3>
-					</c:if>
 					<table class="table table-hover board-list">
 						<thead class="table-warning">
 							<tr>
@@ -102,7 +97,7 @@
 					<div class="col-6 text-center">
 						<c:if test="${sessionScope.member.userRole==0}">
 							<form class="row" name="searchForm" action="${pageContext.request.contextPath}/report/list" method="post">
-								<div class="col-auto p-1">
+								<div class="col-4 p-1">
 									<select name="schType" class="form-select">
 										<option value="all" ${schType=="all"?"selected":""}>제목+내용</option>
 										<option value="name" ${schType=="userName"?"selected":""}>작성자</option>
@@ -111,11 +106,10 @@
 										<option value="content" ${schType=="content"?"selected":""}>내용</option>
 									</select>
 								</div>
-								<div class="col-auto p-1">
+								<div class="col-6 p-1">
 									<input type="text" name="kwd" value="${kwd}" class="form-control">
 								</div>
-								<div class="col-auto p-1">
-									<input type="hidden" name="size" value="${size}">
+								<div class="col-2 p-1">
 									<button type="submit" class="btn btn-light"> <i class="bi bi-search"></i> </button>
 								</div>
 							</form>
