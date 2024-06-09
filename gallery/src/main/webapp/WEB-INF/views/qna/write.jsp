@@ -50,29 +50,30 @@ function sendOk() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 				<h3><i class="bi bi-whatsapp"></i> Q&amp;A </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
 				<form name="questionForm" method="post">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">제 목</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">제 목</td>
 							<td>
 								<input type="text" name="subject" class="form-control" value="${dto.subject}">
 							</td>
 						</tr>
 	        
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작성자명</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작성자명</td>
 	 						<td>
 								<p class="form-control-plaintext">${sessionScope.member.userName}</p>
 							</td>
 						</tr>
 
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">내 용</td>
 							<td>
 								<textarea name="content" id="content" class="form-control">${dto.content}</textarea>
 							</td>

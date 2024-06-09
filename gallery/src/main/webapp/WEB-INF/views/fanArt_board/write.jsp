@@ -22,9 +22,6 @@
 	height: 45px;
 	border-radius: 45px;
 	background-image: url("${pageContext.request.contextPath}/resources/images/add_photo.png");
-	position: relative;
-	z-index: 9999;
-	background-repeat : no-repeat;
 	background-size : cover;
 }
 </style>
@@ -110,15 +107,16 @@ $(function() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 				<h3><i class="bi bi-image"></i> <a href="${pageContext.request.contextPath}/fanArt_board/list">팬아트</a> </h3>
+				<hr class="border border-warning border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
 				<form name="photoForm" method="post" enctype="multipart/form-data">
 					<table class="table write-form mt-5">
 						<tr>
-							<td class="bg-light col" scope="row">제 목</td>
+							<td class="bg-warning-subtle col" scope="row">제 목</td>
 							<td>
 								<select name="artist" class="form-select d-inline" style="max-width: 25% !important;">
 								<c:if test="${sessionScope.member.userRole==0}">
@@ -134,7 +132,7 @@ $(function() {
 	        			
 	        			<c:if test="${sessionScope.member.userRole==0}">
 	        			<tr>
-							<td class="bg-light col-sm-2" scope="row">공지여부</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">공지여부</td>
 							<td>
 								<input type="checkbox" class="form-check-input" name="notice" id="notice" value="1" ${dto.notice==1 ? "checked ":"" } >
 								<label class="form-check-label" for="notice"> 공지</label>
@@ -142,21 +140,21 @@ $(function() {
 						</tr>
 	        			</c:if>
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작성자명</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작성자명</td>
 	 						<td>
 								<p class="form-control-plaintext">${sessionScope.member.userName}</p>
 							</td>
 						</tr>
 	
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">내 용</td>
 							<td>
 								<textarea name="content" id="content" class="form-control">${dto.content}</textarea>
 							</td>
 						</tr>
 						
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">이미지</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">이미지</td>
 							<td>
 								<div class="img-viewer"></div>
 								<input type="file" name="selectFile" accept="image/*" class="form-control" style="display: none;">

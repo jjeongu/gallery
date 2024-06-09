@@ -33,8 +33,9 @@ function searchList() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 				<h3><i class="bi bi-whatsapp"></i> Q&amp;A </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
@@ -44,7 +45,7 @@ function searchList() {
 		        </div>				
 				
 				<table class="table table-hover board-list">
-					<thead class="table-light">
+					<thead class="table-warning">
 						<tr>
 							<th class="num">번호</th>
 							<th class="subject">제목</th>

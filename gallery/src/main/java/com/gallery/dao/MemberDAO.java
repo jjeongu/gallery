@@ -158,16 +158,28 @@ public class MemberDAO {
 		String sql;
 		
 		try {
+			conn.setAutoCommit(false);
+			
+			sql = "delete art where member_id = ?";
+			
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, id);
+			pstmt.executeUpdate();
+			DBUtil.close(pstmt);
+			
 			sql = "delete member1 where member_id = ?";
 			
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, id);
 			pstmt.executeUpdate();
 			
+			conn.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			conn.rollback();
+			throw e;
 		} finally {
 			DBUtil.close(pstmt);
+			conn.setAutoCommit(true);
 		}
 	}
 	
@@ -189,6 +201,40 @@ public class MemberDAO {
 				
 				dto.setUserId(rs.getString("member_id"));
 				dto.setName(rs.getString("name"));
+				
+				list.add(dto);
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.close(rs);
+			DBUtil.close(pstmt);
+		}
+		
+		return list;
+	}
+	
+	public List<MemberDTO> userList() {
+		List<MemberDTO> list = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String sql;
+		
+		try {
+			sql = "select member_id, name, role, reg_date from member1 where role in(1,2) order by role asc, member_id";
+			
+			pstmt = conn.prepareStatement(sql);
+			
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				MemberDTO dto = new MemberDTO();
+				
+				dto.setUserId(rs.getString("member_id"));
+				dto.setName(rs.getString("name"));
+				dto.setRole(rs.getInt("role"));
+				dto.setRegister_date(rs.getString("reg_date"));
 				
 				list.add(dto);
 			}

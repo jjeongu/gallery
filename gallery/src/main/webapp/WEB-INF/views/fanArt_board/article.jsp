@@ -38,8 +38,9 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 				<h3><i class="bi bi-image"></i> <a href="${pageContext.request.contextPath}/fanArt_board/list">팬아트</a> </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
@@ -182,8 +183,8 @@ function ajaxFun(url, method, formData, dataType, fn, file = false) {
 	};
 	
 	if(file) {
-		settings.processData = false;  // file 전송시 필수. 서버로전송할 데이터를 쿼리문자열로 변환여부
-		settings.contentType = false;  // file 전송시 필수. 서버에전송할 데이터의 Content-Type. 기본:application/x-www-urlencoded
+		settings.processData = false;
+		settings.contentType = false;
 	}
 	
 	$.ajax(url, settings);

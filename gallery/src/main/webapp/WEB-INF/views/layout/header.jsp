@@ -36,7 +36,7 @@ $(function() {
         		<li class="nav-item dropdown">
        				<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="#">Community</a>
-					<ul class="dropdown-menu dropdown-menu-warning bg-transparent">
+					<ul class="dropdown-menu bg-white bg-opacity-75">
             			<li><a class="dropdown-item" href="${pageContext.request.contextPath}/free_board/list">자유게시판</a></li>
             			<li><hr class="dropdown-divider"></li>
            				<li><a class="dropdown-item" href="${pageContext.request.contextPath}/fanArt_board/list">팬아트 게시판</a></li>
@@ -49,7 +49,7 @@ $(function() {
         		<li class="nav-item dropdown">
           			<a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown"
        				 aria-expanded="false" href="#">Contact</a>
-					<ul class="dropdown-menu dropdown-menu-warning bg-transparent">
+					<ul class="dropdown-menu dropdown-menu-warning bg-white bg-opacity-75">
 						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/faq/list">FAQ</a></li>
 						<li><hr class="dropdown-divider"></li>
 						<li><a class="dropdown-item" href="${pageContext.request.contextPath}/qna/list">Q&amp;A</a></li>
@@ -70,7 +70,7 @@ $(function() {
 					<a href="${pageContext.request.contextPath}/member/update"><i class="bi bi-gear"></i></a>
 				</c:if>
 				<c:if test="${sessionScope.member.userRole == 0}">
-					<a href="${pageContext.request.contextPath}/member/admin"><i class="bi bi-gear"></i></a>
+					<a href="${pageContext.request.contextPath}/admin"><i class="bi bi-gear"></i></a>
 				</c:if>
 				</li>
 			</ul>

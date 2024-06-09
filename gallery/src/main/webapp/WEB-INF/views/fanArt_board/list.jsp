@@ -14,7 +14,10 @@
 .body-container {
 	max-width: 800px;
 }
-
+.card-img-top{
+	max-width: 250px;
+	max-height: 150px;
+}
 </style>
 
 <script type="text/javascript">
@@ -34,11 +37,13 @@ function searchList() {
 	<main>
 		<div class="container">
 			<div class="body-container">
-				<div class="body-title">
-					<h3 class="border-bottom border-danger border-3">
+				<div>
+					<h3>
 						<i class="bi bi-app"></i> <a href="${pageContext.request.contextPath}/fanArt_board/list">팬아트</a>
 						<span class="fs-6">${dataCount}개(${page}/${total_page})</span>
 					</h3>
+					<hr class="border border-danger border-2 opacity-75">
+					
 				<c:if test="${sessionScope.member.userRole == 1}">
 					<button class="btn btn-secondary float-end py-1" disabled> 글올리기</button>
 				</c:if>
@@ -113,10 +118,6 @@ function searchList() {
 					</form>
 				</div>
 			</div>
-			</div>
-			
-			<div>
-			
 			</div>
 		</div>
 	</main>

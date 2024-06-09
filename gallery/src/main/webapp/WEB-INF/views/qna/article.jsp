@@ -84,8 +84,9 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div >
 				<h3><i class="bi bi-whatsapp"></i> Q&amp;A </h3>
+				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
@@ -95,11 +96,11 @@
 						<tr>
 							<td colspan="2" align="center" class="px-0 pb-0">
 								<div class="row gx-0">
-									<div class="col-sm-1 bg-primary me-1">
-										<p class="form-control-plaintext text-white">Q.</p>
+									<div class="col-sm-1 bg-danger-subtle me-1">
+										<p class="form-control-plaintext text-black fw-bold">Q.</p>
 									</div>
-									<div class="col bg-primary">
-										<p class="form-control-plaintext text-white">${dto.subject}</p>
+									<div class="col bg-danger-subtle">
+										<p class="form-control-plaintext text-black fw-bold">${dto.subject}</p>
 									</div>
 								</div>
 							</td>
@@ -127,11 +128,11 @@
 							<tr>
 								<td colspan="2" align="center" class="p-0">
 									<div class="row gx-0">
-										<div class="col-sm-1 bg-success me-1">
-											<p class="form-control-plaintext text-white">A.</p>
+										<div class="col-sm-1 bg-warning-subtle me-1">
+											<p class="form-control-plaintext text-black fw-bold">A.</p>
 										</div>
-										<div class="col bg-success">
-											<p class="form-control-plaintext text-white">${dto.subject}</p>
+										<div class="col bg-warning-subtle">
+											<p class="form-control-plaintext text-black fw-bold">${dto.subject}</p>
 										</div>
 									</div>
 								</td>
