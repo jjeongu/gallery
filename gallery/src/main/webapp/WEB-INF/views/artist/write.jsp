@@ -115,8 +115,8 @@ $(function(){
 			return false;
 		}
 		
-		let name = $(this).attr("data-name");
-		let birth = $(this).attr("data-birth");
+		let name = $("form select[name=member_id] option:selected").attr("data-name");
+		let birth = $("form select[name=member_id] option:selected").attr("data-birth");
 		
 		$(".art-name").text(name);
 		$(".art-birth").text(birth);

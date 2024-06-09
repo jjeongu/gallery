@@ -131,7 +131,6 @@ function searchList() {
 				<hr class="border border-danger border-2 opacity-75">
 			</div>
 			
-			<!-- main -->
 			<div class="body-main">
 				<div class="artistlist">
 					<ul>

@@ -234,7 +234,7 @@ public class ArtistDAO {
 		String sql;
 		
 		try {
-			sql = "SELECT m.member_id, m.name, m.birth "
+			sql = "SELECT m.member_id, m.name, TO_CHAR(m.birth, 'YYYY-MM-DD') birth "
 					+ " FROM member1 m "
 					+ " LEFT JOIN art a ON m.member_id = a.member_id"
 					+ " WHERE m.role = 1 AND a.member_id IS NULL";

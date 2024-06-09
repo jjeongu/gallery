@@ -116,11 +116,10 @@ public class ArtistController {
 	
 		
 		try {
-			String artist = req.getParameter("artist");
 			ArtDTO dto=new ArtDTO();
 		
 			// 생일, 경력, 소개, 대표작 
-			dto.setMember_id(artist);
+			dto.setMember_id(req.getParameter("member_id"));
 			dto.setIntroduce(req.getParameter("introduce"));
 			dto.setCareer(req.getParameter("career"));
 			dto.setRepresent(req.getParameter("represent"));
