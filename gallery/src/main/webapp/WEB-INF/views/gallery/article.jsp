@@ -43,8 +43,9 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
+			<div>
 				<h3><i class="bi bi-image"></i> 갤러리 </h3>
+				<hr class="border border-warning border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
@@ -54,7 +55,8 @@
 					<thead>
 						<tr>
 							<td>
-								${dto.introduce}
+							<strong><h2>${dto.artistName}</h2></strong> 
+								
 							</td>
 						</tr>
 					</thead>
@@ -75,7 +77,7 @@
 						
 						<tr>
 							<td colspan="2">
-								${dto.artistName}
+								${dto.introduce}
 							</td>
 						</tr>
 						

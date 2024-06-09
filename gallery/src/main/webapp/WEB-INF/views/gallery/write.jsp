@@ -111,8 +111,9 @@ $(function() {
 <main>
 	<div class="container">
 		<div class="body-container">	
-			<div class="body-title">
-				<h3><i class="bi bi-image"></i> 포토 갤러리 </h3>
+			<div>
+				<h3><i class="bi bi-image"></i> 갤러리 </h3>
+				<hr class="border border-warning border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
@@ -120,20 +121,20 @@ $(function() {
 					<table class="table write-form mt-5">
 	        
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작성자명</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작성자명</td>
 	 						<td>
 								<p class="form-control-plaintext">${sessionScope.member.userName}</p>
 							</td>
 						</tr>
 	
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">내 용</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">내 용</td>
 							<td>
 								<textarea name="introduce" id="introduce" class="form-control">${dto.introduce}</textarea>
 							</td>
 						</tr>
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">작 가</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">작 가</td>
 							<td>
 								<select name="artistName">
 									<option value="PAT">패트</option>
@@ -142,7 +143,7 @@ $(function() {
 							</td>
 						</tr>
 						<tr>
-							<td class="bg-light col-sm-2" scope="row">이미지</td>
+							<td class="bg-warning-subtle col-sm-2" scope="row">이미지</td>
 							<td>
 								<div class="img-viewer"></div>
 								<input type="file" name="selectFile" accept="image/*" class="form-control" style="display: none;">
