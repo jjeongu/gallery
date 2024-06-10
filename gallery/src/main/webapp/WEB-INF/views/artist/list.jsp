@@ -17,8 +17,8 @@
 }
 
 .img-thumbnail {
-	width: 300px;
-	height: 300px;
+	width: 400px;
+	height: 400px;
 }
 
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
@@ -132,7 +132,7 @@ function searchList() {
 							<li class="col">
 								<a href="${articleUrl}&member_id=${art.member_id}">
 									<div class="artist">
-										<div class="top" >${art.name}</div>
+										<div class="top">${art.name}</div>
 										<div class="botton"> ${art.name} 작가입니다.</div>
 										<img src="${pageContext.request.contextPath}/uploads/artist/${art.img}" class="img-thumbnail">
 									</div>	
