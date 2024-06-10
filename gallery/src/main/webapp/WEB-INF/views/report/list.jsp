@@ -37,7 +37,7 @@
 <main>
 	<div class="container">
 		<div class="body-container">	
-				<h3><i class="bi bi-exclamation-triangle"></i></i> 신고 및 건의사항 </h3>
+				<h3><i class="bi bi-exclamation-triangle"></i> 신고 및 건의사항 </h3>
 				<hr class="border border-danger border-2 opacity-75">
 			<div class="body-main">
 				<c:if test="${sessionScope.member.userRole!=0}">
@@ -76,7 +76,7 @@
 										<span class="d-inline-block text-truncate align-middle" style="max-width: 390px;"><a href="${articleUrl}&num=${dto.num}" class="text-reset">${dto.subject}</a></span>
 									</td>
 									<td>${dto.userName}</td>
-									<td>${dto.reg_date}</td>
+									<td>${dto.reg_date.substring(0,4)}-${dto.reg_date.substring(4,6)}-${dto.reg_date.substring(6)}</td>
 								</tr>
 							</c:forEach>
 						</tbody>
