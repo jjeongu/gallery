@@ -11,13 +11,6 @@
 <jsp:include page="/WEB-INF/views/layout/staticHeader.jsp"/>
 
 <style type="text/css">
-.body-container {
-	max-width: 800px;
-	font-family: TTLaundryGothicB;
-	font-size: 10px;
-}
-
-
 .artistlist {
 	width: 100%;
 	margin: 0 auto;
@@ -90,7 +83,7 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	width: 78%;
+	width: 97%;
 	height: 100%;
 	background: rgba(0,0,0,.5);
 	z-index: 1;
@@ -112,6 +105,7 @@ function searchList() {
 	const f = document.searchForm;
 	f.submit();
 }
+
 </script>
 
 
@@ -133,11 +127,11 @@ function searchList() {
 			
 			<div class="body-main">
 				<div class="artistlist">
-					<ul>
+					<ul class="row">
 						<c:forEach var="art" items="${list}">
-							<li>
+							<li class="col">
 								<a href="${articleUrl}&member_id=${art.member_id}">
-									<div class="artist" >
+									<div class="artist">
 										<div class="top" >${art.name}</div>
 										<div class="botton"> ${art.name} 작가입니다.</div>
 										<img src="${pageContext.request.contextPath}/uploads/artist/${art.img}" class="img-thumbnail">

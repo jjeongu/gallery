@@ -51,10 +51,10 @@
 .body-container {
     clear:both;
     margin: 0 auto 10px;
+    max-width: 1000px;
     min-height: 500px;
     padding-top: 20px;
 }
-
 .body-title {
     color: #424951;
     padding-top: 10px;
