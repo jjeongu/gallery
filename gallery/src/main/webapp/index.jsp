@@ -14,6 +14,7 @@
 .container {
 	padding: 5% 0;
 }
+
 .container img {
 	width: 80%;
 	animation-duration: 3s;
@@ -22,6 +23,7 @@
 .bounce-text {
 	width:100%;
 }
+
 @keyframes slidein {
   from {
     margin-left: 100%;
@@ -70,7 +72,6 @@
             90% {transform: translate(145px, -10px);}
             100% {transform: translate(150px, 0);}
         }
-        
         
         @keyframes bounce3 {
             0% {transform: translate(153px, 0) scaleX(1.2);}

@@ -46,8 +46,15 @@ font-style:normal;font-weight:700;src:url('//cdn.df.nexon.com/img/common/font/DN
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'ONE-Mobile-POP';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2105_2@1.0/ONE-Mobile-POP.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 h3 {
-	font-family: EF_jejudoldam;
+	font-family: DNFBitBitv2;
 }
 
 .nav > .nav-item > .nav-link {

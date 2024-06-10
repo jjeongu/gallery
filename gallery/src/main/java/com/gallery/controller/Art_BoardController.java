@@ -71,7 +71,7 @@ public class Art_BoardController {
 			}
 			
 			
-			int size = 10;
+			int size = 5;
 			int total_page = util.pageCount(dataCount, size);
 			if(current_page > total_page) {
 				current_page = total_page;

@@ -31,13 +31,13 @@
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
 
 
-ul > li {
+.artistlist ul > li {
 	display: inline-block; /*요소의 속성선언*/
 	vertical-align: top; /*inline의 세로정렬*/
 	width: 50%;
 }
 
-ul > li > a {
+.artistlist ul > li > a {
 	display: bolock;
 	width: auto;
 	text-decoration: none;
@@ -45,13 +45,13 @@ ul > li > a {
 	
 }
 
-ul > li > a .artist {
+.artistlist ul > li > a .artist {
 	position: relative;
 	overflow: hidden;
 }
 
 
-ul > li > a .artist .top {
+.artistlist ul > li > a .artist .top {
 	position:  absolute;
 	bottom: 150%;
 	left: 30px;
@@ -62,7 +62,7 @@ ul > li > a .artist .top {
 	transition: all .35s;
 }
 
-ul > li > a .artist .botton {
+.artistlist ul > li > a .artist .botton {
 	position:  absolute;
 	bottom: 150%;
 	left: 30px;
@@ -72,19 +72,19 @@ ul > li > a .artist .botton {
 	transition: all .35s;
 }
 
-ul > li > a .screen img {
+.artistlist ul > li > a .screen img {
 	width: 100%;
 }
 
-ul > li > a:hover .top {
+.artistlist ul > li > a:hover .top {
 	bottom: 52%;
 }
 
-ul > li > a:hover .botton {
+.artistlist ul > li > a:hover .botton {
 	top: 52%;
 }
 
-ul > li > a .artist::after {
+.artistlist ul > li > a .artist::after {
 	content: '';
 	display: block;
 	position: absolute;
@@ -98,7 +98,7 @@ ul > li > a .artist::after {
 	transition:all .35s;
 }
 
-ul > li > a:hover .artist::after {
+.artistlist ul > li > a:hover .artist::after {
 	opacity: 1;
 }
 /*ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ*/
