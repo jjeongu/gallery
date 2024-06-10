@@ -209,7 +209,7 @@ public class QnaDAO {
 		
 		try {
 			sb.append("select num, m.member_id, subject, content, m.name, hitCount, to_char(m.reg_date, 'YYYY-MM-DD') reg_date, ");
-			sb.append(" answer_id, to_char(answer_date, 'YYYY-MM-DD') answer_date, m2.member_id answer_name, answer from qna q join member1 m on q.member_id=m.member_id ");
+			sb.append(" answer_id, to_char(answer_date, 'YYYY-MM-DD') answer_date, m2.name answer_name, answer from qna q join member1 m on q.member_id=m.member_id ");
 			sb.append(" left outer join member1 m2 on q.answer_id=m2.member_id where num = ?");
 			pstmt = conn.prepareStatement(sb.toString());
 			
