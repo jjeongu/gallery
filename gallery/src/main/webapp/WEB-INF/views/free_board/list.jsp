@@ -127,7 +127,7 @@ function searchList() {
 						</form>
 					</div>
 					<div class="col text-end">
-						<c:if test="${sessionScope.member.userRole==0}">
+						<c:if test="${sessionScope.member.userRole==0 || sessionScope.member.userRole==2}">
 							<button type="button" class="btn btn-light" onclick="location.href='${pageContext.request.contextPath}/free_board/write';">글올리기</button>
 						</c:if>
 					</div>

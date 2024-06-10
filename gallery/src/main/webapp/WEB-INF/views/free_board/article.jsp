@@ -65,7 +65,7 @@
 					<tbody>
 						<tr>
 							<td width="50%">
-								이름 : ${dto.member_id}
+								이름 : ${dto.name}
 							</td>
 							<td align="right">
 								${dto.reg_date} | 조회 ${dto.hitcount}

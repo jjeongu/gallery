@@ -51,6 +51,8 @@ public class Free_BoardController {
 			
 			String schType = req.getParameter("schType");
 			String kwd = req.getParameter("kwd");
+
+			
 			if(schType == null) {
 				schType = "all";
 				kwd = "";
@@ -87,7 +89,7 @@ public class Free_BoardController {
 			
 			// 공지사항 리스트 가져오기
 			List<Free_BoardDTO> listFree_Board = null;
-			if (current_page == 1) {
+			if (current_page == 1 ) {
 			    listFree_Board = dao.listFree_Board();
 			}
 
@@ -164,6 +166,12 @@ public class Free_BoardController {
 			
 			dto.setSubject(req.getParameter("subject"));
 			dto.setContent(req.getParameter("content"));
+			
+			if(req.getParameter("notice")!=null) {
+				dto.setNotice(Integer.parseInt(req.getParameter("notice")));
+			} else {
+				dto.setNotice(0);
+			}
 			
 			Part p = req.getPart("selectFile");
 			MyMultipartFile multiFile = fileManager.doFileUpload(p, pathname);

@@ -89,11 +89,13 @@ function deleteFile(fileNum) {
 						</tr>
 						
 						<tr>
+							<c:if test="${sessionScope.member.userRole==0}">
 							<td class="bg-warning-subtle col-sm-2" scope="row">공지선택</td>
 							<td>
 								<input type="checkbox" class="form-check-input" name="notice" id="notice" value="1" ${dto.notice==1 ? "checked ":"" } >
 								<label class="form-check-label" for="notice"> 공지</label>
 							</td>
+							</c:if>
 						</tr>
 	
 						<tr>
