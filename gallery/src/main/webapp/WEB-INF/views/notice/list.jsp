@@ -31,9 +31,6 @@
 .body-title {
 	text-align: center;
 }
-.body-container h3 {
-	font-family: DNFBitBitv2;
-}
 .hover:hover {
 	cursor: pointer;
 	background: #eee;
