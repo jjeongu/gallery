@@ -9,7 +9,7 @@
 
 <table class='table table-borderless reply-list'>
 	<c:forEach var="vo" items="${listReply}">
-		<tr class='list-header'>
+		<tr class="table-warning"  class='list-header'>
 			<td width='50%'>
 				<span class='bold'>${vo.name}</span>
 			</td>

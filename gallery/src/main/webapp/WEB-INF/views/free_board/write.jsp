@@ -68,7 +68,7 @@ function deleteFile(fileNum) {
 		<div class="body-container">	
 			<div>
 				<h3>🔺 자유 게시판 </h3>
-				<hr class="border border-danger border-2 opacity-75">
+				<hr class="border border-warning border-2 opacity-75">
 			</div>
 			
 			<div class="body-main">
