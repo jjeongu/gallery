@@ -14,7 +14,7 @@
 				<span class='bold'>${dto.name}</span>
 			</td>
 			<td width='50%' align='right'>
-				<span>${dto.reg_date}</span> |
+				<span>${dto.reg_date}</span>
 				<c:if test="${sessionScope.member.userId==dto.member_id || sessionScope.member.userRole==0}">
 					<span class='deleteReply' data-r_num='${dto.r_num}' data-pageNo='${pageNo}'>삭제</span>
 				</c:if>
