@@ -17,9 +17,6 @@
 .body-title {
 	text-align: center;
 }
-.body-container h3 {
-	font-family: DNFBitBitv2;
-}
 .page-navigation ul {
     display: flex;
     flex-direction: row;
