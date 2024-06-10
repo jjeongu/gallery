@@ -295,7 +295,7 @@ public class Free_BoardDAO {
 		try {
 			sql = " select f.num, f.member_id, hitCount, f.reg_date, subject, content,"
 					+ " saveFileName, uploadFileName, fileSize, notice, "
-					+ " NVL(free_boardLikeCount, 0) free_boardLikeCount "
+					+ " NVL(free_boardLikeCount, 0) free_boardLikeCount, name "
 					+ " from free_board f  "
 					+ " join member1 m on f.member_id = m.member_id "
 					+ " LEFT OUTER JOIN ( "
@@ -324,6 +324,7 @@ public class Free_BoardDAO {
 				dto.setNotice(rs.getInt("notice"));
 				
 				dto.setFree_boardLikeCount(rs.getInt("free_boardLikeCount"));
+				dto.setName(rs.getString("name"));
 			}
 			
 		} catch (SQLException e) {
@@ -462,7 +463,7 @@ public class Free_BoardDAO {
 		PreparedStatement pstmt = null;
 		String sql;
 		try {
-			sql = "UPDATE free_board SET subject=?, content=?, saveFilename=?, uploadFilename=?, filesize=? "
+			sql = "UPDATE free_board SET subject=?, content=?, saveFilename=?, uploadFilename=?, filesize=?, notice=? "
 					+ " WHERE num=? AND member_id=? ";
 			pstmt = conn.prepareStatement(sql);
 			
@@ -471,8 +472,9 @@ public class Free_BoardDAO {
 			pstmt.setString(3, dto.getSaveFileName());
 			pstmt.setString(4, dto.getUploadFileName());
 			pstmt.setLong(5, dto.getFileSize());
-			pstmt.setLong(6, dto.getNum());
-			pstmt.setString(7, dto.getMember_id());
+			pstmt.setLong(6, dto.getNotice());
+			pstmt.setLong(7, dto.getNum());
+			pstmt.setString(8, dto.getMember_id());
 			
 			pstmt.executeUpdate();
 
