@@ -21,9 +21,6 @@
 	 font-size: 50px;
 	 padding-bottom: 20px;
 }
-.body-container h3 {
-	font-family: DNFBitBitv2;
-}
 </style>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/board2.css" type="text/css">
 
